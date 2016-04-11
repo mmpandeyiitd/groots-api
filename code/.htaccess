@@ -1,0 +1,17 @@
+<IfModule mod_headers.c>
+
+Header always set Access-Control-Allow-Origin "*"
+Header always set Access-Control-Allow-Methods "POST, GET, OPTIONS, DELETE, PUT"
+Header always set Access-Control-Max-Age "1000"
+Header always set Access-Control-Expose-Headers "API_KEY,APP_VERSION,CONFIG_VERSION,AUTH_TOKEN,RESPONSE_CODE"
+Header always set Access-Control-Allow-Headers "x-requested-with, Content-Type, origin,API_KEY,APP_VERSION,CONFIG_VERSION,AUTH_TOKEN,RESPONSE_CODE, X-Custom-Header"
+
+</IfModule>
+
+<IfModule mod_rewrite.c>
+
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php/$1 [L]
+</IfModule>
