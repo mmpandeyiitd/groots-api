@@ -266,11 +266,11 @@ class api extends CI_Controller {
         }
         $this->load->library('user');
         $result = $this->user->userLogin($value);
-        if(isset($result['response']['user_id']))
+        if(isset($result['data']['user_id']))
         {
             $CI = & get_instance();
             $CI->load->model('apiauthcheck_model');
-            $this->authToken = $CI->apiauthcheck_model->saveAuthToken($result['response']['user_id']);
+            $this->authToken = $CI->apiauthcheck_model->saveAuthToken($result['data']['user_id']);
             $this->output->set_header('AUTH_TOKEN:'.$this->authToken);
             
         }
@@ -455,37 +455,6 @@ class api extends CI_Controller {
         $this->returnfunction($result);
     }
     
-    public function access_request() {
-        $checkAuthToken = TRUE;
-        $result = $this->checkAuth($checkAuthToken);
-        if ($result['config_status'] == -1) {
-            $json_data = json_encode($result);
-            $data['response'] = $json_data;
-            $this->load->view('responseData', $data);
-            return;
-        }
-        if ($result['config_status'] == 0) {
-            $this->output->set_header("RESPONSE_CODE:0");
-            $json_data = json_encode($result);
-            $data['response'] = $json_data;
-            $this->load->view('responseData', $data);
-            return;
-        }
-        
-        $CI = & get_instance();
-        $CI->load->model('apiauthcheck_model');
-        $user_id = $CI->apiauthcheck_model->getUserIdbyToken($this->authToken);
-        $_REQUEST['retailer_id'] = $user_id;
-        $value = array();
-        if (isset($_REQUEST)) {
-            $value = $_REQUEST;
-        }
-        $this->load->library('user');
-        $result = $this->user->accessrequestbrand($value);
-        $this->output->set_header('AUTH_TOKEN:'.$this->authToken);
-        $this->returnfunction($result);
-    }
-    
     public function productList() {
         $checkAuthToken = TRUE;
         $result = $this->checkAuth($checkAuthToken);
@@ -506,7 +475,6 @@ class api extends CI_Controller {
         $CI = & get_instance();
         $CI->load->model('apiauthcheck_model');
         $user_id = $CI->apiauthcheck_model->getUserIdbyToken($this->authToken);
-        $_REQUEST['filter']['retailer_id'] = $user_id;
         $value = array();
         if (isset($_REQUEST)) {
             $value = $_REQUEST;

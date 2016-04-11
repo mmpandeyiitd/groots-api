@@ -43,7 +43,6 @@ class product {
 
         if ($params !== null) {
             $params = http_build_query($params,null,'&');
-
             if ($verb == 'POST') {
                 $cparams['http']['content'] = $params;
             } else {
@@ -120,21 +119,24 @@ class product {
             $data = $this->getallproducts($params);
             if($data->status =='Success')
             {
-                $result['status'] = "Success";
+                $result['status'] = 1;
                 $result['msg'] = "Product Listing";
-                $result['response'] = $data->response;
+                $result['errors'][] = array();
+                $result['data'] = $data->response;
             }
             else
             {
-                $result['status'] = "Fail";
+                $result['status'] = 0;
                 $result['msg'] = "unable to fetch data";    
-                $result['errors'] = array("Product listing fail , Please try again");
-                $result['response'] = array();
+                $result['errors'][] = "Product listing fail , Please try again";
+                $result['data'] = (object)array();
             }
             return $result;
         } catch (Exception $ex) {
-            $result['status'] = "Fail";
+            $result['status'] = 0;
             $result['errors'] = $ex->getMessage();
+            $result['msg'] = "unable to fetch data";    
+            $result['data'] = (object)array();
             return $result;
         }
     }
