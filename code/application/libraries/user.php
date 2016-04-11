@@ -5,114 +5,6 @@ if (!defined('BASEPATH'))
 
 class user {
     
-    public function userRegistration($params) {
-        try {
-            $CI = & get_instance();
-            $CI->load->model('user_model');
-            $CI->load->library('validation');
-            $result = $CI->validation->validate_add_user($params);
-            if ($result['status'] == 1) {
-                $userExist = $CI->user_model->userExists($params);
-                if ($userExist) {
-                    $result['status'] = "Failed";
-                    $result['msg'] = "User Registration Fail";
-                    $result['errors'] = array("Email address already exist in our database");
-                    return $result;
-                }
-                $params['password'] = md5($params['password']);
-                $user_id = $CI->user_model->saveUserData($params);
-                if ($user_id) {
-                    $result['status'] = "Success";
-                    $result['msg'] = "User Registrated Successfully";
-                    $result['response']["user_id"] = $user_id;
-                    $result['response']['name'] = $params['name'];
-                } else {
-                    $result['status'] = "Failed";
-                    $result['msg'] = "User Registrated Fail";
-                    $result['errors'] = array("Registration Fail , Please try again");
-                }
-            } else {
-                $result['status'] = "Failed";
-            }
-            return $result;
-        } catch (Exception $ex) {
-            $result['status'] = "Fail";
-            $result['errors'] = array($ex->getMessage());
-            return $result;
-        }
-    }
-    
-    
-    public function userProfileupdate($params) {
-        try {
-            $CI = & get_instance();
-            $CI->load->model('user_model');
-            $CI->load->library('validation');
-            $result = $CI->validation->validate_update_user($params);
-            if ($result['status'] == 1) {
-                $update_data = array();
-                
-                $update_data['id'] =  $params['id'];
-                if(isset($params['name']) && $params['name'] != ''){
-                   $update_data['name'] =  $params['name'];
-                }
-                if(isset($params['address']) && $params['address'] != ''){
-                    $update_data['address'] =  $params['address'];
-                }
-                if(isset($params['city']) && $params['city'] != ''){
-                    $update_data['city'] =  $params['city'];
-                }
-                if(isset($params['state']) && $params['state'] != ''){
-                    $update_data['state'] =  $params['state'];
-                }
-                if(isset($params['mobile']) && $params['mobile'] != ''){
-                    $update_data['mobile'] =  $params['mobile'];
-                }
-                if(isset($params['telephone']) && $params['telephone'] != ''){
-                    $update_data['telephone'] =  $params['telephone'];
-                }
-                if(isset($params['website']) && $params['website'] != ''){
-                    $update_data['website'] =  $params['website'];
-                }
-                if(isset($params['contact_person1']) && $params['contact_person1'] != ''){
-                    $update_data['contact_person1'] =  $params['contact_person1'];
-                }
-                if(isset($params['contact_person2']) && $params['contact_person2'] != ''){
-                    $update_data['contact_person2'] =  $params['contact_person2'];
-                }
-                if(isset($params['store_size']) && $params['store_size'] != ''){
-                    $update_data['store_size'] =  $params['store_size'];
-                }
-                if(isset($params['product_categories']) && $params['product_categories'] != ''){
-                    $update_data['product_categories'] =  $params['product_categories'];
-                }
-                if(isset($params['key_brand_stocked']) && $params['key_brand_stocked'] != ''){
-                    $update_data['key_brand_stocked'] =  $params['key_brand_stocked'];
-                }
-                if(isset($params['categories_of_interest']) && $params['categories_of_interest'] != ''){
-                    $update_data['categories_of_interest'] =  $params['categories_of_interest'];
-                }
-                $status = $CI->user_model->updateUserRecord($update_data);
-                if ($status) {
-                    $result['status'] = "Success";
-                    $result['msg'] = "User Profile updated Successfully";
-                    $result['response']["user_id"] = $params['id'];
-                } else {
-                    $result['status'] = "Failed";
-                    $result['msg'] = "User Profile update Fail";
-                    $result['errors'] = array("User profile update Fail , Please try again");
-                }
-            } else {
-                $result['status'] = "Failed";
-            }
-            return $result;
-        } catch (Exception $ex) {
-            $result['status'] = "Fail";
-            $result['errors'] = array($ex->getMessage());
-            return $result;
-        }
-    }
-
     public function resetPassword($params) {
         try {
             if (empty($params['key'])) {
@@ -208,43 +100,6 @@ class user {
         }
     }
     
-    public function accessrequestbrand($params) {
-        try {
-            $CI = & get_instance();
-            $CI->load->model('user_model');
-            $CI->load->library('validation');
-            $result = $CI->validation->validate_accessrequestbrand($params);
-            if ($result['status'] == 1) {
-                $res = $CI->user_model->accessrequestexist($params);
-                if ($res) {
-                        $result['status'] = "Failed";
-                        $result['msg'] = "Fail to Save data";
-                        $result['errors'] = "Request already exist or rejected. ";
-                }  else {
-                    $data['retailer_id'] = $params['retailer_id'];
-                    $data['store_id'] = $params['brand_id'];
-                    $data['comment'] = $params['comment'];
-                    $res = $CI->user_model->saveaccessrequest($data);
-                    if ($res) {
-                        $result['status'] = "Success";
-                        $result['msg'] = "Request sent successfully";
-                    } else {
-                        $result['status'] = "Failed";
-                        $result['msg'] = "Save to fail data";
-                        $result['errors'] = "Failed to sent access request";
-                    }
-                }
-            } else {
-                $result['status'] = "Failed";
-            }
-            return $result;
-        } catch (Exception $ex) {
-            $result['status'] = "Fail";
-            $result['errors'] = $ex->getMessage();
-            return $result;
-        }
-    }
-
     public function userLogin($params) {
         try {
 
@@ -253,25 +108,28 @@ class user {
             $CI->load->library('validation');
             $result = $CI->validation->validate_user_login($params);
             if ($result['status'] == 1) {
+                $result = array();
                 $params['password'] = md5($params['password']);
                 $res = $CI->user_model->userLogin($params);
                 if ($res) {
-                    $result['status'] = "Success";
+                    $result['status'] = 1;
+                    $result['errors'] = array();
                     $result['msg'] = "User Login Successfully";
-                    $result['response']["user_id"] = $res["id"];
-                    $result['response']["name"] = $res["name"];
+                    $result['data']["user_id"] = $res["id"];
+                    $result['data']["name"] = $res["name"];
                 } else {
-                    $result['status'] = "Failed";
+                    $result['status'] = 1;
                     $result['msg'] = "User Login Fail";
-                    $result['errors'] = "Invalid email or password";
+                    $result['errors'][] = "Invalid email or password";
+                    $result['data'] = array();
                 }
-            } else {
-                $result['status'] = "Failed";
             }
             return $result;
         } catch (Exception $ex) {
-            $result['status'] = "Fail";
+            $result['status'] = 0;
+            $result['msg'] = "Failed to login";
             $result['errors'] = $ex->getMessage();
+            $result['data'] = array();
             return $result;
         }
     }
