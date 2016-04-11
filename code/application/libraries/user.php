@@ -11,7 +11,7 @@ class user {
                 $result['status'] = 0;
                 $result['msg'] = "Reset Password Fail";
                 $result['errors'][] = "Invalid Key";
-                $result['data'] = array();
+                $result['data'] = (object)array();
                 return $result;
             }
             $encodedata = base64_decode($params['key']);
@@ -20,7 +20,7 @@ class user {
                 $result['status'] = 0;
                 $result['msg'] = "Reset Password Fail";
                 $result['errors'][] = "Invalid Key";
-                $result['data'] = array();
+                $result['data'] = (object)array();
                 return $result;
             }
             $user_id = $arr[0];
@@ -46,26 +46,26 @@ class user {
                         $result['status'] = 1;
                         $result['msg'] = "Password has been updated Successfully";
                         $result['errors'] = array();
-                        $result['data'] = array();
+                        $result['data'] = (object)array();
                     } else {
                         $result['status'] = 0;
                         $result['msg'] = "Save to fail data";
                         $result['errors'][] = "Failed to update password";
-                        $result['data'] = array();
+                        $result['data'] = (object)array();
                     }
                 }
             } else {
                 $result['status'] = 0;
                 $result['msg'] = "Reset Password Fail";
                 $result['errors'][] = "Invalid Key";
-                $result['data'] = array();
+                $result['data'] = (object)array();
             }
             return $result;
         } catch (Exception $ex) {
             $result['status'] = 0;
             $result['msg'] = "Save to fail data";
             $result['errors'] = $ex->getMessage();
-            $result['data'] = array();
+            $result['data'] = (object)array();
             return $result;
         }
     }
@@ -125,10 +125,10 @@ class user {
                     $result['data']["user_id"] = $res["id"];
                     $result['data']["name"] = $res["name"];
                 } else {
-                    $result['status'] = 1;
+                    $result['status'] = 0;
                     $result['msg'] = "User Login Fail";
                     $result['errors'][] = "Invalid email or password";
-                    $result['data'] = array();
+                    $result['data'] = (object)array();
                 }
             }
             return $result;
@@ -136,7 +136,7 @@ class user {
             $result['status'] = 0;
             $result['msg'] = "Failed to login";
             $result['errors'] = $ex->getMessage();
-            $result['data'] = array();
+            $result['data'] = (object)array();
             return $result;
         }
     }
@@ -173,13 +173,13 @@ class user {
                         $result['status'] = 0;
                         $result['msg'] = "Forgot Password Fail";
                         $result['errors'][] = "Fail to send email";
-                        $result['data'] = array();
+                        $result['data'] = (object)array();
                     }
                 } else {
                     $result['status'] = 0;
                     $result['msg'] = "Forgot Password Fail";
                     $result['errors'][] = "invalid email";
-                    $result['data'] = array();
+                    $result['data'] = (object)array();
                 }
             }
             return $result;
@@ -187,7 +187,7 @@ class user {
             $result['status'] = 0;
             $result['errors'] = $ex->getMessage();
             $result['msg'] = "Forgot Password Fail";
-            $result['data'] = array();
+            $result['data'] = (object)array();
             return $result;
         }
     }
