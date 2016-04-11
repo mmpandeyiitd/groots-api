@@ -720,24 +720,28 @@ class validation {
             $CI->load->library('form_validation');
             if ($CI->form_validation->required($params['user_id']) == False) {
                 $result['status'] = 0;
-                $result['msg'] = "Fail to save data";
                 $result['errors'][] = "user id required";
             }
 
             if ($CI->form_validation->required($params['password']) == False) {
                 $result['status'] = 0;
-                $result['msg'] = "Fail to save data";
                 $result['errors'][] = "password Required";
             }
             if (empty($result)) {
                 $result['status'] = 1;
                 $result['msg'] = "valid data";
             }
+            else
+            {
+                $result['msg'] = "Fail to save data";
+                $result['data'] = array();
+            }
             return $result;
         } catch (Exception $ex) {
-            $result['status'] = "0";
+            $result['status'] = 0;
             $result['msg'] = "Fail to save data";
             $result['errors'] = $ex->getMessage();
+            $result['data'] = array();
             return $result;
         }
     }
@@ -969,23 +973,27 @@ class validation {
             $CI->load->library('form_validation');
             if ($CI->form_validation->required($params['email']) == False) {
                 $result['status'] = 0;
-                $result['msg'] = "Fail to save data";
                 $result['errors'][] = "email required";
             }
             if ($CI->form_validation->valid_email($params['email']) == False) {
                 $result['status'] = 0;
-                $result['msg'] = "Fail to save data";
                 $result['errors'][] = "invalid email Address";
             }
             if (empty($result)) {
                 $result['status'] = 1;
                 $result['msg'] = "valid data";
             }
+            else
+            {
+                $result['msg'] = "Api Fail";
+                $result['data'] = array();
+            }
             return $result;
         } catch (Exception $ex) {
             $result['status'] = "0";
             $result['msg'] = "Fail to save data";
             $result['errors'] = $ex->getMessage();
+            $result['data'] = array();
             return $result;
         }
     }
