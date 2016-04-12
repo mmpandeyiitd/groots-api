@@ -266,7 +266,7 @@ class api extends CI_Controller {
         }
         $this->load->library('user');
         $result = $this->user->userLogin($value);
-        if(isset($result['data']['user_id']))
+        if($result['status'] == 1)
         {
             $CI = & get_instance();
             $CI->load->model('apiauthcheck_model');
