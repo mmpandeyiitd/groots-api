@@ -986,7 +986,7 @@ class validation {
             else
             {
                 $result['msg'] = "Api Fail";
-                $result['data'] = array();
+                $result['data'] = (object)array();
             }
             return $result;
         } catch (Exception $ex) {

@@ -169,7 +169,7 @@ class user {
                         $result['status'] = 1;
                         $result['msg'] = "User Forgot Password";
                         $result['errors'] = array();
-                        $result['data'] = $data;
+                        $result['data'] = json_decode($data);
                     } else {
                         $result['status'] = 0;
                         $result['msg'] = "Forgot Password Fail";
