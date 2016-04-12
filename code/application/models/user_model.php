@@ -61,7 +61,7 @@ class user_model extends CI_Model {
 
     public function userLogin($data) {
         try {
-           $user_query = $this->db2->query("SELECT id,name FROM retailer where email='" . $data['email'] . "' and password='".$data['password']."'");
+           $user_query = $this->db2->query("SELECT id,name,contact_person1 FROM retailer where email='" . $data['email'] . "' and password='".$data['password']."'");
             if ($user_query->num_rows() > 0) {
                 $row = $user_query->row_array();
                 return $row;

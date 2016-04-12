@@ -81,39 +81,6 @@ class product {
     }
     
     
-     public function productDetails($params) { 
-        try {
-            
-            $CI = & get_instance();
-            $CI->load->model('user_model');
-            $CI->load->library('validation');
-            $result = $CI->validation->validate_product_details($params);
-            if ($result['status'] == 1) {
-               $data = $this->getallproducts($params);
-                if($data->status =='Success')
-                {
-                    $result['status'] = "Success";
-                    $result['msg'] = "Product Listing";
-                    $result['response'] = $data->response;
-                }
-                else
-                {
-                    $result['status'] = "Fail";
-                    $result['msg'] = "unable to fetch data";    
-                    $result['errors'] = array("Product listing fail , Please try again");
-                    $result['response'] = array();
-                } 
-            }else{
-                $result['status'] = "Failed";
-            }
-            return $result;
-        } catch (Exception $ex) {
-            $result['status'] = "Fail";
-            $result['errors'] = $ex->getMessage();
-            return $result;
-        }
-    }
-    
     public function productList($params) { 
         try {
             $data = $this->getallproducts($params);

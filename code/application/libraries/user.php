@@ -123,6 +123,7 @@ class user {
                     $result['errors'] = array();
                     $result['msg'] = "User Login Successfully";
                     $result['data']["user_id"] = $res["id"];
+                    $result['data']["retailer_name"] = $res["contact_person1"];
                     $result['data']["name"] = $res["name"];
                 } else {
                     $result['status'] = 0;
