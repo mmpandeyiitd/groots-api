@@ -189,7 +189,6 @@ class order extends CI_Controller {
                 $data['order_number'] = "'" . $params['order_prefix'] . $orderno . "'";
                 $data['created_date'] = "'" . date('Y-m-d H:i:s') . "'";
                 $data['payment_status'] = "'" . 'Pending' . "'";
-                $data['source_url'] = "'" . $params['source_url'] . "'";
                 $data['billing_name'] = "'" . $params['billing_name'] . "'";
                 $data['billing_email'] = "'" . $params['billing_email'] . "'";
                 $data['billing_phone'] = "'" . $params['billing_phone'] . "'";
@@ -208,13 +207,8 @@ class order extends CI_Controller {
                 $data['total_payable_amount'] = $params['total_payable_amount'];
                 $data['discount_amt'] = $params['discount_amt'];
                 $data['status'] = "'" . 'pending' . "'";
-                $data['order_source'] = "'" . $params['order_source'] . "'";
-                $data['source_type'] = "'" . $params['source_type'] . "'";
-                $data['source_id'] = $params['source_id'];
-                $data['source_name'] = "'" . $params['source_name'] . "'";
                 //$data['buyer_shipping_cost'] = $params['buyer_shipping_cost'];
                 $data['order_type'] = "'" . $params['order_type'] . "'";
-                $data['utm_source'] = "'" . $params['utm_source'] . "'";
                 $data['coupon_code'] = "'" . $params['coupon_code'] . "'";
                 $data['shipping_charges'] = $params['total_shipping_charges'];
                 $data['tax'] = $params['total_tax'];
@@ -485,7 +479,6 @@ class order extends CI_Controller {
                         $arr[$i]['payment_ref_id'] = $order_header_data[$j]->payment_ref_id;
                         $arr[$i]['payment_gateway_name'] = $order_header_data[$j]->payment_gateway_name;
                         $arr[$i]['payment_source'] = $order_header_data[$j]->payment_source;
-                        $arr[$i]['order_source'] = $order_header_data[$j]->order_source;
                         $arr[$i]['timestamp'] = $order_header_data[$j]->timestamp;
                         $arr[$i]['transaction_id'] = $order_header_data[$j]->transaction_id;
                         $arr[$i]['bank_transaction_id'] = $order_header_data[$j]->bank_transaction_id;
@@ -494,14 +487,9 @@ class order extends CI_Controller {
                         $arr[$i]['bankname'] = $order_header_data[$j]->bankname;
                         $arr[$i]['status'] = $order_header_data[$j]->status;
                         $arr[$i]['cron_processed_flag'] = $order_header_data[$j]->cron_processed_flag;
-                        $arr[$i]['source_url'] = $order_header_data[$j]->source_url;
-                        $arr[$i]['source_type'] = $order_header_data[$j]->source_type;
-                        $arr[$i]['source_id'] = $order_header_data[$j]->source_id;
-                        $arr[$i]['source_name'] = $order_header_data[$j]->source_name;
                         $arr[$i]['campaign_id'] = $order_header_data[$j]->campaign_id;
                         $arr[$i]['buyer_shipping_cost'] = $order_header_data[$j]->buyer_shipping_cost;
                         $arr[$i]['order_type'] = $order_header_data[$j]->order_type;
-                        $arr[$i]['utm_source'] = $order_header_data[$j]->utm_source;
 
                         $r['subscribed_product_id'] = $order_header_data[$j]->subscribed_product_id;
                         $r['base_product_id'] = $order_header_data[$j]->base_product_id;
@@ -618,7 +606,6 @@ class order extends CI_Controller {
                     $arr[$i]['payment_ref_id'] = $order_header_data[$j]->payment_ref_id;
                     $arr[$i]['payment_gateway_name'] = $order_header_data[$j]->payment_gateway_name;
                     $arr[$i]['payment_source'] = $order_header_data[$j]->payment_source;
-                    $arr[$i]['order_source'] = $order_header_data[$j]->order_source;
                     $arr[$i]['timestamp'] = $order_header_data[$j]->timestamp;
                     $arr[$i]['transaction_id'] = $order_header_data[$j]->transaction_id;
                     $arr[$i]['bank_transaction_id'] = $order_header_data[$j]->bank_transaction_id;
@@ -627,14 +614,9 @@ class order extends CI_Controller {
                     $arr[$i]['bankname'] = $order_header_data[$j]->bankname;
                     $arr[$i]['status'] = $order_header_data[$j]->status;
                     $arr[$i]['cron_processed_flag'] = $order_header_data[$j]->cron_processed_flag;
-                    $arr[$i]['source_url'] = $order_header_data[$j]->source_url;
-                    $arr[$i]['source_type'] = $order_header_data[$j]->source_type;
-                    $arr[$i]['source_id'] = $order_header_data[$j]->source_id;
-                    $arr[$i]['source_name'] = $order_header_data[$j]->source_name;
                     $arr[$i]['campaign_id'] = $order_header_data[$j]->campaign_id;
                     $arr[$i]['buyer_shipping_cost'] = $order_header_data[$j]->buyer_shipping_cost;
                     $arr[$i]['order_type'] = $order_header_data[$j]->order_type;
-                    $arr[$i]['utm_source'] = $order_header_data[$j]->utm_source;
                     
                     $same_product_count = 0;
                     $product_name = $order_header_data[$j]->product_name;

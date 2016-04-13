@@ -69,9 +69,6 @@ class validation {
             $CI = & get_instance();
             $CI->load->library('form_validation');
             $rex = '/^[a-z][a-z ]*$/i';
-            if ($CI->form_validation->required($params['source_url']) == False) {
-                $result['errors'][] = "Source url required";
-            }
             
             if ($CI->form_validation->required($params['order_prefix']) == False) {
                 $result['errors'][] = "Order Prefix required";
@@ -79,14 +76,6 @@ class validation {
             
             if ($CI->form_validation->alpha($params['order_prefix']) == False) {
                 $result['errors'][] = "Order Prefix accept only alphabets";
-            }
-            
-            if ($CI->form_validation->required($params['source_type']) == False) {
-                $result['errors'][] = "Source Type required";
-            }
-            
-            if ($CI->form_validation->alpha($params['source_type']) == False) {
-                $result['errors'][] = "Source type accept only alphabets";
             }
             
             if ($CI->form_validation->required($params['discount_amt']) == False) {

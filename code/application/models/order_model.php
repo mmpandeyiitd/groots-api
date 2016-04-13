@@ -17,7 +17,7 @@ class order_model extends CI_Model {
     public function saveOrderHeaderAndLinesData($data) {
         try {
             $this->legacy_db->trans_begin();
-            $sql = 'INSERT INTO order_header (order_number,created_date,payment_status,source_url,billing_name,billing_email,billing_phone,billing_address,billing_city,billing_state,billing_pincode,shipping_name,shipping_email,shipping_phone,shipping_address,shipping_state,shipping_city,shipping_pincode,total,total_payable_amount,discount_amt,status,order_source,source_type,source_id,source_name,order_type,utm_source,coupon_code,shipping_charges,tax,user_id) VALUES ' . $data['header'];
+            $sql = 'INSERT INTO order_header (order_number,created_date,payment_status,billing_name,billing_email,billing_phone,billing_address,billing_city,billing_state,billing_pincode,shipping_name,shipping_email,shipping_phone,shipping_address,shipping_state,shipping_city,shipping_pincode,total,total_payable_amount,discount_amt,status,order_type,coupon_code,shipping_charges,tax,user_id) VALUES ' . $data['header'];
             $this->legacy_db->query($sql);
             $id = $this->legacy_db->insert_id();
             $data['line'] = str_replace("##ORDERID##", $id, $data['line']);
