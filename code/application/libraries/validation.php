@@ -97,13 +97,6 @@ class validation {
                 $result['errors'][] = "Total  Amount should be numeric number and greater than zero";
             }
 
-            if ($CI->form_validation->required($params['user_id']) == False) {
-                $result['errors'][] = "User ID required";
-            }
-            if ($CI->form_validation->numeric($params['user_id']) === FALSE) {
-                $result['errors'][] = "User ID should be numeric number";
-            }
-
             if ($CI->form_validation->numeric($params['total_shipping_charges']) === FALSE || $params['total_shipping_charges'] < 0) {
                 $result['errors'][] = "Total Shipping Charges should be numeric number and greater than zero";
             }

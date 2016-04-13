@@ -1,5 +1,4 @@
 <?php
-
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
@@ -16,43 +15,38 @@ class order extends CI_Controller {
             $CI = & get_instance();
             $CI->load->model('order_model');
             $CI->load->model('user_model');
-            $log['inputs'] = json_encode($params);
-            $logid = $CI->order_model->saveOrderLogs($log);
             $CI->load->library('validation');
             $CI->load->config('custom-config');
             $CI->load->library('communicationengine');
+            if(!(isset($params_r['data']['order_prefix']) && $params_r['data']['order_prefix'] != ''))
+            {
+                $params_r['data']['order_prefix'] = $CI->config->item('ORDER_PREFIX');
+            }
+            $log['inputs'] = json_encode($params);
+            $logid = $CI->order_model->saveOrderLogs($log);
             $params = $params_r['data'];
             $products = $params['product_details'];
             $result = $CI->validation->validate_order($params);
-            $buyer_data =  $CI->user_model->getUserDetails($params_r['user_id']);
-            $params['shipping_name'] = $buyer_data[0]->name;
-            $params['shipping_email'] = $buyer_data[0]->email;
-            $params['shipping_phone'] = $buyer_data[0]->mobile;
-            $params['shipping_address'] = $buyer_data[0]->address;
-            $params['shipping_city'] = $buyer_data[0]->city;
-            $params['shipping_state'] = $buyer_data[0]->state;
-            $params['shipping_pincode'] = $buyer_data[0]->pincode;
-            $params['billing_name'] = $buyer_data[0]->name;
-            $params['billing_email'] = $buyer_data[0]->email;
-            $params['billing_phone'] = $buyer_data[0]->mobile;
-            $params['billing_address'] = $buyer_data[0]->address;
-            $params['billing_city'] = $buyer_data[0]->city;
-            $params['billing_state'] = $buyer_data[0]->state;
-            $params['billing_pincode'] = $buyer_data[0]->pincode;
-            $params['buyer_email'] = $buyer_data[0]->email;
-            $grandtotal = 0.0;
-            $totalpayableamount = 0.0;
-            $totalTax = 0.0;
-            $totalShippingCharges = 0;
             if ($result['status'] == 1) {
-                
-                // $pincodeArr = $CI->config->item('PINCODE');
-                // if (!in_array($params['shipping_pincode'], $pincodeArr, true)) {
-                //     $result['status'] = "Failed";
-                //     $result['msg'] = "Save to fail data";
-                //     $result['errors'] = "Invalid shipping pincode";
-                //     return $result;
-                // }
+                $buyer_data =  $CI->user_model->getUserDetails($params['user_id']);
+                $params['shipping_name'] = $buyer_data[0]->name;
+                $params['shipping_email'] = $buyer_data[0]->email;
+                $params['shipping_phone'] = $buyer_data[0]->mobile;
+                $params['shipping_address'] = $buyer_data[0]->address;
+                $params['shipping_city'] = $buyer_data[0]->city;
+                $params['shipping_state'] = $buyer_data[0]->state;
+                $params['shipping_pincode'] = $buyer_data[0]->pincode;
+                $params['billing_name'] = $buyer_data[0]->name;
+                $params['billing_email'] = $buyer_data[0]->email;
+                $params['billing_phone'] = $buyer_data[0]->mobile;
+                $params['billing_address'] = $buyer_data[0]->address;
+                $params['billing_city'] = $buyer_data[0]->city;
+                $params['billing_state'] = $buyer_data[0]->state;
+                $params['billing_pincode'] = $buyer_data[0]->pincode;
+                $grandtotal = 0.0;
+                $totalpayableamount = 0.0;
+                $totalTax = 0.0;
+                $totalShippingCharges = 0;
                 $count = count($products);
                 $flag_exit = 0;
                 for ($i = 0; $i < $count; $i++) {
@@ -84,7 +78,7 @@ class order extends CI_Controller {
                     } else {
                         $products[$i]['base_product_id'] = $product_arr['base_product_id'];
                     }
-                    $params['seller_email'] = $product_arr['email'];
+                    
                     if (!empty($products[$i]['subscribed_product_id'])) {
                         if ($products[$i]['subscribed_product_id'] != $product_arr['subscribed_product_id']) {
                             $result['status'] = "Failed";
@@ -105,42 +99,23 @@ class order extends CI_Controller {
                     } else {
                         $products[$i]['store_id'] = $product_arr['store_id'];
                     }
-                    if ($products[$i]['product_qty'] > $product_arr['quantity']) {
-                        $result['status'] = "Failed";
-                        $result['msg'] = "Save to fail data";
-                        $result['errors'] = "Invalid  quantity";
-                        return $result;
-                    }
-                    $product_arr['store_offer_price'] = round($product_arr['store_offer_price']);
+                    // if ($products[$i]['product_qty'] > $product_arr['quantity']) {
+                    //     $result['status'] = "Failed";
+                    //     $result['msg'] = "Save to fail data";
+                    //     $result['errors'] = "Invalid  quantity";
+                    //     return $result;
+                    // }
+                    $product_arr['store_offer_price'] = round($product_arr['store_offer_price']); //higher side round off
                     if (floatval($products[$i]['unit_price']) != floatval($product_arr['store_offer_price'])) {
                         $result['status'] = "Failed";
                         $result['msg'] = "Save to fail data";
                         $result['errors'] = "Invalid Price";
                         return $result;
                     }
-                    $product_arr['store_tax_per'] = '0.00';
-//                    $taxdetail = $this->product_model->getTaxByBaseProductId($products[$i]['base_product_id']);
-//                    if (!empty($taxdetail)) {
-//                        foreach ($taxdetail as $tax) {
-//                            if ($tax->cat_tax_per > 0) {
-//                                $product_arr['store_tax_per'] = $tax->cat_tax_per;
-//                                break;
-//                            }
-//                        }
-//                    }
                     $total = floatval($products[$i]['product_qty']) * floatval($product_arr['store_offer_price']);
-
-                    //$tax = (floatval($product_arr['store_offer_price']) * floatval($product_arr['store_tax_per']));
-                    //$tax = round($tax / 100);
-                    //$totalTax = floatval($products[$i]['product_qty']) * $tax;
-                    // $totalshippingCharges = round(floatval($products[$i]['product_qty']) * floatval($product_arr['subscribe_shipping_charge']));
-
                     $grandtotal = $grandtotal + $total;
-                    $totalpayableamount = $totalpayableamount + $total + $totalTax;
                     $products[$i]['store_name'] = $product_arr['store_name'];
                     $products[$i]['store_email'] = $product_arr['store_email'];
-                    //$products[$i]['store_front_id'] = $product_arr['store_front_id'];
-                    //$products[$i]['store_front_name'] = $product_arr['store_front_name'];
                     $products[$i]['seller_name'] = $product_arr['seller_name'];
                     $products[$i]['seller_phone'] = $product_arr['seller_contact_no'];
                     $products[$i]['seller_address'] = $product_arr['business_address'];
@@ -149,13 +124,14 @@ class order extends CI_Controller {
                     $products[$i]['colour'] = $product_arr['colour'];
                     $products[$i]['size'] = $product_arr['size'];
                     $products[$i]['price'] = $total;
-                    $products[$i]['tax'] = $totalTax;
                     $products[$i]['shipping_charges'] = 0;
-                    $quantity = intval($product_arr['quantity']) - intval($products[$i]['product_qty']);
-                    $updateData[] = array(
-                        'subscribed_product_id' => $products[$i]['subscribed_product_id'],
-                        'quantity' => $quantity
-                    );
+                    //$quantity = intval($product_arr['quantity']) - intval($products[$i]['product_qty']);
+                    //$quantity = intval($product_arr['quantity']);
+                    // $updateData[] = array(
+                    //     'subscribed_product_id' => $products[$i]['subscribed_product_id'],
+                    //     'quantity' => $quantity
+                    // );
+                    $updateData = true;
                 }
                 if (round($grandtotal) != floatval($params['total'])) {
                     $result['status'] = "Failed";
@@ -165,14 +141,11 @@ class order extends CI_Controller {
                     return $result;
                 }
 
-                if (empty($params['shipping_charges'])) {
-                    $params['shipping_charges'] = 0.0;
-                }
-                $total_payable_amount = round($totalpayableamount - floatval($params['discount_amt']) + $totalShippingCharges);
+                $total_payable_amount = round($grandtotal - floatval($params['discount_amt']) + floatval($params['total_tax']));
                 
                 if ($total_payable_amount != floatval($params['total_payable_amount'])) {
                     $result['status'] = "Failed";
-                    $result['total'] = $totalpayableamount;
+                    $result['total'] = $grandtotal;
                     $result['grandtotal'] = $total_payable_amount;
                     $result['msg'] = "Save to fail data";
                     $result['errors'] = "Invalid Payable Amount";
@@ -182,10 +155,7 @@ class order extends CI_Controller {
                 $data = array();
                 $seller = array();
                 $maxid = $this->order_model->getMaxOrderId();
-
-
                 $orderno = floatval($CI->config->item('ORD_NO')) + floatval($maxid) + 1;
-
                 $data['order_number'] = "'" . $params['order_prefix'] . $orderno . "'";
                 $data['created_date'] = "'" . date('Y-m-d H:i:s') . "'";
                 $data['payment_status'] = "'" . 'Pending' . "'";
@@ -210,16 +180,9 @@ class order extends CI_Controller {
                 //$data['buyer_shipping_cost'] = $params['buyer_shipping_cost'];
                 $data['order_type'] = "'" . $params['order_type'] . "'";
                 $data['coupon_code'] = "'" . $params['coupon_code'] . "'";
-                $data['shipping_charges'] = $params['total_shipping_charges'];
+                $data['shipping_charges'] = 0;
                 $data['tax'] = $params['total_tax'];
-                $data['user_id'] = $params_r['user_id'];
-                $userAddress['user_id'] = $params_r['user_id'];
-                $userAddress['type'] = 'B';
-                $userAddress['address'] = $params['billing_name'] . '~' . $params['billing_email'] . '~' . $params['billing_phone'] . '~' . $params['billing_address'] . '~' . $params['billing_city'] . '~' . $params['billing_state'] . '~' . $params['billing_pincode'];
-                $this->order_model->saveUserAddressData($userAddress);
-                $userAddress['type'] = 'S';
-                $userAddress['address'] = $params['shipping_name'] . '~' . $params['shipping_email'] . '~' . $params['shipping_phone'] . '~' . $params['shipping_address'] . '~' . $params['shipping_city'] . '~' . $params['shipping_state'] . '~' . $params['shipping_pincode'];
-                $this->order_model->saveUserAddressData($userAddress);
+                $data['user_id'] = $params['user_id'];
                 $FinalData['header'] = '(' . implode(',', $data) . ')';
                 $count = count($products);
                 $emailUserData = '';
@@ -247,6 +210,8 @@ class order extends CI_Controller {
                     $pdata['shipping_charges'] = 0; //$products[$i]['shipping_charges'];
                     $LinesData[] = '(' . implode(',', $pdata) . ')';
                     $serialno = $i + 1;
+                    
+                    //HTML data is using for sending email
                     $seller[$i]['name'] = $products[$i]['store_name'];
                     $seller[$i]['email'] = $products[$i]['store_email'];
                     $seller[$i]['product'] = '<tr style="border-bottom: 1px solid #E6E6E6">
@@ -274,14 +239,17 @@ class order extends CI_Controller {
 
                 $FinalData['line'] = implode(",", $LinesData);
                 $order_id = $this->order_model->saveOrderHeaderAndLinesData($FinalData);
-                $this->order_model->deleteCartByUserIdAndCartId($params['cart_id']);
                 $logs['order_id'] = $order_id;
                 $logs['id'] = $logid;
                 $logid = $this->order_model->updateOrderLogs($logs);
                 if ($order_id) {
                     if ($updateData) {
-                        $update_res = $this->product_model->updateProductQuantity($updateData);
-                        $resSolrbacklog = $this->solrBackLog($updateData);
+                        //$update_res = $this->product_model->updateProductQuantity($updateData);
+                        $update_header['order_id'] = $order_id;
+                        $update_header['order_number'] = $params['order_prefix'].$order_id;
+                        $updt_hdr = $this->order_model->updateorderheader($update_header);
+                        $update_res = true;
+                        //$resSolrbacklog = $this->solrBackLog($updateData);
                         if ($update_res) {
                             $viewdata['name'] = $params['shipping_name'];
                             $viewdata['product'] = $emailProductData;
@@ -311,7 +279,6 @@ class order extends CI_Controller {
                             $result['msg'] = "Data Save Successfully";
                             $result['data']['order_id'] = $order_id;
                             $result['data']['order_no'] = $params['order_prefix'] . $orderno;
-                            //$result['response']['email'] = $dataRes;
                         } else {
                             $result['status'] = "Failed";
                             $result['msg'] = "Save to fail data";

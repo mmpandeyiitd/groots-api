@@ -67,7 +67,7 @@ class api extends CI_Controller {
     public function addOrder() {
         $checkAuthToken = TRUE;
         $result = $this->checkAuth($checkAuthToken);
-        if ($result['config_status'] == -1) {
+        if ($result['config_status'] == -1) { 
             $json_data = json_encode($result);
             $data['response'] = $json_data;
             $this->load->view('responseData', $data);
@@ -83,7 +83,7 @@ class api extends CI_Controller {
         $CI = & get_instance();
         $CI->load->model('apiauthcheck_model');
         $user_id = $CI->apiauthcheck_model->getUserIdbyToken($this->authToken);
-        $_REQUEST['user_id'] = $user_id;
+        $_REQUEST['data']['user_id'] = $user_id;
         $value = array();
         if (isset($_REQUEST)) {
             $value = $_REQUEST;

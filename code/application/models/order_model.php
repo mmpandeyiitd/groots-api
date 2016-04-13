@@ -146,6 +146,25 @@ class order_model extends CI_Model {
             return FALSE;
         }
     }
+
+    public function updateorderheader($data) {
+       try {
+            $this->legacy_db->where('order_id', $data['order_id']);
+            $this->legacy_db->update('order_header', $data);
+            if($this->legacy_db->_error_message()){
+                $dberrorObjs->error_code = $this->legacy_db->_error_number();
+                $dberrorObjs->error_message = $this->legacy_db->_error_message();
+                $dberrorObjs->error_query = $this->legacy_db->last_query();
+                $dberrorObjs->error_time = date("Y-m-d H:i:s");
+                $this->legacy_db->insert('dberror', $dberrorObjs);
+                return FALSE;
+            } else{
+                return True;
+            }
+        } catch (Exception $e) {
+            return FALSE;
+        }
+    }
     public function checkUserAddressExist($data) {
         try {
             $user_query = $this->legacy_db->query("SELECT id FROM user_address where address='" . $data['address'] . "' and user_id=" . $data['user_id']);
