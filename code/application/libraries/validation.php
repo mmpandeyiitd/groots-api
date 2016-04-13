@@ -72,130 +72,6 @@ class validation {
             if ($CI->form_validation->required($params['source_url']) == False) {
                 $result['errors'][] = "Source url required";
             }
-            if ($CI->form_validation->required($params['billing_name']) == False) {
-                $result['errors'][] = "Billing Name required";
-            }
-            
-            if (! preg_match($rex,$params['billing_name'])) {
-                $result['errors'][] = "Invalid Billing Name";
-            }
-            
-            if (strlen($params['billing_name']) > 32 || strlen($params['billing_name']) < 4) {
-                $result['errors'][] = "Billing Name must between 4 to 32 characters";
-            }
-            
-            if ($CI->form_validation->required($params['billing_email']) == False) {
-                $result['errors'][] = "Billing Email required";
-            }
-            if ($CI->form_validation->valid_email($params['billing_email']) == False) {
-                $result['errors'][] = "Invalid Billing Email Address";
-            }
-            if ($CI->form_validation->required($params['billing_phone']) == False) {
-                $result['errors'][] = "Billing Phone no required";
-            }
-            
-            if (preg_match('/[^0-9]/',$params['billing_phone']) || $params['billing_phone'] < 999999999 || $params['billing_phone'] > 9999999999) {
-                $result['errors'][] = "Wrong billing phone";
-            }
-
-            if ($CI->form_validation->required($params['billing_address']) == False) {
-                $result['errors'][] = "Billing Address required";
-            }
-            
-            if (strlen($params['billing_address']) > 64 || strlen($params['billing_address']) < 10) {
-                $result['errors'][] = "Billing Address must between 10 to 64 characters";
-            }
-                
-            if ($CI->form_validation->required($params['billing_city']) == False) {
-                $result['errors'][] = "Billing City required";
-            }
-            
-            if (! preg_match($rex,$params['billing_city'])) {
-                $result['errors'][] = "Invalid Billing City";
-            }
-            
-            if ($CI->form_validation->required($params['billing_state']) == False) {
-                $result['errors'][] = "Billing State required";
-            }
-            
-            if (! preg_match($rex,$params['billing_state'])) {
-                $result['errors'][] = "Invalid Billing State";
-            }
-            
-            if ($CI->form_validation->required($params['billing_pincode']) == False) {
-                $result['errors'][] = "Billing Pincode required";
-            }
-            
-            if ($CI->form_validation->is_natural_no_zero($params['billing_pincode']) == False) {
-                $result['errors'][] = "Invalid Billing Pincode";
-            }
-            
-            if ($params['billing_pincode'] < 100000 || $params['billing_pincode'] > 999999) {
-                $result['errors'][] = "Invalid Billing Pincode";
-            }
-
-            if ($CI->form_validation->required($params['shipping_name']) == False) {
-                $result['errors'][] = "Shipping Name required";
-            }
-            
-            if (! preg_match($rex,$params['shipping_name'])) {
-                $result['errors'][] = "Invalid Shipping Name";
-            }
-            
-            if (strlen($params['shipping_name']) > 32 || strlen($params['shipping_name']) < 4) {
-                $result['errors'][] = "Shipping Name must between 4 to 32 characters";
-            }
-            
-            if ($CI->form_validation->required($params['shipping_email']) == False) {
-                $result['errors'][] = "Shipping Email required";
-            }
-            if ($CI->form_validation->valid_email($params['shipping_email']) == False) {
-                $result['errors'][] = "Invalid Shipping Email Address";
-            }
-
-            if ($CI->form_validation->required($params['shipping_phone']) == False) {
-                $result['errors'][] = "Shipping Phone no required";
-            }
-            
-            if (preg_match('/[^0-9]/',$params['shipping_phone']) || $params['shipping_phone'] < 999999999 || $params['shipping_phone'] > 9999999999) {
-                $result['errors'][] = "Wrong Shipping phone";
-            }
-            
-            if ($CI->form_validation->required($params['shipping_address']) == False) {
-                $result['errors'][] = "Shipping Address required";
-            }
-            
-            if (strlen($params['shipping_address']) > 64 || strlen($params['shipping_address']) < 10) {
-                $result['errors'][] = "Shipping Address must between 10 to 64 characters";
-            }
-            
-            if ($CI->form_validation->required($params['shipping_city']) == False) {
-                $result['errors'][] = "Shipping City required";
-            }
-            
-            if (! preg_match($rex,$params['shipping_city'])) {
-                $result['errors'][] = "Invalid Shipping City";
-            }
-            
-            if ($CI->form_validation->required($params['shipping_state']) == False) {
-                $result['errors'][] = "Shipping State required";
-            }
-            
-            if (! preg_match($rex,$params['shipping_state'])) {
-                $result['errors'][] = "Invalid Shipping State";
-            }
-            
-            if ($CI->form_validation->required($params['shipping_pincode']) == False) {
-                $result['errors'][] = "Shipping Pincode required";
-            }
-            
-            if ($CI->form_validation->is_natural_no_zero($params['shipping_pincode']) == False) {
-                $result['errors'][] = "Invalid Shipping Pincode";
-            }
-            
-            if ($params['shipping_pincode'] < 100000 || $params['shipping_pincode'] > 999999) {
-                $result['errors'][] = "Invalid Shipping Pincode";
-            }
             
             if ($CI->form_validation->required($params['order_prefix']) == False) {
                 $result['errors'][] = "Order Prefix required";
@@ -205,30 +81,12 @@ class validation {
                 $result['errors'][] = "Order Prefix accept only alphabets";
             }
             
-            if ($CI->form_validation->required($params['order_source']) == False) {
-                $result['errors'][] = "Order Source required";
-            }
-            
-            if ($CI->form_validation->alpha($params['order_source']) == False) {
-                $result['errors'][] = "Order source accept only alphabets";
-            }
-            
             if ($CI->form_validation->required($params['source_type']) == False) {
                 $result['errors'][] = "Source Type required";
             }
             
             if ($CI->form_validation->alpha($params['source_type']) == False) {
                 $result['errors'][] = "Source type accept only alphabets";
-            }
-            
-            if ($CI->form_validation->required($params['source_id']) == False) {
-                $result['errors'][] = "Source ID required";
-            }
-            if ($CI->form_validation->is_natural_no_zero($params['source_id']) === FALSE) {
-                $result['errors'][] = "Source ID should be numeric number";
-            }
-            if ($CI->form_validation->required($params['source_name']) == False) {
-                $result['errors'][] = "Source Name required";
             }
             
             if ($CI->form_validation->required($params['discount_amt']) == False) {
@@ -250,22 +108,13 @@ class validation {
                 $result['errors'][] = "Total  Amount should be numeric number and greater than zero";
             }
 
-            if ($CI->form_validation->required($params['utm_source']) == False) {
-                $result['errors'][] = "UTM Source required";
-            }
-
             if ($CI->form_validation->required($params['user_id']) == False) {
                 $result['errors'][] = "User ID required";
             }
             if ($CI->form_validation->numeric($params['user_id']) === FALSE) {
                 $result['errors'][] = "User ID should be numeric number";
             }
-            if ($CI->form_validation->required($params['cart_id']) == False) {
-                $result['errors'][] = "Cart ID required";
-            }
-            if ($CI->form_validation->is_natural_no_zero($params['cart_id']) === FALSE) {
-                $result['errors'][] = "Cart ID should be numeric number";
-            }
+
             if ($CI->form_validation->numeric($params['total_shipping_charges']) === FALSE || $params['total_shipping_charges'] < 0) {
                 $result['errors'][] = "Total Shipping Charges should be numeric number and greater than zero";
             }

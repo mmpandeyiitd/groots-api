@@ -15,6 +15,7 @@ class order extends CI_Controller {
         try {
             $CI = & get_instance();
             $CI->load->model('order_model');
+            $CI->load->model('user_model');
             $log['inputs'] = json_encode($params);
             $logid = $CI->order_model->saveOrderLogs($log);
             $CI->load->library('validation');
@@ -23,19 +24,35 @@ class order extends CI_Controller {
             $params = $params_r['data'];
             $products = $params['product_details'];
             $result = $CI->validation->validate_order($params);
+            $buyer_data =  $CI->user_model->getUserDetails($params_r['user_id']);
+            $params['shipping_name'] = $buyer_data[0]->name;
+            $params['shipping_email'] = $buyer_data[0]->email;
+            $params['shipping_phone'] = $buyer_data[0]->mobile;
+            $params['shipping_address'] = $buyer_data[0]->address;
+            $params['shipping_city'] = $buyer_data[0]->city;
+            $params['shipping_state'] = $buyer_data[0]->state;
+            $params['shipping_pincode'] = $buyer_data[0]->pincode;
+            $params['billing_name'] = $buyer_data[0]->name;
+            $params['billing_email'] = $buyer_data[0]->email;
+            $params['billing_phone'] = $buyer_data[0]->mobile;
+            $params['billing_address'] = $buyer_data[0]->address;
+            $params['billing_city'] = $buyer_data[0]->city;
+            $params['billing_state'] = $buyer_data[0]->state;
+            $params['billing_pincode'] = $buyer_data[0]->pincode;
+            $params['buyer_email'] = $buyer_data[0]->email;
             $grandtotal = 0.0;
             $totalpayableamount = 0.0;
             $totalTax = 0.0;
             $totalShippingCharges = 0;
             if ($result['status'] == 1) {
                 
-                $pincodeArr = $CI->config->item('PINCODE');
-                if (!in_array($params['shipping_pincode'], $pincodeArr, true)) {
-                    $result['status'] = "Failed";
-                    $result['msg'] = "Save to fail data";
-                    $result['errors'] = "Invalid shipping pincode";
-                    return $result;
-                }
+                // $pincodeArr = $CI->config->item('PINCODE');
+                // if (!in_array($params['shipping_pincode'], $pincodeArr, true)) {
+                //     $result['status'] = "Failed";
+                //     $result['msg'] = "Save to fail data";
+                //     $result['errors'] = "Invalid shipping pincode";
+                //     return $result;
+                // }
                 $count = count($products);
                 $flag_exit = 0;
                 for ($i = 0; $i < $count; $i++) {
@@ -67,6 +84,7 @@ class order extends CI_Controller {
                     } else {
                         $products[$i]['base_product_id'] = $product_arr['base_product_id'];
                     }
+                    $params['seller_email'] = $product_arr['email'];
                     if (!empty($products[$i]['subscribed_product_id'])) {
                         if ($products[$i]['subscribed_product_id'] != $product_arr['subscribed_product_id']) {
                             $result['status'] = "Failed";

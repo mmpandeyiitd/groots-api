@@ -188,7 +188,7 @@ class user_model extends CI_Model {
     
     public function getUserDetails($params) {
        try{
-            $user_details_query = $this->db2->query('SELECT name, email, retailer_code,VAT_number,mobile,telephone,address,city,state,image,website,contact_person1,contact_person2,key_brand_stocked,product_categories,categories_of_interest,store_size FROM retailer where id="'.$params['id'].'"');
+            $user_details_query = $this->db2->query('SELECT name, email, retailer_code,VAT_number,mobile,telephone,address,city,state,pincode,image,website,contact_person1,contact_person2,key_brand_stocked,product_categories,categories_of_interest,store_size FROM retailer where id="'.$params['id'].'"');
             $user_details  = $user_details_query->result();
             if($this->db2->_error_message()){
                 $dberrorObjs->error_code = $this->db2->_error_number();
