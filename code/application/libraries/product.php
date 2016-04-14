@@ -84,7 +84,7 @@ class product {
     public function productList($params) { 
         try {
             $data = $this->getallproducts($params);
-            if($data->status =='Success')
+            if($data->status =='Success' & $data->response !=null)
             {
                 $result['status'] = 1;
                 $result['msg'] = "Product Listing";

@@ -97,9 +97,26 @@ class validation {
                 $result['errors'][] = "Total  Amount should be numeric number and greater than zero";
             }
 
+            if ($CI->form_validation->required($params['total_shipping_charges']) == False) {
+                $result['errors'][] = "Total Shipping Charges Required";
+            }
+
             if ($CI->form_validation->numeric($params['total_shipping_charges']) === FALSE || $params['total_shipping_charges'] < 0) {
                 $result['errors'][] = "Total Shipping Charges should be numeric number and greater than zero";
             }
+
+            if ($CI->form_validation->required($params['total_tax']) == False) {
+                $result['errors'][] = "Total Tax Charges Required";
+            }
+
+            if (!(isset($params['coupon_code']))) {
+                $result['errors'][] = "Coupon Code Required either value or blank";
+            }
+
+            if ($CI->form_validation->required($params['order_type']) == False) {
+                $result['errors'][] = "Order Type Charges Required";
+            }
+
             if ($CI->form_validation->numeric($params['total_tax']) === FALSE || $params['total_tax']) {
                 $result['errors'][] = "Total Tax should be numeric number and greater than zero";
             }
@@ -147,6 +164,14 @@ class validation {
                     if ($CI->form_validation->is_natural_no_zero($params['product_details'][$i]['product_qty']) == False || $params['product_details'][$i]['product_qty'] < 0) {
                         $product_arr['live']['errors'][] = "Product Quantity should be numeric and greater than zero";
                     }
+
+                    if ($CI->form_validation->required($params['product_details'][$i]['tax']) == False) {
+                        $product_arr['live']['errors'][] = "Product Tax required";
+                    }
+                    
+                    if ($CI->form_validation->is_natural_no_zero($params['product_details'][$i]['tax']) == False || $params['product_details'][$i]['tax'] < 0) {
+                        $product_arr['live']['errors'][] = "Product Tax should be numeric and greater than zero";
+                    }
                 }
                 if (!empty($product_arr)) {
                     $result['errors'][] = $product_arr;
@@ -155,16 +180,18 @@ class validation {
             if (empty($result)) {
                 $result['status'] = 1;
                 $result['msg'] = "valid data";
+
             } else {
                 $result['status'] = 0;
                 $result['msg'] = "Fail to save data";
-                $result['errors'] = $result['errors'];
+                $result['data'] = (object)array();
             }
             return $result;
         } catch (Exception $ex) {
             $result['status'] = "0";
             $result['msg'] = "Fail to save data";
             $result['errors'] = $ex->getMessage();
+            $result['data'] = (object)array();
             return $result;
         }
     }
@@ -786,13 +813,14 @@ class validation {
             else
             {
                 $result['msg'] = "Failed to login";
-                $result['data'] = array();
+                $result['data'] = (object)array();
             }
             return $result;
         } catch (Exception $ex) {
             $result['status'] = 0;
             $result['msg'] = "Fail to save data";
             $result['errors'] = $ex->getMessage();
+            $result['data'] = (object)array();
             return $result;
         }
     }
@@ -824,7 +852,7 @@ class validation {
             $result['status'] = "0";
             $result['msg'] = "Fail to save data";
             $result['errors'] = $ex->getMessage();
-            $result['data'] = array();
+            $result['data'] = (object)array();
             return $result;
         }
     }
