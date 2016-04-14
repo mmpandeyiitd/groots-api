@@ -57,7 +57,7 @@ class order extends CI_Controller {
                         $cond['store_id'] = $products[$i]['store_id'];
                     } else {
                         $result['status'] = 0;
-                        $result['msg'] = "Save to fail data";
+                        $result['msg'] = "Fail to save data";
                         $result['errors'][] = "Invalid  subscribed product id,base product id or store id";
                         $result['data'] = (object)array();
                         return $result;
@@ -65,14 +65,14 @@ class order extends CI_Controller {
                     $product_arr = $this->product_model->getProductData($cond);
                     if (empty($product_arr)) {
                         $result['status'] = "Failed";
-                        $result['msg'] = "Save to fail data";
+                        $result['msg'] = "Fail to save data";
                         $result['errors'] = "Invalid  subscribed product id,base product id or store id";
                         return $result;
                     }
                     if (!empty($products[$i]['base_product_id'])) {
                         if ($products[$i]['base_product_id'] != $product_arr['base_product_id']) {
                             $result['status'] = 0;
-                            $result['msg'] = "Save to fail data";
+                            $result['msg'] = "Fail to save data";
                             $result['errors'][] = "Invalid  subscribed product id,base product id or store id";
                             $result['data'] = (object)array();
                             return $result;
@@ -84,7 +84,7 @@ class order extends CI_Controller {
                     if (!empty($products[$i]['subscribed_product_id'])) {
                         if ($products[$i]['subscribed_product_id'] != $product_arr['subscribed_product_id']) {
                             $result['status'] = 0;
-                            $result['msg'] = "Save to fail data";
+                            $result['msg'] = "Fail to save data";
                             $result['errors'][] = "Invalid  subscribed product id,base product id or store id";
                             $result['data'] = (object)array();
                             return $result;
@@ -95,7 +95,7 @@ class order extends CI_Controller {
                     if (!empty($products[$i]['store_id'])) {
                         if ($products[$i]['store_id'] != $product_arr['store_id']) {
                             $result['status'] = 0;
-                            $result['msg'] = "Save to fail data";
+                            $result['msg'] = "Fail to save data";
                             $result['errors'][] = "Invalid  subscribed product id,base product id or store id";
                             $result['data'] = (object)array();
                             return $result;
@@ -105,20 +105,21 @@ class order extends CI_Controller {
                     }
                     // if ($products[$i]['product_qty'] > $product_arr['quantity']) {
                     //     $result['status'] = "Failed";
-                    //     $result['msg'] = "Save to fail data";
+                    //     $result['msg'] = "Fail to save data";
                     //     $result['errors'] = "Invalid  quantity";
                     //     return $result;
                     // }
                     $product_arr['store_offer_price'] = round($product_arr['store_offer_price']); //higher side round off
                     if (floatval($products[$i]['unit_price']) != floatval($product_arr['store_offer_price'])) {
                         $result['status'] = 0;
-                        $result['msg'] = "Save to fail data";
+                        $result['msg'] = "Fail to save data";
                         $result['errors'][] = "Invalid Price";
                         $result['data'] = (object)array();
                         return $result;
                     }
                     $total = floatval($products[$i]['product_qty']) * floatval($product_arr['store_offer_price']);
                     $grandtotal = $grandtotal + $total;
+                    $totalTax = $totalTax + floatval($products[$i]['tax']);
                     $products[$i]['store_name'] = $product_arr['store_name'];
                     $products[$i]['store_email'] = $product_arr['store_email'];
                     $products[$i]['seller_name'] = $product_arr['seller_name'];
@@ -140,8 +141,16 @@ class order extends CI_Controller {
                 }
                 if (round($grandtotal) != floatval($params['total'])) {
                     $result['status'] = 0;
-                    $result['msg'] = "Save to fail data";
+                    $result['msg'] = "Fail to save data";
                     $result['errors'][] = "Invalid Total Price";
+                    $result['data'] = (object)array();
+                    return $result;
+                }
+
+                if (round($totalTax) != floatval($params['total_tax'])) {
+                    $result['status'] = 0;
+                    $result['msg'] = "Fail to save data";
+                    $result['errors'][] = "Invalid Total Tax";
                     $result['data'] = (object)array();
                     return $result;
                 }
@@ -150,7 +159,7 @@ class order extends CI_Controller {
                 
                 if ($total_payable_amount != floatval($params['total_payable_amount'])) {
                     $result['status'] = 0;
-                    $result['msg'] = "Save to fail data";
+                    $result['msg'] = "Fail to save data";
                     $result['errors'][] = "Invalid Payable Amount";
                     $result['data'] = (object)array();
                     return $result;
@@ -286,19 +295,19 @@ class order extends CI_Controller {
                             $result['data']['order_no'] = $params['order_prefix'] . $orderno;
                         } else {
                             $result['status'] = 0;
-                            $result['msg'] = "Save to fail data";
+                            $result['msg'] = "Fail to save data";
                             $result['errors'][] = "Update Query not execute";
                             $result['data'] = (object)array();
                         }
                     } else {
                         $result['status'] = 0;
-                        $result['msg'] = "Save to fail data";
+                        $result['msg'] = "Fail to save data";
                         $result['errors'][] = "Update Query not execute";
                         $result['data'] = (object)array();
                     }
                 } else {
                     $result['status'] = 0;
-                    $result['msg'] = "Save to fail data";
+                    $result['msg'] = "Fail to save data";
                     $result['errors'][] = "Insert Query not execute";
                     $result['data'] = (object)array();
                 }
@@ -354,7 +363,7 @@ class order extends CI_Controller {
                     $result['msg'] = "Data updated Successfully";
                 } else {
                     $result['status'] = "Failed";
-                    $result['msg'] = "Save to fail data";
+                    $result['msg'] = "Fail to save data";
                 }
             } else {
                 $result['status'] = "Failed";

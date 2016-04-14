@@ -169,8 +169,8 @@ class validation {
                         $product_arr['live']['errors'][] = "Product Tax required";
                     }
                     
-                    if ($CI->form_validation->is_natural_no_zero($params['product_details'][$i]['tax']) == False || $params['product_details'][$i]['tax'] < 0) {
-                        $product_arr['live']['errors'][] = "Product Tax should be numeric and greater than zero";
+                    if ($CI->form_validation->numeric($params['product_details'][$i]['tax']) == False || $params['product_details'][$i]['tax'] < 0) {
+                        $product_arr['live']['errors'][] = "Product Tax should be numeric";
                     }
                 }
                 if (!empty($product_arr)) {
