@@ -23,8 +23,12 @@ class api extends CI_Controller {
             $CI->apiauthcheck_model->setHeader('CONFIG_VERSION', $requestHeaders['CONFIG_VERSION']);
             if ($checkAuthToken == TRUE) {
                 if (!$requestHeaders['API_KEY']) {
-                    $result['config_status'] = -1;
-                    $result['config_msg'] = "Auth Token is missing";
+                    // $result['config_status'] = -1;
+                    // $result['config_msg'] = "Auth Token is missing";
+                    $result['status'] = 0;
+                    $result['msg'] = "Authentication fail";
+                    $result['errors'][] = "Auth Token is missing";
+                    $result['data'] = (object)array();
                     return $result;
                 }
             } 
@@ -33,8 +37,12 @@ class api extends CI_Controller {
                 $this->authToken = $requestHeaders['AUTH_TOKEN'];
             }
         } else {
-            $result['config_status'] = -1;
-            $result['config_msg'] = "Header Field is missing";
+            // $result['config_status'] = -1;
+            // $result['config_msg'] = "Header Field is missing";
+            $result['status'] = 0;
+            $result['msg'] = "Authentication Fail";
+            $result['errors'][] = "Header Field is missing";
+            $result['data'] = (object)array();
         }
         return $result;
     }
@@ -309,20 +317,13 @@ class api extends CI_Controller {
     public function productList() {
         $checkAuthToken = TRUE;
         $result = $this->checkAuth($checkAuthToken);
-        if ($result['config_status'] == -1) {
+        if ($result['status'] == 0) {
             $json_data = json_encode($result);
             $data['response'] = $json_data;
             $this->load->view('responseData', $data);
             return;
         }
-        if ($result['config_status'] == 0) {
-            $this->output->set_header("RESPONSE_CODE:0");
-            $json_data = json_encode($result);
-            $data['response'] = $json_data;
-            $this->load->view('responseData', $data);
-            return;
-        }
-        
+
         $CI = & get_instance();
         $CI->load->model('apiauthcheck_model');
         $user_id = $CI->apiauthcheck_model->getUserIdbyToken($this->authToken);

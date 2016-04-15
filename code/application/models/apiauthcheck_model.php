@@ -143,6 +143,7 @@ class apiauthcheck_model extends CI_Model {
                         $flag = 0;
                         if ($app_version) {
                             if (strtotime(date("Y-m-d", strtotime($app_version_new->force_update_date))) > strtotime(date("Y-m-d"))) {
+                                
                                 $arr['config_status'] = 1;
                                 $arr['config_msg'] = "Update App version";
                                 $arr['response']['app_version'] = $app_version_new->app_version;
@@ -154,12 +155,12 @@ class apiauthcheck_model extends CI_Model {
                         }
 
                         if ($flag == 0) {
-                            $arr['status'] = "Fail";
-                            $arr['config_status'] = 0;
-                            $arr['config_msg'] = "App version Mismatch";
-                            $arr['response']['app_version'] = $app_version_new->app_version;
-                            $arr['response']['release_date'] = $app_version_new->release_date;
-                            $arr['response']['force_update_date'] = $app_version_newforce_update_date;
+                            $arr['status'] = 0;
+                            $arr['msg'] = "Authentication fail";
+                            $arr['errors'][] = "App version Mismatch";
+                            $arr['data']['app_version'] = $app_version_new->app_version;
+                            $arr['data']['release_date'] = $app_version_new->release_date;
+                            $arr['data']['force_update_date'] = $app_version_newforce_update_date;
                             $appversionflag = -1;
                         }
                     }
@@ -174,10 +175,11 @@ class apiauthcheck_model extends CI_Model {
                                 $arr['config_msg'] = "app status success";
                             }
                         } else {
-                            $arr['status'] = "Fail";
-                            $arr['config_status'] = 0;
-                            $arr['config_msg'] = "Config Version Mismatch";
-                            $arr['response']['config_version'] = $config_version_new->api_config_version;
+                            $arr['status'] = 0;
+                            $arr['msg'] = "Authentication fail";
+                            $arr['errors'][] = "Config Version Mismatch";
+                            $arr['data']['config_version'] = $config_version_new->api_config_version;
+
                         }
                     }
                 } else {
@@ -185,16 +187,18 @@ class apiauthcheck_model extends CI_Model {
                     $arr['config_msg'] = "app status success";
                 }
             } else {
-                $arr['status'] = "Fail";
-                $arr['config_status'] = 0;
-                $arr['config_msg'] = "Api key Mismatch";
+                $arr['status'] = 0;
+                $arr['msg'] = "Authentication fail";
+                $arr['errors'][] = "Api key Mismatch";
+                $arr['data'] = (object)array();
             }
             if ($arr['config_status'] == 1 && $checkAuthToken == TRUE) {
                 $auth_token = $this->checkAuthToken($headerFiled['AUTH_TOKEN']);
                 if (!$auth_token) {
-                    $arr['status'] = "Fail";
-                    $arr['config_status'] = 0;
-                    $arr['config_msg'] = "Invalid User or session expired. Please login again.";
+                    $arr['status'] = 0;
+                    $arr['msg'] = "Authentication fail";
+                    $arr['errors'][] = "Invalid User or session expired. Please login again.";
+                    $arr['data'] = (object)array();
                 }
             }
             return $arr;
