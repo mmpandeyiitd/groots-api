@@ -175,6 +175,7 @@ class api extends CI_Controller {
 
     public function forgotPassword() {
         $checkAuthToken = FALSE;
+        $result = $this->checkAuth($checkAuthToken);
         if ($result['status'] == 0 && $result['config_status'] != 1) {
             $json_data = json_encode($result);
             $data['response'] = $json_data;
