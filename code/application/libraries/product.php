@@ -88,7 +88,7 @@ class product {
             {
                 $result['status'] = 1;
                 $result['msg'] = "Product Listing";
-                $result['errors'][] = array();
+                $result['errors'] = array();
                 $result['data'] = $data->response;
             }
             else
