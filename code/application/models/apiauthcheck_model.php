@@ -195,6 +195,7 @@ class apiauthcheck_model extends CI_Model {
             if ($arr['config_status'] == 1 && $checkAuthToken == TRUE) {
                 $auth_token = $this->checkAuthToken($headerFiled['AUTH_TOKEN']);
                 if (!$auth_token) {
+                    $arr = array();
                     $arr['status'] = 0;
                     $arr['msg'] = "Authentication fail";
                     $arr['errors'][] = "Invalid User or session expired. Please login again.";

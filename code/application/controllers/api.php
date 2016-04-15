@@ -75,14 +75,7 @@ class api extends CI_Controller {
     public function addOrder() {
         $checkAuthToken = TRUE;
         $result = $this->checkAuth($checkAuthToken);
-        if ($result['config_status'] == -1) { 
-            $json_data = json_encode($result);
-            $data['response'] = $json_data;
-            $this->load->view('responseData', $data);
-            return;
-        }
-        if ($result['config_status'] == 0) {
-            $this->output->set_header("RESPONSE_CODE:0");
+        if ($result['status'] == 0 && $result['config_status'] != 1) {
             $json_data = json_encode($result);
             $data['response'] = $json_data;
             $this->load->view('responseData', $data);
@@ -106,14 +99,7 @@ class api extends CI_Controller {
         
         $checkAuthToken = FALSE;
         $result = $this->checkAuth($checkAuthToken);
-        if ($result['config_status'] == -1) {
-            $json_data = json_encode($result);
-            $data['response'] = $json_data;
-            $this->load->view('responseData', $data);
-            return;
-        }
-        if ($result['config_status'] == 0) {
-            $this->output->set_header("RESPONSE_CODE:0");
+        if ($result['status'] == 0 && $result['config_status'] != 1) {
             $json_data = json_encode($result);
             $data['response'] = $json_data;
             $this->load->view('responseData', $data);
@@ -138,15 +124,7 @@ class api extends CI_Controller {
 
     public function resetPassword() {
         $checkAuthToken = FALSE;
-        $result = $this->checkAuth($checkAuthToken);
-        if ($result['config_status'] == -1) {
-            $json_data = json_encode($result);
-            $data['response'] = $json_data;
-            $this->load->view('responseData', $data);
-            return;
-        }
-        if ($result['config_status'] == 0) {
-            $this->output->set_header("RESPONSE_CODE:0");
+        if ($result['status'] == 0 && $result['config_status'] != 1) {
             $json_data = json_encode($result);
             $data['response'] = $json_data;
             $this->load->view('responseData', $data);
@@ -197,15 +175,7 @@ class api extends CI_Controller {
 
     public function forgotPassword() {
         $checkAuthToken = FALSE;
-        $result = $this->checkAuth($checkAuthToken);
-        if ($result['config_status'] == -1) {
-            $json_data = json_encode($result);
-            $data['response'] = $json_data;
-            $this->load->view('responseData', $data);
-            return;
-        }
-        if ($result['config_status'] == 0) {
-            $this->output->set_header("RESPONSE_CODE:0");
+        if ($result['status'] == 0 && $result['config_status'] != 1) {
             $json_data = json_encode($result);
             $data['response'] = $json_data;
             $this->load->view('responseData', $data);
@@ -317,7 +287,7 @@ class api extends CI_Controller {
     public function productList() {
         $checkAuthToken = TRUE;
         $result = $this->checkAuth($checkAuthToken);
-        if ($result['status'] == 0) {
+        if ($result['status'] == 0 && $result['config_status'] != 1) {
             $json_data = json_encode($result);
             $data['response'] = $json_data;
             $this->load->view('responseData', $data);
