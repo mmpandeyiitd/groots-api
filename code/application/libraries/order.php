@@ -64,9 +64,10 @@ class order extends CI_Controller {
                     }
                     $product_arr = $this->product_model->getProductData($cond);
                     if (empty($product_arr)) {
-                        $result['status'] = "Failed";
+                        $result['status'] = 0;
                         $result['msg'] = "Fail to save data";
-                        $result['errors'] = "Invalid  subscribed product id,base product id or store id";
+                        $result['errors'][] = "Invalid  subscribed product id,base product id or store id";
+                        $result['data'] = (object)array();
                         return $result;
                     }
                     if (!empty($products[$i]['base_product_id'])) {
