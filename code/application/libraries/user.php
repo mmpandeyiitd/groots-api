@@ -155,7 +155,7 @@ class user {
                 if ($data) {
                     $data['date'] = date('Y-m-d H:i:s');
                     $str = $data["id"] . '~' . $data['date'];
-                    $encodedata = base64_encode($str);
+                    $encodedata = rawurlencode(base64_encode($str));
                     $CI->load->config('custom-config');
                     $url = $CI->config->item('URL') . "reset-password.php?key=" . $encodedata;
                     $viewdata['name'] = $data['name'];
