@@ -13,7 +13,7 @@ class apiauthcheck_model extends CI_Model {
         if (empty($tokenval) || $tokenval == NULL) {
             return false;
         }
-        $token_array = $this->legacy_db->query("SELECT * FROM auth_tokens WHERE token = '" . $tokenval . "'");
+        $token_array = $this->legacy_db->query("SELECT at.* FROM auth_tokens as at INNER JOIN retailer as rt on at.user_id = rt.id WHERE at.token = '" . $tokenval . "' AND rt.status = 1");
         $token = $token_array->result();
         if (count($token)) {
             foreach ($token as $value) {
