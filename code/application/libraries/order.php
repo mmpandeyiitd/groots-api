@@ -28,7 +28,8 @@ class order extends CI_Controller {
             $products = $params['product_details'];
             $result = $CI->validation->validate_order($params);
             if ($result['status'] == 1) {
-                $buyer_data =  $CI->user_model->getUserDetails($params['user_id']);
+                $byr['id'] = $params['user_id'];
+                $buyer_data =  $CI->user_model->getUserDetails($byr);
                 $params['shipping_name'] = $buyer_data[0]->name;
                 $params['shipping_email'] = $buyer_data[0]->email;
                 $params['shipping_phone'] = $buyer_data[0]->mobile;
@@ -276,7 +277,6 @@ class order extends CI_Controller {
                             $emailData['subject'] = "Supplified : Your Order Has Been Placed Successfully";
                             $emailData['email'] = $params['shipping_email'];
                             $dataRes['UserEmail'] = $CI->communicationengine->emailCommunication($emailData);
-
                             $SMSData['SMS'] = str_replace("{ORDERNO}", $data['order_number'], $CI->config->item('PLACE_ORDER'));
                             $SMSData['mobile'] = $params['shipping_phone'];
                             //$dataRes['UserSMS'] = $CI->communicationengine->smsCommunication($SMSData);
