@@ -300,6 +300,7 @@ class api extends CI_Controller {
         $CI->load->model('apiauthcheck_model');
         $user_id = $CI->apiauthcheck_model->getUserIdbyToken($this->authToken);
         $value = array();
+        $_REQUEST['filter']['retailer_id'] = $user_id;
         if (isset($_REQUEST)) {
             $value = $_REQUEST;
         }

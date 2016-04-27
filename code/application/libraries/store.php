@@ -20,7 +20,9 @@ class store {
         $params['api_key'] = $CI->config->item('API_KEY');
         $params['api_password'] = $CI->config->item('API_PASSWORD');
         $url = $this->getallstoresUrl();
-        $obj = $this->rest_helper($url,$params) ;
+        $headers = array();
+        $method  = 'POST';
+        $obj  = $this->callCurl($url, $headers, $params, $method);
         if($obj)
         {
             $data = json_decode($obj);
@@ -32,53 +34,41 @@ class store {
         }
     }
     
-    public function rest_helper($url, $params = null,$cacheControl=0, $verb = 'POST', $format = 'json')
-    {
-        $cparams = array(
-        'http' => array(
-        'method' => $verb,
-        'ignore_errors' => true
-        )
-        );
-
-        if ($params !== null) {
-            $params = http_build_query($params,null,'&');
-
-            if ($verb == 'POST') {
-                $cparams['http']['content'] = $params;
-            } else {
-                $url .= '?' . $params;
+    public function callCurl($baseUrl, $headers, $values, $method){
+        $CI = & get_instance();
+        $CI->load->config('custom-config');
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $baseUrl);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_FAILONERROR, 1);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+        curl_setopt($ch,CURLOPT_HEADER,true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        $postFields = http_build_query($values);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postFields);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, $CI->config->item('CONNECTION_TIMEOUT'));
+        curl_setopt($ch, CURLOPT_TIMEOUT_MS, $CI->config->item('RESPONSE_TIMEOUT'));
+        $http_result = curl_exec($ch);
+        $err_msg = curl_error($ch);
+        $err_num = curl_errno($ch);
+        curl_close($ch);
+        list($headers, $content) = explode("\r\n\r\n",$http_result,2);
+        foreach (explode("\r\n",$headers) as $hdr){
+            $arr=explode(':', $hdr);
+            if($arr[0]=='AUTH_TOKEN'){
+               $authToken  = isset($arr[1])?$arr[1]:'';
+               if($baseUrl == CONFIG::CURLURL.'userLogin'){
+                    $_SESSION['authToken'] = $authToken;
+               }
             }
         }
-        $context = stream_context_create($cparams);
-        $fp = fopen($url, 'rb', false, $context);
-        if (!$fp) {
-            $res = false;
-        } else {
 
-            $res = stream_get_contents($fp);
+        if ($http_result === false) {        
+            $http_result = '{"error" : "1", "msg": "' . $err_num."--".$err_msg . '"}';
         }
-
-        if ($res === false) {
-            throw new Exception("$verb $url failed: $php_errormsg");
-        }
-
-        switch ($format) {
-            case 'json':
-                $r = $res;
-                if ($r === null) {
-                    throw new Exception("failed to decode $res as json");
-                }
-                return $r;
-
-            case 'xml':
-                $r = simplexml_load_string($res);
-                if ($r === null) {
-                    throw new Exception("failed to decode $res as xml");
-                }
-                return $r;
-        }
-        return $res;
+        
+        return $content;
     }
     
     
