@@ -255,6 +255,7 @@ class order extends CI_Controller {
                     $pdata['price'] = $products[$i]['price'];
                     $pdata['tax'] = $products[$i]['tax'];
                     $pdata['shipping_charges'] = 0; //$products[$i]['shipping_charges'];
+                    $pdata['created_date'] = $data['created_date'];
                     $LinesData[] = '(' . implode(',', $pdata) . ')';
                     $serialno = $i + 1;
                     
