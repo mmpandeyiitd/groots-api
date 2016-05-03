@@ -118,7 +118,7 @@ class product_model extends CI_Model {
                 $user_query = $this->db->query("SELECT effective_price, discount_per FROM retailer_product_quotation WHERE retailer_id = ". $params['retailer_id']);
                     if ($user_query->num_rows() > 0) 
                     {
-                        $data['status'] = 0;
+                        $data['status'] = 1;
                         return $data;
                     }
                     else

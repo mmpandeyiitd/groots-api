@@ -68,7 +68,7 @@ class order extends CI_Controller {
                     $price_data = $this->product_model->getPriceData($cond);
                     if($price_data)
                     {
-                        if($price_data['status'] == 0)
+                        if($price_data['status'] == 1)
                         {
                             $result['status'] = 0;
                             $result['msg'] = "Fail to save data";
