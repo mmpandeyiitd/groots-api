@@ -68,7 +68,6 @@ class order extends CI_Controller {
                     $price_data = $this->product_model->getPriceData($cond);
                     if($price_data)
                     {
-                        print_r($price_data);die;
                         if($price_data['status'] == 0)
                         {
                             $result['status'] = 0;
@@ -79,7 +78,14 @@ class order extends CI_Controller {
                         }
                         else
                         {
-                            print_r($price_data);die;
+                            if($price_data[0]->discount_per > 0)
+                            {
+                                $product_arr['store_offer_price'] = $product_arr['store_offer_price'] - ($product_arr['store_offer_price'] * $price_data[0]->discount_per/100);
+                            }
+                            else
+                            {
+                                $product_arr['store_offer_price'] = round($price_data[0]->effective_price);
+                            }
                         }
                     }
                     if (empty($product_arr)) {
