@@ -220,7 +220,6 @@ class order extends CI_Controller {
                 $data['total_payable_amount'] = $params['total_payable_amount'];
                 $data['discount_amt'] = $params['discount_amt'];
                 $data['status'] = "'" . 'pending' . "'";
-                //$data['buyer_shipping_cost'] = $params['buyer_shipping_cost'];
                 $data['order_type'] = "'" . $params['order_type'] . "'";
                 $data['coupon_code'] = "'" . $params['coupon_code'] . "'";
                 $data['shipping_charges'] = 0;
@@ -236,8 +235,6 @@ class order extends CI_Controller {
                     $pdata['store_id'] = $products[$i]['store_id'];
                     $pdata['store_name'] = "'" . $products[$i]['store_name'] . "'";
                     $pdata['store_email'] = "'" . $products[$i]['store_email'] . "'";
-                    //$pdata['store_front_id'] = "'" . $products[$i]['store_front_id'] . "'";
-                    //$pdata['store_front_name'] = "'" . $products[$i]['store_front_name'] . "'";
                     $pdata['seller_name'] = "'" . $products[$i]['seller_name'] . "'";
                     $pdata['seller_phone'] = "'" . $products[$i]['seller_phone'] . "'";
                     $pdata['seller_address'] = "'" . $products[$i]['seller_address'] . "'";
@@ -254,7 +251,7 @@ class order extends CI_Controller {
                     $pdata['unit_price'] = $products[$i]['unit_price'];
                     $pdata['price'] = $products[$i]['price'];
                     $pdata['tax'] = $products[$i]['tax'];
-                    $pdata['shipping_charges'] = 0; //$products[$i]['shipping_charges'];
+                    $pdata['shipping_charges'] = 0; 
                     $pdata['created_date'] = $data['created_date'];
                     $LinesData[] = '(' . implode(',', $pdata) . ')';
                     $serialno = $i + 1;
