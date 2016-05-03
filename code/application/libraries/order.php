@@ -214,7 +214,6 @@ class order extends CI_Controller {
                 $data['shipping_pincode'] = "'" . $params['shipping_pincode'] . "'";
                 $data['total'] = $params['total'];
                 $data['total_payable_amount'] = $params['total_payable_amount'];
-                $data['grand_total'] = $params['total_payable_amount'];
                 $data['discount_amt'] = $params['discount_amt'];
                 $data['status'] = "'" . 'pending' . "'";
                 //$data['buyer_shipping_cost'] = $params['buyer_shipping_cost'];
