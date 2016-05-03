@@ -153,8 +153,12 @@ class order extends CI_Controller {
                     $products[$i]['seller_address'] = $product_arr['business_address'];
                     $products[$i]['seller_state'] = $product_arr['business_address_state'];
                     $products[$i]['seller_city'] = $product_arr['business_address_city'];
-                    $products[$i]['colour'] = $product_arr['colour'];
+                    $products[$i]['colour'] = $product_arr['color'];
                     $products[$i]['size'] = $product_arr['size'];
+                    $products[$i]['grade'] = $product_arr['grade'];
+                    $products[$i]['pack_size'] = $product_arr['pack_size'];
+                    $products[$i]['pack_unit'] = $product_arr['pack_unit'];
+                    $products[$i]['diameter'] = $product_arr['diameter'];
                     $products[$i]['price'] = $total;
                     $products[$i]['shipping_charges'] = 0;
                     //$quantity = intval($product_arr['quantity']) - intval($products[$i]['product_qty']);
