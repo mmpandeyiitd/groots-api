@@ -110,7 +110,7 @@ class product_model extends CI_Model {
     
     Public function getPriceData($params) {
         try {
-            $user_query = $this->db->query("SELECT effective_price, discount_per FROM retailer_product_quotation WHERE subscribed_product_id=" . $id . " AND retailer_id = ". $id);
+            $user_query = $this->db->query("SELECT effective_price, discount_per FROM retailer_product_quotation WHERE subscribed_product_id=" . $params['subscribed_product_id'] . " AND retailer_id = ". $params['retailer_id']);
             if ($user_query->num_rows() > 0) {
                 $row = $user_query->result();
                 return $row;
