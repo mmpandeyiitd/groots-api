@@ -259,7 +259,7 @@ class order extends CI_Controller {
                     //HTML data is using for sending email
                     $seller[$i]['name'] = $products[$i]['store_name'];
                     $seller[$i]['email'] = $products[$i]['store_email'];
-                    $seller[$i]['product'] = '<tr style="width: 556px; display: block;  border: 1px solid #ECECEC; padding: 10px;margin:10px;"> <td style="background:#fff; padding: 5px 0;  width: 180px; display: inline-block; font-size: 14px; text-transform: capitalize;" > ' . $products[$i]['product_name'] . '</td> <td style="background:#fff; padding: 5px 0;  width: 100px; display: inline-block; font-size: 14px;text-align: center;" ><p style="margin: 0;font-size: 10px; color: #AFAFAF;">Product Price</p> Rs. ' . $products[$i]['price'] . ' </td> <td style="background:#fff; padding: 5px 0;  width: 100px; display: inline-block; font-size: 14px; text-align: center;" > <p style="margin: 0;font-size: 10px; color: #AFAFAF;">QTY</p> ' . $products[$i]['product_qty'] . ' pack unit ' .$products[$i]['pack_unit'] . ' pack size '. $products[$i]['pack_size'] .'</td> <td style="background:#fff; padding: 5px 0;  width: 100px; display: inline-block; font-size: 14px; color: #808080; text-align: center;" > <p style="margin: 0;font-size: 10px; color: #AFAFAF;">Total</p> Rs. 20 </td> </tr>';
+                    $seller[$i]['product'] = '<tr style="width: 556px; display: block;  border: 1px solid #ECECEC; padding: 10px;margin:10px;"> <td style="background:#fff; padding: 5px 0;  width: 180px; display: inline-block; font-size: 14px; text-transform: capitalize;" > ' . $products[$i]['product_name'] . '</td> <td style="background:#fff; padding: 5px 0;  width: 100px; display: inline-block; font-size: 14px;text-align: center;" ><p style="margin: 0;font-size: 10px; color: #AFAFAF;">Product Price</p> Rs. ' . $products[$i]['price'] . ' </td> <td style="background:#fff; padding: 5px 0;  width: 100px; display: inline-block; font-size: 14px; text-align: center;" > <p style="margin: 0;font-size: 10px; color: #AFAFAF;">QTY</p> ' . $products[$i]['product_qty'] * $products[$i]['pack_size'] . ' ' .$products[$i]['pack_unit'] . '</td> <td style="background:#fff; padding: 5px 0;  width: 100px; display: inline-block; font-size: 14px; color: #808080; text-align: center;" > <p style="margin: 0;font-size: 10px; color: #AFAFAF;">Total</p> Rs. 20 </td> </tr>';
 
                     $emailProductData.=$seller[$i]['product'];
                 }
@@ -282,6 +282,7 @@ class order extends CI_Controller {
                             $viewdata['name'] = $params['shipping_name'];
                             $viewdata['product'] = $emailProductData;
                             $viewdata['address'] = $userAddress;
+                            $viewdata['base_path'] = $CI->config->item('URL');
                             $viewdata['order_number'] = $data['order_number'];
                             $message = $CI->load->view('userOrderDetail', $viewdata, TRUE);
 
