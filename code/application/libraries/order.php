@@ -64,6 +64,12 @@ class order extends CI_Controller {
                         return $result;
                     }
                     $product_arr = $this->product_model->getProductData($cond);
+                    $cond['retailer_id'] = $params['user_id'];
+                    $price_data = $this->product_model->getPriceData($cond);
+                    if($price_data)
+                    {
+                        print_r($price_data);die;
+                    }
                     if (empty($product_arr)) {
                         $result['status'] = 0;
                         $result['msg'] = "Fail to save data";
