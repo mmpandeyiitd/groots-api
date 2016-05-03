@@ -261,20 +261,7 @@ class order extends CI_Controller {
                     $seller[$i]['email'] = $products[$i]['store_email'];
                     $seller[$i]['product'] = '<tr style="width: 556px; display: block;  border: 1px solid #ECECEC; padding: 10px;margin:10px;"> <td style="background:#fff; padding: 5px 0;  width: 180px; display: inline-block; font-size: 14px; text-transform: capitalize;" > ' . $products[$i]['product_name'] . '</td> <td style="background:#fff; padding: 5px 0;  width: 100px; display: inline-block; font-size: 14px;text-align: center;" ><p style="margin: 0;font-size: 10px; color: #AFAFAF;">Product Price</p> Rs. ' . $products[$i]['price'] . ' </td> <td style="background:#fff; padding: 5px 0;  width: 100px; display: inline-block; font-size: 14px; text-align: center;" > <p style="margin: 0;font-size: 10px; color: #AFAFAF;">QTY</p> ' . $products[$i]['product_qty'] . ' pack unit ' .$products[$i]['pack_unit'] . ' pack size '. $products[$i]['pack_size'] .'</td> <td style="background:#fff; padding: 5px 0;  width: 100px; display: inline-block; font-size: 14px; color: #808080; text-align: center;" > <p style="margin: 0;font-size: 10px; color: #AFAFAF;">Total</p> Rs. 20 </td> </tr>';
 
-                    $seller[$i]['product'] = '<tr style="border-bottom: 1px solid #E6E6E6">
-                    <td align="center" style="padding: 8px;color: #695C5C;">' . $serialno . '</td>
-                    <td align="center" style="padding: 8px;color: #695C5C;">' . $products[$i]['store_name'] . '</td>
-                    <td align="center" style="padding: 8px;color: #695C5C;">' . $products[$i]['product_name'] . '</td>
-                    <td align="center" style="padding: 8px;color: #695C5C;">' . $products[$i]['product_qty'] . '</td>
-                    <td align="center" style="padding: 8px;color: #695C5C;">Rs. ' . $products[$i]['price'] . '</td>
-                    </tr>';
-                    $emailProductData.='<tr style="border-bottom: 1px solid #E6E6E6">
-                    <td align="center" style="padding: 8px;color: #695C5C;">' . $serialno . '</td>
-                    <td align="center" style="padding: 8px;color: #695C5C;">' . $products[$i]['store_name'] . '</td>
-                    <td align="center" style="padding: 8px;color: #695C5C;">' . $products[$i]['product_name'] . '</td>
-                    <td align="center" style="padding: 8px;color: #695C5C;">' . $products[$i]['product_qty'] . '</td>
-                    <td align="center" style="padding: 8px;color: #695C5C;">Rs. ' . $params['total_payable_amount'] . '</td>
-                    </tr>';
+                    $emailProductData.=$seller[$i]['product'];
                 }
                 $userAddress = '<td colspan="1" align="left" valign="top" style="margin:0;padding:15px"><p style="margin:0;padding:0;color:#565656; font-weight:bold;">BILLING ADDRESS</p>
                 <p style="padding:0;margin:15px 0 10px 0;font-size:17px"> ' . $params['billing_name'] . ' &nbsp;|&nbsp; ' . $params['billing_phone'] . '</p>
