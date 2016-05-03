@@ -245,6 +245,10 @@ class order extends CI_Controller {
                     $pdata['seller_city'] = "'" . $products[$i]['seller_city'] . "'";
                     $pdata['colour'] = "'" . $products[$i]['colour'] . "'";
                     $pdata['size'] = "'" . $products[$i]['size'] . "'";
+                    $pdata['grade'] = $product_arr[$i]['grade'];
+                    $pdata['pack_size'] = $product_arr[$i]['pack_size'];
+                    $pdata['pack_unit'] = $product_arr[$i]['pack_unit'];
+                    $pdata['diameter'] = $product_arr[$i]['diameter'];
                     $pdata['product_name'] = "'" . $products[$i]['product_name'] . "'";
                     $pdata['product_qty'] = $products[$i]['product_qty'];
                     $pdata['unit_price'] = $products[$i]['unit_price'];
