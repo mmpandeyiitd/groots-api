@@ -263,12 +263,7 @@ class order extends CI_Controller {
 
                     $emailProductData.=$seller[$i]['product'];
                 }
-                $userAddress = '<td colspan="1" align="left" valign="top" style="margin:0;padding:15px"><p style="margin:0;padding:0;color:#565656; font-weight:bold;">BILLING ADDRESS</p>
-                <p style="padding:0;margin:15px 0 10px 0;font-size:17px"> ' . $params['billing_name'] . ' &nbsp;|&nbsp; ' . $params['billing_phone'] . '</p>
-                <p style="line-height:18px;padding:0;margin:0;color:#565656; font-size: 12px;"> ' . $params['billing_address'] . ', ' . $params['billing_city'] . '<br/> ' . $params['billing_state'] . '-' . $params['billing_pincode'] . ' </p><br></td>
-                <td colspan="1" align="left" valign="top" style="margin:0;padding:15px"><p style="margin:0;padding:0;color:#565656; font-weight:bold;">DELIVERY ADDRESS</p>
-                <p style="padding:0;margin:15px 0 10px 0;font-size:17px">' . $params['shipping_name'] . ' &nbsp;|&nbsp; ' . $params['shipping_phone'] . '</p>
-                <p style="line-height:18px;padding:0;margin:0;color:#565656; font-size: 12px;"> ' . $params['shipping_address'] . ', ' . $params['shipping_city'] . '<br/> ' . $params['shipping_state'] . '-' . $params['shipping_pincode'] . ' </p><br></td>';
+                $userAddress = '<span style="padding-left: 10px; margin: 0; font-size: 12px;  text-transform: uppercase; letter-spacing: 1px;">Delivery Address</span><p style="color: #333;font-size: 10px; line-height: 14px; text-align: left; margin: 5px 0; padding-left:10px;">' . $params['billing_name'] . '<br> ' . $params['billing_phone'] . '<br>' . $params['billing_address'] . '<br>' . $params['billing_city'] . '<br> ' . $params['billing_state'] . '-' . $params['billing_pincode'] . '</p></td><td style="  width: 300px; border-left: 1px solid #ccc;" ><span style="padding-left: 10px; margin: 0; font-size: 12px;  text-transform: uppercase; letter-spacing: 1px;">Shipping Address</span><p style="color: #333;font-size: 10px; line-height: 14px; text-align: left; margin: 5px 0;  padding-left:10px; padding-left: 10px; ">' . $params['shipping_name'] . '<br>' . $params['shipping_phone'] . '<br>' . $params['shipping_address'] . '<br>' . $params['shipping_city'] . '<br> ' . $params['shipping_state'] . '-' . $params['shipping_pincode'] . ' </p>';
 
                 $FinalData['line'] = implode(",", $LinesData);
                 $order_id = $this->order_model->saveOrderHeaderAndLinesData($FinalData);
