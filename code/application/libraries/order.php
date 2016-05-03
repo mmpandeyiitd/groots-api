@@ -69,6 +69,18 @@ class order extends CI_Controller {
                     if($price_data)
                     {
                         print_r($price_data);die;
+                        if($price_data['status'] == 0)
+                        {
+                            $result['status'] = 0;
+                            $result['msg'] = "Fail to save data";
+                            $result['errors'][] = "Product does not associated with the user.";
+                            $result['data'] = (object)array();
+                            return $result;    
+                        }
+                        else
+                        {
+                            print_r($price_data);die;
+                        }
                     }
                     if (empty($product_arr)) {
                         $result['status'] = 0;
