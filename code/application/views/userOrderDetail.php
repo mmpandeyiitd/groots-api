@@ -30,8 +30,7 @@ $message = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http
       </p>
      </td>          
    </tr>
-    
-  
+      ' . $product . '
      <tr style=" width: 600px; display: block;  margin: 20px 0px 0px;  background: #F3F3F3; padding: 10px 0;">
     <td style="  width: 300px; " >
       '.$address.'
