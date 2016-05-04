@@ -17,7 +17,7 @@ $message = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http
       </td>
       <td style="padding: 5px 10px; width:450px; background-color:#444;color: #fff;font-size: 24px; text-transform: uppercase; text-align:right;">
         <span style="float:right;">+91 99999 99999</span>
-        <img src="'.$base_path.'cemailimage/allIco-head.png" alt="call" width="25" style="float:right; margin:0 10px;"> 
+        <img src="'.$base_path.'emailimage/callIco-head.png" alt="call" width="25" style="float:right; margin:0 10px;"> 
       </td>
     </tr>
     <tr style=" width: 600px; display: block;">
