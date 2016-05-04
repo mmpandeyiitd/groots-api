@@ -12,12 +12,12 @@ $message = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http
     <tbody>
     <tr style="display: block; ">
       <td style="padding:0px; width: 150px; background-color: #444;" >
-        <a href="javascript:void(0);" style="display:block; height:63px; "><img src="logo.png" alt="" style="    width: 50px;
+        <a href="javascript:void(0);" style="display:block; height:63px; "><img src="'.$base_path.'lemailimage/ogo.png" alt="" style="    width: 50px;
     margin: 8px 20px;"></a>
       </td>
       <td style="padding: 5px 10px; width:450px; background-color:#444;color: #fff;font-size: 24px; text-transform: uppercase; text-align:right;">
         <span style="float:right;">+91 99999 99999</span>
-        <img src="callIco-head.png" alt="call" width="25" style="float:right; margin:0 10px;"> 
+        <img src="'.$base_path.'cemailimage/allIco-head.png" alt="call" width="25" style="float:right; margin:0 10px;"> 
       </td>
     </tr>
     <tr style=" width: 600px; display: block;">
