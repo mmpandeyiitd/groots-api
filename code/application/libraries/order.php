@@ -287,7 +287,7 @@ class order extends CI_Controller {
                             $message = $CI->load->view('userOrderDetail', $viewdata, TRUE);
 
                             $emailData['body'] = $message;
-                            $emailData['subject'] = "Supplified : Your Order Has Been Placed Successfully";
+                            $emailData['subject'] = "Groots : Your Order Has Been Placed Successfully";
                             $emailData['email'] = $params['shipping_email'];
                             $dataRes['UserEmail'] = $CI->communicationengine->emailCommunication($emailData);
                             $SMSData['SMS'] = str_replace("{ORDERNO}", $data['order_number'], $CI->config->item('PLACE_ORDER'));
