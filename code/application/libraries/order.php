@@ -279,11 +279,11 @@ class order extends CI_Controller {
                         $update_res = true;
                         //$resSolrbacklog = $this->solrBackLog($updateData);
                         if ($update_res) {
-                            $viewdata['name'] = $params['shipping_name'];
+                            $viewdata['name'] = ucfirst($params['shipping_name']);
                             $viewdata['product'] = $emailProductData;
                             $viewdata['address'] = $userAddress;
                             $viewdata['base_path'] = $CI->config->item('URL');
-                            $viewdata['order_number'] = $data['order_number'];
+                            $viewdata['order_number'] = $params['order_prefix'] . $orderno;
                             $message = $CI->load->view('userOrderDetail', $viewdata, TRUE);
 
                             $emailData['body'] = $message;

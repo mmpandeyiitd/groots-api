@@ -23,7 +23,7 @@ $message = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http
     <tr style=" width: 600px; display: block;">
      <td style="display: block; padding: 10px;">
       <p style="font-size:13px;">
-            <strong>'.$name.',</strong> <br> <br> 
+            <strong>Hi '.$name.',</strong> <br> <br> 
      Thank you for your order! . Your order ID is '.$order_number.'.
     <br> <br> 
     We will send you another email once the items in your order have been shipped.
