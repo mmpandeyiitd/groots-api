@@ -66,6 +66,7 @@ class order extends CI_Controller {
                     $product_arr = $this->product_model->getProductData($cond);
                     $cond['retailer_id'] = $params['user_id'];
                     $price_data = $this->product_model->getPriceData($cond);
+                    unset($cond['retailer_id']);
                     if($price_data)
                     {
                         if($price_data['status'] == 1)
