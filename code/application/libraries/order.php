@@ -246,7 +246,7 @@ class order extends CI_Controller {
                         $data['delivery_date'] = date('Y-m-d H:i:s', strtotime($data['created_date'] .' +1 day'));
                     }
                 }
-                $data['user_comment'] = $params['user_comment'];
+                $data['user_comment'] = "'" . $params['user_comment'] . "'";
                 $FinalData['header'] = '(' . implode(',', $data) . ')';
                 $count = count($products);
                 $emailUserData = '';
