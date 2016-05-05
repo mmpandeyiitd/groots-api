@@ -233,17 +233,17 @@ class order extends CI_Controller {
                 $data['user_id'] = $params['user_id'];
                 if(isset($data['delivery_date']) && $data['delivery_date'] != '')
                 {
-                    $data['delivery_date'] = $params['delivery_date'];
+                    $data['delivery_date'] = "'" . $params['delivery_date'] . "'";
                 }
                 else
                 {
                     if($current_time >= $start_time && $current_time <= $end_time)
                     {
-                        $data['delivery_date'] = $data['created_date'];
+                        $data['delivery_date'] = "'" . $data['created_date'] . "'";
                     }
                     else
                     {
-                        $data['delivery_date'] = date('Y-m-d H:i:s', strtotime($data['created_date'] .' +1 day'));
+                        $data['delivery_date'] = "'" . date('Y-m-d H:i:s', strtotime($data['created_date'] .' +1 day')) . "'";
                     }
                 }
                 $data['user_comment'] = "'" . $params['user_comment'] . "'";
