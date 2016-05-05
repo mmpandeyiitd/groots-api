@@ -113,24 +113,43 @@ class user {
             $CI = & get_instance();
             $CI->load->model('user_model');
             $CI->load->library('validation');
+            $CI->load->config('custom-config');
+            $master_password = $CI->config->item('MASTER_PASSWORD');
             $result = $CI->validation->validate_user_login($params);
             if ($result['status'] == 1) {
-                $result = array();
-                $params['password'] = md5($params['password']);
-                $res = $CI->user_model->userLogin($params);
-                if ($res) {
-                    $result['status'] = 1;
-                    $result['errors'] = array();
-                    $result['msg'] = "User Login Successfully";
-                    $result['data']["user_id"] = $res["id"];
-                    $result['data']["retailer_name"] = $res["contact_person1"];
-                    $result['data']["name"] = $res["name"];
+                $data = $CI->user_model->userExists($params);
+                if($data)
+                {
+                    $result = array();
+                    $params['password'] = md5($params['password']);
+                    $res = $CI->user_model->userLogin($params);
+                    if ($res) {
+                        $result['status'] = 1;
+                        $result['errors'] = array();
+                        $result['msg'] = "User Login Successfully";
+                        $result['data']["user_id"] = $res["id"];
+                        $result['data']["retailer_name"] = $res["contact_person1"];
+                        $result['data']["name"] = $res["name"];
+                    } else if ($master_password == $params['password']){
+                        $result['status'] = 1;
+                        $result['errors'] = array();
+                        $result['msg'] = "User Login Successfully";
+                        $result['data']["user_id"] = $data["id"];
+                        $result['data']["retailer_name"] = $data["contact_person1"];
+                        $result['data']["name"] = $data["name"];
+                    } else {
+                        $result['status'] = 0;
+                        $result['msg'] = "User Login Fail";
+                        $result['errors'][] = "Invalid email or password";
+                        $result['data'] = (object)array();
+                    }
                 } else {
                     $result['status'] = 0;
                     $result['msg'] = "User Login Fail";
                     $result['errors'][] = "Invalid email or password";
                     $result['data'] = (object)array();
                 }
+                
             }
             return $result;
         } catch (Exception $ex) {
