@@ -121,6 +121,13 @@ class validation {
                 $result['errors'][] = "Total Tax should be numeric number and greater than zero";
             }
 
+            if(isset($params['delivery_date']) && $params['delivery_date'] != ''){
+                if(strtotime($params['delivery_date']) < strtotime(date('Y-m-d H:i:s')) || strtotime($params['delivery_date']) > strtotime(date('Y-m-d H:i:s', strtotime(' +10 day'))))
+                {
+                    $result['errors'][] = "Delivery date should be curent date or within next 10 days.";
+                }  
+            }
+
             $product_arr = array();
             $count = count($params['product_details']);
             if ($count > 0) {

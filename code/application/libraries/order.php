@@ -196,6 +196,11 @@ class order extends CI_Controller {
                     return $result;
                 }
 
+                date_default_timezone_set('Asia/Calcutta');
+                $start_time = strtotime("12:00:00am");
+                $end_time = strtotime("01:59:50am");
+                $current_time = date("h:i:sa");
+
                 $data = array();
                 $seller = array();
                 $maxid = $this->order_model->getMaxOrderId();
@@ -226,6 +231,22 @@ class order extends CI_Controller {
                 $data['shipping_charges'] = 0;
                 $data['tax'] = $params['total_tax'];
                 $data['user_id'] = $params['user_id'];
+                if(isset($data['delivery_date']) && $data['delivery_date'] != '')
+                {
+                    $data['delivery_date'] = $params['delivery_date'];
+                }
+                else
+                {
+                    if($current_time >= $start_time && $current_time <= $end_time)
+                    {
+                        $data['delivery_date'] = $data['created_date'];
+                    }
+                    else
+                    {
+                        $data['delivery_date'] = date('Y-m-d H:i:s', strtotime($data['created_date'] .' +1 day'));
+                    }
+                }
+                $data['user_comment'] = $params['user_comment'];
                 $FinalData['header'] = '(' . implode(',', $data) . ')';
                 $count = count($products);
                 $emailUserData = '';
