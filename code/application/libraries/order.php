@@ -243,7 +243,7 @@ class order extends CI_Controller {
                     }
                     else
                     {
-                        $data['delivery_date'] = "'" . date('Y-m-d H:i:s', strtotime($data['created_date'] .' +1 day')) . "'";
+                        $data['delivery_date'] = "'" . date('Y-m-d H:i:s', strtotime(' +1 day')) . "'";
                     }
                 }
                 $data['user_comment'] = "'" . $params['user_comment'] . "'";
