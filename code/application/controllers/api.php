@@ -351,6 +351,7 @@ class api extends CI_Controller {
             return;
         }
         $result = array();
+        date_default_timezone_set('Asia/Calcutta');
         $result['status'] = 1;
         $result['msg'] = "Server Date Time";
         $result['errors'] = array();
