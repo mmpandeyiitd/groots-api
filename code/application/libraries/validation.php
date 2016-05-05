@@ -122,9 +122,14 @@ class validation {
             }
 
             if(isset($params['delivery_date']) && $params['delivery_date'] != ''){
-                if(strtotime($params['delivery_date']) < strtotime(date('Y-m-d H:i:s')) || strtotime($params['delivery_date']) > strtotime(date('Y-m-d H:i:s', strtotime(' +10 day'))))
+                if (!(preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/",$date)))
                 {
-                    $result['errors'][] = "Delivery date should be curent date or within next 10 days.";
+                    $result['errors'][] = "Invalid Delivery date should be in YYYY-MM-DD format.";
+                }
+
+                if(strtotime($params['delivery_date']) < strtotime(date('Y-m-d')) || strtotime($params['delivery_date']) > strtotime(date('Y-m-d', strtotime(' +30 day'))))
+                {
+                    $result['errors'][] = "Delivery date should be curent date or within next 30 days.";
                 }  
             }
 

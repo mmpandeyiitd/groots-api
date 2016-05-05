@@ -239,11 +239,11 @@ class order extends CI_Controller {
                 {
                     if($current_time >= $start_time && $current_time <= $end_time)
                     {
-                        $data['delivery_date'] = "'" . $data['created_date'] . "'";
+                        $data['delivery_date'] = "'" . date('Y-m-d') . "'";
                     }
                     else
                     {
-                        $data['delivery_date'] = "'" . date('Y-m-d H:i:s', strtotime(' +1 day')) . "'";
+                        $data['delivery_date'] = "'" . date('Y-m-d', strtotime(' +1 day')) . "'";
                     }
                 }
                 $data['user_comment'] = "'" . $params['user_comment'] . "'";
