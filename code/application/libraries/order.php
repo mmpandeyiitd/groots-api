@@ -231,7 +231,7 @@ class order extends CI_Controller {
                 $data['shipping_charges'] = 0;
                 $data['tax'] = $params['total_tax'];
                 $data['user_id'] = $params['user_id'];
-                if(isset($data['delivery_date']) && $data['delivery_date'] != '')
+                if(isset($params['delivery_date']) && $params['delivery_date'] != '')
                 {
                     $data['delivery_date'] = "'" . $params['delivery_date'] . "'";
                 }
