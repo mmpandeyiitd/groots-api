@@ -310,37 +310,6 @@ class api extends CI_Controller {
         $this->returnfunction($result);
     }
     
-    public function storeList() {
-        $checkAuthToken = TRUE;
-        $result = $this->checkAuth($checkAuthToken);
-        if ($result['config_status'] == -1) {
-            $json_data = json_encode($result);
-            $data['response'] = $json_data;
-            $this->load->view('responseData', $data);
-            return;
-        }
-        if ($result['config_status'] == 0) {
-            $this->output->set_header("RESPONSE_CODE:0");
-            $json_data = json_encode($result);
-            $data['response'] = $json_data;
-            $this->load->view('responseData', $data);
-            return;
-        }
-        
-        $CI = & get_instance();
-        $CI->load->model('apiauthcheck_model');
-        $user_id = $CI->apiauthcheck_model->getUserIdbyToken($this->authToken);
-        $_REQUEST['filter']['retailer_id'] = $user_id;
-        $value = array();
-        if (isset($_REQUEST)) {
-            $value = $_REQUEST;
-        }
-        $this->load->library('Store');
-        $result = $this->store->storeList($value);
-        $this->output->set_header('AUTH_TOKEN:'.$this->authToken);
-        $this->returnfunction($result);
-    }
-    
     public function productDetails() {
         $checkAuthToken = TRUE;
         $result = $this->checkAuth($checkAuthToken);
@@ -371,32 +340,21 @@ class api extends CI_Controller {
         $this->output->set_header('AUTH_TOKEN:'.$this->authToken);
         $this->returnfunction($result);
     }
-    
-    public function storeDetails() {
+
+    public function serverDatetime() {
         $checkAuthToken = TRUE;
         $result = $this->checkAuth($checkAuthToken);
-        if ($result['config_status'] == -1) {
+        if ($result['status'] == 0 && $result['config_status'] != 1) {
             $json_data = json_encode($result);
             $data['response'] = $json_data;
             $this->load->view('responseData', $data);
             return;
         }
-        if ($result['config_status'] == 0) {
-            $this->output->set_header("RESPONSE_CODE:0");
-            $json_data = json_encode($result);
-            $data['response'] = $json_data;
-            $this->load->view('responseData', $data);
-            return;
-        }
-        
-        $CI = & get_instance();
-        $CI->load->model('apiauthcheck_model');
-        $value = array();
-        if (isset($_REQUEST)) {
-            $value = $_REQUEST;
-        }
-        $this->load->library('Store');
-        $result = $this->store->storeDetails($value);
+        $result = array();
+        $result['status'] = 1;
+        $result['msg'] = "Server Date Time";
+        $result['errors'] = array();
+        $result['data']['current_date_time'] = date("Y-m-d h:i:sa");
         $this->output->set_header('AUTH_TOKEN:'.$this->authToken);
         $this->returnfunction($result);
     }
