@@ -12,6 +12,7 @@ class api extends CI_Controller {
     }
     
     public function checkAuth($checkAuthToken = TRUE) {
+        date_default_timezone_set('Asia/Calcutta');
         $requestHeaders = apache_request_headers();
         if ($requestHeaders['API_KEY']) {
             $CI = & get_instance();

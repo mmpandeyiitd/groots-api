@@ -130,7 +130,7 @@ class validation {
 
                 if(strtotime($params['delivery_date']) < strtotime(date('Y-m-d')) || strtotime($params['delivery_date']) > strtotime(date('Y-m-d', strtotime(' +'.$delivery_date_limit.''))))
                 {
-                    $result['errors'][] = "Delivery date should be curent date or within next 30 days.";
+                    $result['errors'][] = "Delivery date should be current date or within next ".$delivery_date_limit;
                 }  
             }
             $product_arr = array();
