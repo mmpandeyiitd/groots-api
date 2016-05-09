@@ -68,8 +68,9 @@ class validation {
         try {
             $CI = & get_instance();
             $CI->load->library('form_validation');
+            $CI->load->config('custom-config');
+            $delivery_date_limit = $CI->config->item('DELIVERY_DATE_LIMIT');
             $rex = '/^[a-z][a-z ]*$/i';
-            
             if ($CI->form_validation->required($params['order_prefix']) == False) {
                 $result['errors'][] = "Order Prefix required";
             }
@@ -127,12 +128,11 @@ class validation {
                     $result['errors'][] = "Invalid Delivery date should be in YYYY-MM-DD format.";
                 }
 
-                if(strtotime($params['delivery_date']) < strtotime(date('Y-m-d')) || strtotime($params['delivery_date']) > strtotime(date('Y-m-d', strtotime(' +30 day'))))
+                if(strtotime($params['delivery_date']) < strtotime(date('Y-m-d')) || strtotime($params['delivery_date']) > strtotime(date('Y-m-d', strtotime(' +'.$delivery_date_limit.''))))
                 {
                     $result['errors'][] = "Delivery date should be curent date or within next 30 days.";
                 }  
             }
-
             $product_arr = array();
             $count = count($params['product_details']);
             if ($count > 0) {
