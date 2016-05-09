@@ -230,7 +230,6 @@ class order extends CI_Controller {
                 $data['coupon_code'] = "'" . $params['coupon_code'] . "'";
                 $data['shipping_charges'] = 0;
                 $data['tax'] = $params['total_tax'];
-                $data['timestamp'] = "'" . date('Y-m-d H:i:s') . "'";
                 $data['user_id'] = $params['user_id'];
                 if(isset($params['delivery_date']) && $params['delivery_date'] != '')
                 {
