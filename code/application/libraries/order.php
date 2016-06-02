@@ -208,6 +208,7 @@ class order extends CI_Controller {
                 $data = array();
                 $seller = array();
                 $maxid = $this->order_model->getMaxOrderId();
+
                 $orderno = floatval($CI->config->item('ORD_NO')) + floatval($maxid) + 1;
                 $data['order_number'] = "'" . $params['order_prefix'] . $orderno . "'";
                 $data['created_date'] = "'" . date('Y-m-d H:i:s') . "'";
@@ -236,6 +237,7 @@ class order extends CI_Controller {
                 $data['tax'] = $params['total_tax'];
                 $data['timestamp'] = "'" . date('Y-m-d H:i:s') . "'";
                 $data['user_id'] = $params['user_id'];
+                
                 if(isset($params['delivery_date']) && $params['delivery_date'] != '')
                 {
                     $data['delivery_date'] = "'" . $params['delivery_date'] . "'";
@@ -251,6 +253,12 @@ class order extends CI_Controller {
                         $data['delivery_date'] = "'" . date('Y-m-d', strtotime(' +1 day')) . "'";
                     }
                 }
+                $name = substr($products[0]['seller_name'], 0, 3);
+                $mont = date('m', strtotime($data['delivery_date']));
+                $year = date('Y', strtotime($data['delivery_date']));
+                $date = date('d', strtotime($data['delivery_date']));
+                $params['order_prefix'] = $name . $mont . $year . $date;
+                $data['order_number'] = "'" . $params['order_prefix'] . $orderno . "'";
                 $data['user_comment'] = "'" . $params['user_comment'] . "'";
                 $FinalData['header'] = '(' . implode(',', $data) . ')';
                 $count = count($products);
@@ -294,7 +302,7 @@ class order extends CI_Controller {
 
                     $emailProductData.=$seller[$i]['product'];
                 }
-                $userAddress = '<span style="padding-left: 10px; margin: 0; font-size: 12px;  text-transform: uppercase; letter-spacing: 1px;">Delivery Address</span><p style="color: #333;font-size: 10px; line-height: 14px; text-align: left; margin: 5px 0; padding-left:10px;">' . $params['billing_name'] . '<br> ' . $params['billing_phone'] . '<br>' . $params['billing_address'] . '<br>' . $params['billing_city'] . '<br> ' . $params['billing_state'] . '-' . $params['billing_pincode'] . '</p></td><td style="  width: 300px; border-left: 1px solid #ccc;" ><span style="padding-left: 10px; margin: 0; font-size: 12px;  text-transform: uppercase; letter-spacing: 1px;">Shipping Address</span><p style="color: #333;font-size: 10px; line-height: 14px; text-align: left; margin: 5px 0;  padding-left:10px; padding-left: 10px; ">' . $params['shipping_name'] . '<br>' . $params['shipping_phone'] . '<br>' . $params['shipping_address'] . '<br>' . $params['shipping_city'] . '<br> ' . $params['shipping_state'] . '-' . $params['shipping_pincode'] . ' </p>';
+                $userAddress = '<span style="padding-left: 10px; margin: 0; font-size: 12px;  text-transform: uppercase; letter-spacing: 1px;">Delivery Address</span><p style="color: #333;font-size: 10px; line-height: 14px; text-align: left; margin: 5px 0; padding-left:10px;">' . $params['billing_name'] . '<br> ' . $params['billing_phone'] . '<br>' . $params['billing_address'] . '<br>' . $params['billing_city'] . '<br> ' . $params['billing_state'] . '</p></td><td style="  width: 300px; border-left: 1px solid #ccc;" ><span style="padding-left: 10px; margin: 0; font-size: 12px;  text-transform: uppercase; letter-spacing: 1px;">Shipping Address</span><p style="color: #333;font-size: 10px; line-height: 14px; text-align: left; margin: 5px 0;  padding-left:10px; padding-left: 10px; ">' . $params['shipping_name'] . '<br>' . $params['shipping_phone'] . '<br>' . $params['shipping_address'] . '<br>' . $params['shipping_city'] . '<br> ' . $params['shipping_state'] . ' </p>';
 
                 $FinalData['line'] = implode(",", $LinesData);
                 $order_id = $this->order_model->saveOrderHeaderAndLinesData($FinalData);
