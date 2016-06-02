@@ -136,7 +136,6 @@ class order extends CI_Controller {
                     //     $result['errors'] = "Invalid  quantity";
                     //     return $result;
                     // }
-                    $product_arr['store_offer_price'] = round($product_arr['store_offer_price']); //higher side round off
                     if (floatval($products[$i]['unit_price']) != floatval($product_arr['store_offer_price'])) {
                         $result['status'] = 0;
                         $result['msg'] = "Fail to save data";
