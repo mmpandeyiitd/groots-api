@@ -85,7 +85,7 @@ class order extends CI_Controller {
                             }
                             else
                             {
-                                $product_arr['store_offer_price'] = round($price_data[0]->effective_price);
+                                $product_arr['store_offer_price'] = ($price_data[0]->effective_price);
                             }
                         }
                     }
@@ -256,7 +256,7 @@ class order extends CI_Controller {
                         $data['delivery_date'] = "'" . date('Y-m-d', strtotime(' +1 day')) . "'";
                     }
                 }
-                $data['user_comment'] = "'" . $params['user_comment'] . "'";
+                $data['user_comment'] = "'" . $params['comment'] . "'";
                 $name = substr($products[0]['seller_name'], 0, 3);
                 $mont = date('m', strtotime($delivery_date));
                 $year = date('Y', strtotime($delivery_date));
