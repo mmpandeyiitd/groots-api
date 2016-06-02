@@ -173,7 +173,7 @@ class order extends CI_Controller {
                     // );
                     $updateData = true;
                 }
-                if (round($grandtotal) != floatval($params['total'])) {
+                if (($grandtotal) != ($params['total'])) {
                     $result['status'] = 0;
                     $result['msg'] = "Fail to save data";
                     $result['errors'][] = "Invalid Total Price";
@@ -181,7 +181,7 @@ class order extends CI_Controller {
                     return $result;
                 }
 
-                if (round($totalTax) != floatval($params['total_tax'])) {
+                if (($totalTax) != ($params['total_tax'])) {
                     $result['status'] = 0;
                     $result['msg'] = "Fail to save data";
                     $result['errors'][] = "Invalid Total Tax";
@@ -189,9 +189,9 @@ class order extends CI_Controller {
                     return $result;
                 }
 
-                $total_payable_amount = round($grandtotal - floatval($params['discount_amt']) + floatval($params['total_tax']));
+                $total_payable_amount = ($grandtotal - ($params['discount_amt']) + ($params['total_tax']));
                 
-                if ($total_payable_amount != floatval($params['total_payable_amount'])) {
+                if ($total_payable_amount != ($params['total_payable_amount'])) {
                     $result['status'] = 0;
                     $result['msg'] = "Fail to save data";
                     $result['errors'][] = "Invalid Payable Amount";
