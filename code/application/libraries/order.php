@@ -256,13 +256,13 @@ class order extends CI_Controller {
                         $data['delivery_date'] = "'" . date('Y-m-d', strtotime(' +1 day')) . "'";
                     }
                 }
+                $data['user_comment'] = "'" . $params['user_comment'] . "'";
                 $name = substr($products[0]['seller_name'], 0, 3);
                 $mont = date('m', strtotime($delivery_date));
                 $year = date('Y', strtotime($delivery_date));
                 $date = date('d', strtotime($delivery_date));
-                $params['order_prefix'] = $name . $mont . $year . $date;
-                $data['order_number'] = "'" . $params['order_prefix'] . $orderno . "'";
-                $data['user_comment'] = "'" . $params['user_comment'] . "'";
+                $invoice_prefix = $name . $mont . $year . $date;
+                $data['invoice_number'] = "'" . $invoice_prefix . $orderno . "'";
                 $FinalData['header'] = '(' . implode(',', $data) . ')';
                 $count = count($products);
                 $emailUserData = '';
@@ -301,7 +301,7 @@ class order extends CI_Controller {
                     //HTML data is using for sending email
                     $seller[$i]['name'] = $products[$i]['store_name'];
                     $seller[$i]['email'] = $products[$i]['store_email'];
-                    $seller[$i]['product'] = '<tr style="width: 556px; display: block;  border: 1px solid #ECECEC; padding: 10px;margin:10px;"> <td style="background:#fff; padding: 5px 0;  width: 180px; display: inline-block; font-size: 14px; text-transform: capitalize;" > ' . $products[$i]['product_name'] . '</td> <td style="background:#fff; padding: 5px 0;  width: 100px; display: inline-block; font-size: 14px;text-align: center;" ><p style="margin: 0;font-size: 10px; color: #AFAFAF;">Product Price</p> Rs. ' . $products[$i]['price'] . ' </td> <td style="background:#fff; padding: 5px 0;  width: 100px; display: inline-block; font-size: 14px; text-align: center;" > <p style="margin: 0;font-size: 10px; color: #AFAFAF;">QTY</p> ' . $products[$i]['product_qty'] * $products[$i]['pack_size'] . ' ' .$products[$i]['pack_unit'] . '</td> <td style="background:#fff; padding: 5px 0;  width: 100px; display: inline-block; font-size: 14px; color: #808080; text-align: center;" > <p style="margin: 0;font-size: 10px; color: #AFAFAF;">Total</p> Rs. '.$products[$i]['unit_price'] * $products[$i]['product_qty'].' </td> </tr>';
+                    $seller[$i]['product'] = '<tr style="width: 556px; display: block;  border: 1px solid #ECECEC; padding: 10px;margin:10px;"> <td style="background:#fff; padding: 5px 0;  width: 180px; display: inline-block; font-size: 14px; text-transform: capitalize;" > ' . $products[$i]['product_name'] . '</td> <td style="background:#fff; padding: 5px 0;  width: 100px; display: inline-block; font-size: 14px;text-align: center;" ><p style="margin: 0;font-size: 10px; color: #AFAFAF;">Product Price</p> Rs. ' . $products[$i]['price'] . ' </td> <td style="background:#fff; padding: 5px 0;  width: 100px; display: inline-block; font-size: 14px; text-align: center;" > <p style="margin: 0;font-size: 10px; color: #AFAFAF;">QTY</p> ' . $products[$i]['product_qty'] * $products[$i]['pack_size'] . ' ' .$products[$i]['pack_unit'] . '</td> <td style="background:#fff; padding: 5px 0;  width: 100px; display: inline-block; font-size: 14px; text-align: center;" > <p style="margin: 0;font-size: 10px; color: #AFAFAF;">Total</p> Rs. '.$products[$i]['unit_price'] * $products[$i]['product_qty'].' </td> </tr>';
 
                     $emailProductData.=$seller[$i]['product'];
                 }
