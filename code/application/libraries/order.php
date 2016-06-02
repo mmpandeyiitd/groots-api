@@ -240,23 +240,26 @@ class order extends CI_Controller {
                 
                 if(isset($params['delivery_date']) && $params['delivery_date'] != '')
                 {
+                    $delivery_date = $params['delivery_date'];
                     $data['delivery_date'] = "'" . $params['delivery_date'] . "'";
                 }
                 else
                 {
                     if($current_time >= $start_time && $current_time <= $end_time)
                     {
+                        $delivery_date = date('Y-m-d');
                         $data['delivery_date'] = "'" . date('Y-m-d') . "'";
                     }
                     else
                     {
+                        $delivery_date = date('Y-m-d', strtotime(' +1 day'));
                         $data['delivery_date'] = "'" . date('Y-m-d', strtotime(' +1 day')) . "'";
                     }
                 }
                 $name = substr($products[0]['seller_name'], 0, 3);
-                $mont = date('m', strtotime($data['delivery_date']));
-                $year = date('Y', strtotime($data['delivery_date']));
-                $date = date('d', strtotime($data['delivery_date']));
+                $mont = date('m', strtotime($delivery_date));
+                $year = date('Y', strtotime($delivery_date));
+                $date = date('d', strtotime($delivery_date));
                 $params['order_prefix'] = $name . $mont . $year . $date;
                 $data['order_number'] = "'" . $params['order_prefix'] . $orderno . "'";
                 $data['user_comment'] = "'" . $params['user_comment'] . "'";
