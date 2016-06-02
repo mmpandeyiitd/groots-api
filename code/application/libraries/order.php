@@ -159,6 +159,10 @@ class order extends CI_Controller {
                     $products[$i]['grade'] = $product_arr['grade'];
                     $products[$i]['pack_size'] = $product_arr['pack_size'];
                     $products[$i]['pack_unit'] = $product_arr['pack_unit'];
+                    $products[$i]['weight'] = $product_arr['weight'];
+                    $products[$i]['weight_unit'] = $product_arr['weight_unit'];
+                    $products[$i]['length'] = $product_arr['length'];
+                    $products[$i]['length_unit'] = $product_arr['length_unit'];
                     $products[$i]['diameter'] = $product_arr['diameter'];
                     $products[$i]['price'] = $total;
                     $products[$i]['shipping_charges'] = 0;
@@ -276,6 +280,10 @@ class order extends CI_Controller {
                     $pdata['tax'] = $products[$i]['tax'];
                     $pdata['shipping_charges'] = 0; 
                     $pdata['created_date'] = $data['created_date'];
+                    $pdata['weight'] = "'" . $products[$i]['weight'] . "'";
+                    $pdata['weight_unit'] = "'" . $products[$i]['weight_unit'] . "'";
+                    $pdata['length'] = "'" . $products[$i]['length'] . "'";
+                    $pdata['length_unit'] = "'" . $products[$i]['length_unit'] . "'";
                     $LinesData[] = '(' . implode(',', $pdata) . ')';
                     $serialno = $i + 1;
                     
