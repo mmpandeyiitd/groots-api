@@ -22,7 +22,7 @@ class order extends CI_Controller {
             {
                 $params_r['data']['order_prefix'] = $CI->config->item('ORDER_PREFIX');
             }
-            $log['inputs'] = json_encode($params);
+            $log['inputs'] = json_encode($params_r);
             $logid = $CI->order_model->saveOrderLogs($log);
             $params = $params_r['data'];
             $products = $params['product_details'];
