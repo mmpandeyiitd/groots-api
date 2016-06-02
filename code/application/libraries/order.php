@@ -64,6 +64,7 @@ class order extends CI_Controller {
                         return $result;
                     }
                     $product_arr = $this->product_model->getProductData($cond);
+                    $category_name = $this->product_model->get_categoryNname($products[$i]['base_product_id']);
                     $cond['retailer_id'] = $params['user_id'];
                     $price_data = $this->product_model->getPriceData($cond);
                     unset($cond['retailer_id']);
@@ -163,6 +164,7 @@ class order extends CI_Controller {
                     $products[$i]['length'] = $product_arr['length'];
                     $products[$i]['length_unit'] = $product_arr['length_unit'];
                     $products[$i]['diameter'] = $product_arr['diameter'];
+                    $products[$i]['category_name'] = $category_name;
                     $products[$i]['price'] = $total;
                     $products[$i]['shipping_charges'] = 0;
                     //$quantity = intval($product_arr['quantity']) - intval($products[$i]['product_qty']);
@@ -294,6 +296,7 @@ class order extends CI_Controller {
                     $pdata['weight_unit'] = "'" . $products[$i]['weight_unit'] . "'";
                     $pdata['length'] = "'" . $products[$i]['length'] . "'";
                     $pdata['length_unit'] = "'" . $products[$i]['length_unit'] . "'";
+                    $pdata['category_name'] = "'" . $products[$i]['category_name'] . "'";
                     $LinesData[] = '(' . implode(',', $pdata) . ')';
                     $serialno = $i + 1;
                     

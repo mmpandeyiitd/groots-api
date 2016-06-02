@@ -21,7 +21,7 @@ class order_model extends CI_Model {
             $this->legacy_db->query($sql);
             $id = $this->legacy_db->insert_id();
             $data['line'] = str_replace("##ORDERID##", $id, $data['line']);
-            $sql = 'INSERT INTO order_line (order_id,subscribed_product_id,base_product_id,store_id,store_name,store_email,seller_name,seller_phone,seller_address,seller_state,seller_city,colour,size,grade,pack_size,pack_unit,diameter,product_name,product_qty,unit_price,price,tax,shipping_charges,created_date,weight,weight_unit,length,length_unit) VALUES ' . $data['line'];
+            $sql = 'INSERT INTO order_line (order_id,subscribed_product_id,base_product_id,store_id,store_name,store_email,seller_name,seller_phone,seller_address,seller_state,seller_city,colour,size,grade,pack_size,pack_unit,diameter,product_name,product_qty,unit_price,price,tax,shipping_charges,created_date,weight,weight_unit,length,length_unit,category_name) VALUES ' . $data['line'];
             $this->legacy_db->query($sql);
             if ($this->legacy_db->trans_status() === FALSE) {
                 $this->legacy_db->trans_rollback();

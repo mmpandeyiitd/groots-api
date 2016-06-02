@@ -139,6 +139,17 @@ class product_model extends CI_Model {
         }
     }
 
+    
+    Public function get_categoryNname($base_id) {
+        try {
+            $user_query = $this->db->query("select pcm.base_product_id, max(pcm.category_id) as category_id, cat.category_name from product_category_mapping as pcm left join category as cat on cat.category_id = pcm.category_id where base_product_id =" . $base_id );
+            $row = $user_query->result();
+            return $row[0]->category_name;
+        } catch (Exception $e) {
+            return FALSE;
+        }
+    }
+
 }
 
 ?>
