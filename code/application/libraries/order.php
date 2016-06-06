@@ -175,8 +175,7 @@ class order extends CI_Controller {
                     // );
                     $updateData = true;
                 }
-                $params['total'] = floatval($params['total']);
-                if ($grandtotal != $params['total']) {
+                if((string)round($grandtotal,2)==(string)round($params['total'],2)){
                     $result['status'] = 0;
                     $result['msg'] = "Fail to save data";
                     $result['errors'][] = "Invalid Total Price";
