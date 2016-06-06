@@ -193,7 +193,7 @@ class order extends CI_Controller {
 
                 $total_payable_amount = ($grandtotal - ($params['discount_amt']) + ($params['total_tax']));
                 
-                if ($total_payable_amount != ($params['total_payable_amount'])) {
+                if ((string)round($total_payable_amount,2) != ((string)round($params['total_payable_amount'],2)) {
                     $result['status'] = 0;
                     $result['msg'] = "Fail to save data";
                     $result['errors'][] = "Invalid Payable Amount";
