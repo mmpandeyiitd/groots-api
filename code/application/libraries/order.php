@@ -84,9 +84,13 @@ class order extends CI_Controller {
                             {
                                 $product_arr['store_offer_price'] = $product_arr['store_offer_price'] - ($product_arr['store_offer_price'] * $price_data[0]->discount_per/100);
                             }
-                            else
+                            else if ($price_data[0]->effective_price > 0)
                             {
                                 $product_arr['store_offer_price'] = ($price_data[0]->effective_price);
+                            } 
+                            else 
+                            {
+                                $product_arr['store_offer_price'] = ($price_data[0]->store_offer_price);  
                             }
                         }
                     }
@@ -137,7 +141,7 @@ class order extends CI_Controller {
                     //     $result['errors'] = "Invalid  quantity";
                     //     return $result;
                     // }
-                    if (floatval($products[$i]['unit_price']) != floatval($product_arr['store_offer_price'])) {
+                    if (round($products[$i]['unit_price'],2) != round($product_arr['store_offer_price'],2)) {
                         $result['status'] = 0;
                         $result['msg'] = "Fail to save data";
                         $result['errors'][] = "Invalid Price";
