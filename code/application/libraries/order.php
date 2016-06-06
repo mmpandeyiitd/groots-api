@@ -148,7 +148,7 @@ class order extends CI_Controller {
                         $result['data'] = (object)array();
                         return $result;
                     }
-                    $total = floatval($products[$i]['product_qty']) * floatval($product_arr['store_offer_price']);
+                    $total = round($products[$i]['product_qty'],2) * round($product_arr['store_offer_price'],2);
                     $grandtotal = $grandtotal + $total;
                     $totalTax = $totalTax + floatval($products[$i]['tax']);
                     $products[$i]['store_name'] = $product_arr['store_name'];
