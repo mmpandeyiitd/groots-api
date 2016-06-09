@@ -59,7 +59,7 @@ class order extends CI_Controller {
                     } else {
                         $result['status'] = 0;
                         $result['msg'] = "Fail to save data";
-                        $result['errors'][] = "Invalid  subscribed product id,base product id or store id";
+                        $result['errors'][] = "One or more products you have chosen is unavailable. Please clear your list and add items again.";
                         $result['data'] = (object)array();
                         return $result;
                     }
@@ -74,7 +74,7 @@ class order extends CI_Controller {
                         {
                             $result['status'] = 0;
                             $result['msg'] = "Fail to save data";
-                            $result['errors'][] = "Product does not associated with the user.";
+                            $result['errors'][] = "One or more products you have chosen is unavailable. Please clear your list and add items again.";
                             $result['data'] = (object)array();
                             return $result;    
                         }
@@ -97,7 +97,7 @@ class order extends CI_Controller {
                     if (empty($product_arr)) {
                         $result['status'] = 0;
                         $result['msg'] = "Fail to save data";
-                        $result['errors'][] = "Invalid  subscribed product id,base product id or store id";
+                        $result['errors'][] = "One or more products you have chosen is unavailable. Please clear your list and add items again.";
                         $result['data'] = (object)array();
                         return $result;
                     }
@@ -105,7 +105,7 @@ class order extends CI_Controller {
                         if ($products[$i]['base_product_id'] != $product_arr['base_product_id']) {
                             $result['status'] = 0;
                             $result['msg'] = "Fail to save data";
-                            $result['errors'][] = "Invalid  subscribed product id,base product id or store id";
+                            $result['errors'][] = "One or more products you have chosen is unavailable. Please clear your list and add items again.";
                             $result['data'] = (object)array();
                             return $result;
                         }
@@ -117,7 +117,7 @@ class order extends CI_Controller {
                         if ($products[$i]['subscribed_product_id'] != $product_arr['subscribed_product_id']) {
                             $result['status'] = 0;
                             $result['msg'] = "Fail to save data";
-                            $result['errors'][] = "Invalid  subscribed product id,base product id or store id";
+                            $result['errors'][] = "One or more products you have chosen is unavailable. Please clear your list and add items again.";
                             $result['data'] = (object)array();
                             return $result;
                         }
@@ -128,7 +128,7 @@ class order extends CI_Controller {
                         if ($products[$i]['store_id'] != $product_arr['store_id']) {
                             $result['status'] = 0;
                             $result['msg'] = "Fail to save data";
-                            $result['errors'][] = "Invalid  subscribed product id,base product id or store id";
+                            $result['errors'][] = "One or more products you have chosen is unavailable. Please clear your list and add items again.";
                             $result['data'] = (object)array();
                             return $result;
                         }
@@ -144,7 +144,7 @@ class order extends CI_Controller {
                     if (round($products[$i]['unit_price'],2) != round($product_arr['store_offer_price'],2)) {
                         $result['status'] = 0;
                         $result['msg'] = "Fail to save data";
-                        $result['errors'][] = "Invalid Price";
+                        $result['errors'][] = "It seems that there is a price change. Please clear your list and add items again.";
                         $result['data'] = (object)array();
                         return $result;
                     }
@@ -182,7 +182,7 @@ class order extends CI_Controller {
                 if(round($grandtotal,2) != round($params['total'],2)) {
                     $result['status'] = 0;
                     $result['msg'] = "Fail to save data";
-                    $result['errors'][] = "Invalid Total Price";
+                    $result['errors'][] = "Mismatch in order total - it seems that there is a price change. Please clear your list and add items again.";
                     $result['data'] = (object)array();
                     return $result;
                 }
@@ -190,7 +190,7 @@ class order extends CI_Controller {
                 if (($totalTax) != ($params['total_tax'])) {
                     $result['status'] = 0;
                     $result['msg'] = "Fail to save data";
-                    $result['errors'][] = "Invalid Total Tax";
+                    $result['errors'][] = "Invalid tax amount";
                     $result['data'] = (object)array();
                     return $result;
                 }
@@ -200,7 +200,7 @@ class order extends CI_Controller {
                 if (round($total_payable_amount,2) != (round($params['total_payable_amount'],2))) {
                     $result['status'] = 0;
                     $result['msg'] = "Fail to save data";
-                    $result['errors'][] = "Invalid Payable Amount";
+                    $result['errors'][] = "Mismatch in payable amount - it seems that there is a price change. Please try again.";
                     $result['data'] = (object)array();
                     return $result;
                 }
@@ -372,7 +372,7 @@ class order extends CI_Controller {
                 } else {
                     $result['status'] = 0;
                     $result['msg'] = "Fail to save data";
-                    $result['errors'][] = "Insert Query not execute";
+                    $result['errors'][] = "Something is not right. We are unable to place your order. Please contact our support.";
                     $result['data'] = (object)array();
                 }
             } else {
