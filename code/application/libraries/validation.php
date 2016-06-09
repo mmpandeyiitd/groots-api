@@ -138,31 +138,31 @@ class validation {
             if ($count > 0) {
                 for ($i = 0; $i < $count; $i++) {
                     if ($CI->form_validation->required($params['product_details'][$i]['subscribed_product_id']) == False) {
-                        $product_arr['live']['errors'][] = "Subscribed Product ID required";
+                        $result['errors'][] = "Subscribed Product ID required";
                     }
                     if ($CI->form_validation->is_natural_no_zero($params['product_details'][$i]['subscribed_product_id']) === FALSE) {
-                        $product_arr['live']['errors'][] = "Subscribed Product ID should be numeric number and greater than zero";
+                        $result['errors'][] = "Subscribed Product ID should be numeric number and greater than zero";
                     }
                     if ($CI->form_validation->required($params['product_details'][$i]['base_product_id']) == False) {
-                        $product_arr['live']['errors'][] = "Base Product ID required";
+                        $result['errors'][] = "Base Product ID required";
                     }
                     if ($CI->form_validation->is_natural_no_zero($params['product_details'][$i]['base_product_id']) === FALSE) {
-                        $product_arr['live']['errors'][] = "Base Product ID should be numeric number";
+                        $result['errors'][] = "Base Product ID should be numeric number";
                     }
                     if ($CI->form_validation->required($params['product_details'][$i]['store_id']) == False) {
-                        $product_arr['live']['errors'][] = "Store ID required";
+                        $result['errors'][] = "Store ID required";
                     }
                     if ($CI->form_validation->is_natural_no_zero($params['product_details'][$i]['store_id']) === FALSE) {
-                        $product_arr['live']['errors'][] = "Store ID should be numeric number";
+                        $result['errors'][] = "Store ID should be numeric number";
                     }
                     if ($CI->form_validation->required($params['product_details'][$i]['unit_price']) == False) {
-                        $product_arr['live']['errors'][] = "Unit Price required";
+                        $result['errors'][] = "Unit Price required";
                     }
                     if ($CI->form_validation->numeric($params['product_details'][$i]['unit_price']) === FALSE || $params['product_details'][$i]['unit_price'] < 0) {
-                        $product_arr['live']['errors'][] = "Unit Price should be numeric number and greater than zero";
+                        $result['errors'][] = "Unit Price should be numeric number and greater than zero";
                     }
                     if ($CI->form_validation->required($params['product_details'][$i]['product_name']) == False) {
-                        $product_arr['live']['errors'][] = "Product Name required";
+                        $result['errors'][] = "Product Name required";
                     }
                     
                     if (strlen($params['product_details'][$i]['product_name']) > 100 || strlen($params['product_details'][$i]['product_name']) < 2) {
@@ -170,23 +170,20 @@ class validation {
                     }
 
                     if ($CI->form_validation->required($params['product_details'][$i]['product_qty']) == False) {
-                        $product_arr['live']['errors'][] = "Product Quantity required";
+                        $result['errors'][] = "Product Quantity required";
                     }
                     
                     if ($CI->form_validation->is_natural_no_zero($params['product_details'][$i]['product_qty']) == False || $params['product_details'][$i]['product_qty'] < 0) {
-                        $product_arr['live']['errors'][] = "Product Quantity should be numeric and greater than zero";
+                        $result['errors'][] = "Product Quantity should be numeric and greater than zero";
                     }
 
                     if ($CI->form_validation->required($params['product_details'][$i]['tax']) == False) {
-                        $product_arr['live']['errors'][] = "Product Tax required";
+                        $result['errors'][] = "Product Tax required";
                     }
                     
                     if ($CI->form_validation->numeric($params['product_details'][$i]['tax']) == False || $params['product_details'][$i]['tax'] < 0) {
-                        $product_arr['live']['errors'][] = "Product Tax should be numeric";
+                        $result['errors'][] = "Product Tax should be numeric";
                     }
-                }
-                if (!empty($product_arr)) {
-                    $result['errors'][] = $product_arr;
                 }
             }
             if (empty($result)) {
