@@ -179,9 +179,10 @@ class user {
                     $url = $CI->config->item('URL') . "reset-password.php?key=" . $encodedata;
                     $viewdata['name'] = $data['name'];
                     $viewdata['link'] = $url;
+                    $viewdata['base_path'] = $CI->config->item('URL');
                     $message = $CI->load->view('forgotPwd', $viewdata, TRUE);
                     $emailData['body'] = $message;
-                    $emailData['subject'] = "Yorder : Forgot password";
+                    $emailData['subject'] = "Groots : Forgot password";
                     $emailData['email'] = $data['email'];
                     $data = $CI->communicationengine->emailCommunication($emailData);
                     if ($data) {
