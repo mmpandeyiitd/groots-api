@@ -607,5 +607,6 @@ Session.vim
 .netrwhist
 
 ### Project Specific files
-/code/api/card/config/config.php
-/code/api/experience/config/config.php
+/code/application/config/custom-config.php
+/code/application/config/database.php
+

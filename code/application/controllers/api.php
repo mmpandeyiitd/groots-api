@@ -1,0 +1,363 @@
+<?php
+
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class api extends CI_Controller {
+    
+    protected $authToken;
+    protected $verfiedAuth;
+
+    public function index() {
+        //return "hi";
+    }
+    
+    public function checkAuth($checkAuthToken = TRUE) {
+        date_default_timezone_set('Asia/Calcutta');
+        $requestHeaders = apache_request_headers();
+        if ($requestHeaders['API_KEY']) {
+            $CI = & get_instance();
+            $CI->load->model('apiauthcheck_model');
+            $CI->load->config('custom-config');
+            $result = $CI->apiauthcheck_model->appStatusVerify($requestHeaders, $checkAuthToken);
+            $CI->apiauthcheck_model->setHeader('API_KEY', $requestHeaders['API_KEY']);
+            $CI->apiauthcheck_model->setHeader('APP_VERSION', $requestHeaders['APP_VERSION']);
+            $CI->apiauthcheck_model->setHeader('CONFIG_VERSION', $requestHeaders['CONFIG_VERSION']);
+            if ($checkAuthToken == TRUE) {
+                if (!$requestHeaders['API_KEY']) {
+                    // $result['config_status'] = -1;
+                    // $result['config_msg'] = "Auth Token is missing";
+                    $result['status'] = 0;
+                    $result['msg'] = "Authentication fail";
+                    $result['errors'][] = "Auth Token is missing";
+                    $result['data'] = (object)array();
+                    return $result;
+                }
+            } 
+            if ($result['config_status'] == 1 && $checkAuthToken == TRUE) {
+                $this->verfiedAuth = true;
+                $this->authToken = $requestHeaders['AUTH_TOKEN'];
+            }
+        } else {
+            // $result['config_status'] = -1;
+            // $result['config_msg'] = "Header Field is missing";
+            $result['status'] = 0;
+            $result['msg'] = "Authentication Fail";
+            $result['errors'][] = "Header Field is missing";
+            $result['data'] = (object)array();
+        }
+        return $result;
+    }
+    
+    public function returnfunction($result) {
+
+        if ($result['app'] == 1) {
+            $result['status'] = strtolower($result['status']) == 'success' ? 1 : 0;
+            if (isset($result['data'])) {
+                $result['data'] = isset($result['data']) ? $result['data'] : null;
+            } else if (isset($result['response'])) {
+                $result['data'] = isset($result['response']) ? $result['response'] : null;
+                unset($result['response']);
+            } else {
+                $result['data'] = null;
+            }
+
+            if (is_array($result['errors'])) {
+                $result['errors'] = isset($result['errors']) ? $result['errors'] : null;
+            } else {
+                $result['errors'] = isset($result['errors']) ? array($result['errors']) : null;
+            }
+        }
+        unset($result['app']);
+        $json_data = json_encode($result);
+        $data['response'] = $json_data;
+        $this->load->view('responseData', $data);
+    }
+
+    public function addOrder() {
+        $checkAuthToken = TRUE;
+        $result = $this->checkAuth($checkAuthToken);
+        if ($result['status'] == 0 && $result['config_status'] != 1) {
+            $json_data = json_encode($result);
+            $data['response'] = $json_data;
+            $this->load->view('responseData', $data);
+            return;
+        }
+        $CI = & get_instance();
+        $CI->load->model('apiauthcheck_model');
+        $user_id = $CI->apiauthcheck_model->getUserIdbyToken($this->authToken);
+        $_REQUEST['data']['user_id'] = $user_id;
+        $value = array();
+        if (isset($_REQUEST)) {
+            $value = $_REQUEST;
+        }
+        $this->load->library('order');
+        $result = $this->order->addOrder($value);
+        $this->output->set_header('AUTH_TOKEN:'.$this->authToken);
+        $this->returnfunction($result);
+    }
+
+    public function userLogin() {
+        
+        $checkAuthToken = FALSE;
+        $result = $this->checkAuth($checkAuthToken);
+        if ($result['status'] == 0 && $result['config_status'] != 1) {
+            $json_data = json_encode($result);
+            $data['response'] = $json_data;
+            $this->load->view('responseData', $data);
+            return;
+        }
+        $value = array();
+        if (isset($_REQUEST)) {
+            $value = $_REQUEST;
+        }
+        $this->load->library('user');
+        $result = $this->user->userLogin($value);
+        if($result['status'] == 1)
+        {
+            $CI = & get_instance();
+            $CI->load->model('apiauthcheck_model');
+            $this->authToken = $CI->apiauthcheck_model->saveAuthToken($result['data']['user_id']);
+            $this->output->set_header('AUTH_TOKEN:'.$this->authToken);
+            
+        }
+        $this->returnfunction($result);
+    }
+
+    public function resetPassword() {
+        $checkAuthToken = FALSE;
+        $result = $this->checkAuth($checkAuthToken);
+        if ($result['status'] == 0 && $result['config_status'] != 1) {
+            $json_data = json_encode($result);
+            $data['response'] = $json_data;
+            $this->load->view('responseData', $data);
+            return;
+        }
+        
+        $CI = & get_instance();
+        $CI->load->model('apiauthcheck_model');
+        $value = array();
+        if (isset($_REQUEST)) {
+            $value = $_REQUEST;
+        }
+        $this->load->library('user');
+        $result = $this->user->resetPassword($value);
+        $this->returnfunction($result);
+    }
+    
+    public function changePassword() {
+        $checkAuthToken = TRUE;
+        $result = $this->checkAuth($checkAuthToken);
+        if ($result['config_status'] == -1) {
+            $json_data = json_encode($result);
+            $data['response'] = $json_data;
+            $this->load->view('responseData', $data);
+            return;
+        }
+        if ($result['config_status'] == 0) {
+            $this->output->set_header("RESPONSE_CODE:0");
+            $json_data = json_encode($result);
+            $data['response'] = $json_data;
+            $this->load->view('responseData', $data);
+            return;
+        }
+        
+        $CI = & get_instance();
+        $CI->load->model('apiauthcheck_model');
+        $user_id = $CI->apiauthcheck_model->getUserIdbyToken($this->authToken);
+        $_REQUEST['id'] = $user_id;
+        $value = array();
+        if (isset($_REQUEST)) {
+            $value = $_REQUEST;
+        }
+        $this->load->library('user');
+        $result = $this->user->changePassword($value);
+        $this->output->set_header('AUTH_TOKEN:'.$this->authToken);
+        $this->returnfunction($result);
+    }
+
+    public function forgotPassword() {
+        $checkAuthToken = FALSE;
+        $result = $this->checkAuth($checkAuthToken);
+        if ($result['status'] == 0 && $result['config_status'] != 1) {
+            $json_data = json_encode($result);
+            $data['response'] = $json_data;
+            $this->load->view('responseData', $data);
+            return;
+        }
+        
+        $CI = & get_instance();
+        $CI->load->model('apiauthcheck_model');
+        $value = array();
+        if (isset($_REQUEST)) {
+            $value = $_REQUEST;
+        }
+        $this->load->library('user');
+        $result = $this->user->forgotPassword($value);
+        $this->returnfunction($result);
+    }
+
+    public function fetchorders() {
+        $checkAuthToken = TRUE;
+        $result = $this->checkAuth($checkAuthToken);
+        if ($result['config_status'] == -1) {
+            $json_data = json_encode($result);
+            $data['response'] = $json_data;
+            $this->load->view('responseData', $data);
+            return;
+        }
+        if ($result['config_status'] == 0) {
+            $this->output->set_header("RESPONSE_CODE:0");
+            $json_data = json_encode($result);
+            $data['response'] = $json_data;
+            $this->load->view('responseData', $data);
+            return;
+        }
+        $CI = & get_instance();
+        $CI->load->model('apiauthcheck_model');
+        $user_id = $CI->apiauthcheck_model->getUserIdbyToken($this->authToken);
+        $_REQUEST['user_id'] = $user_id;
+        $value = array();
+        if (isset($_REQUEST)) {
+            $value = $_REQUEST;
+        }
+        $this->load->library('order');
+        $result = $this->order->fetchorder($value);
+        $this->output->set_header('AUTH_TOKEN:'.$this->authToken);
+        $this->returnfunction($result);
+    }
+    
+    public function orderdetails() {
+        $checkAuthToken = TRUE;
+        $result = $this->checkAuth($checkAuthToken);
+        if ($result['config_status'] == -1) {
+            $json_data = json_encode($result);
+            $data['response'] = $json_data;
+            $this->load->view('responseData', $data);
+            return;
+        }
+        if ($result['config_status'] == 0) {
+            $this->output->set_header("RESPONSE_CODE:0");
+            $json_data = json_encode($result);
+            $data['response'] = $json_data;
+            $this->load->view('responseData', $data);
+            return;
+        }
+        $CI = & get_instance();
+        $CI->load->model('apiauthcheck_model');
+        $user_id = $CI->apiauthcheck_model->getUserIdbyToken($this->authToken);
+        $_REQUEST['user_id'] = $user_id;
+        $value = array();
+        if (isset($_REQUEST)) {
+            $value = $_REQUEST;
+        }
+        $this->load->library('order');
+        $result = $this->order->orderdetails($value);
+        $this->output->set_header('AUTH_TOKEN:'.$this->authToken);
+        $this->returnfunction($result);
+    }
+
+    public function user_profile() {
+        $checkAuthToken = TRUE;
+        $result = $this->checkAuth($checkAuthToken);
+        if ($result['config_status'] == -1) {
+            $json_data = json_encode($result);
+            $data['response'] = $json_data;
+            $this->load->view('responseData', $data);
+            return;
+        }
+        if ($result['config_status'] == 0) {
+            $this->output->set_header("RESPONSE_CODE:0");
+            $json_data = json_encode($result);
+            $data['response'] = $json_data;
+            $this->load->view('responseData', $data);
+            return;
+        }
+        
+        $CI = & get_instance();
+        $CI->load->model('apiauthcheck_model');
+        $user_id = $CI->apiauthcheck_model->getUserIdbyToken($this->authToken);
+        $_REQUEST['id'] = $user_id;
+        $value = array();
+        if (isset($_REQUEST)) {
+            $value = $_REQUEST;
+        }
+        $this->load->library('user');
+        $result = $this->user->fetchuserdetails($value);
+        $this->output->set_header('AUTH_TOKEN:'.$this->authToken);
+        $this->returnfunction($result);
+    }
+    
+    public function productList() {
+        $checkAuthToken = TRUE;
+        $result = $this->checkAuth($checkAuthToken);
+        if ($result['status'] == 0 && $result['config_status'] != 1) {
+            $json_data = json_encode($result);
+            $data['response'] = $json_data;
+            $this->load->view('responseData', $data);
+            return;
+        }
+
+        $CI = & get_instance();
+        $CI->load->model('apiauthcheck_model');
+        $user_id = $CI->apiauthcheck_model->getUserIdbyToken($this->authToken);
+        $value = array();
+        $_REQUEST['filter']['retailer_id'] = $user_id;
+        if (isset($_REQUEST)) {
+            $value = $_REQUEST;
+        }
+        $this->load->library('Product');
+        $result = $this->product->productList($value);
+        $this->output->set_header('AUTH_TOKEN:'.$this->authToken);
+        $this->returnfunction($result);
+    }
+    
+    public function productDetails() {
+        $checkAuthToken = TRUE;
+        $result = $this->checkAuth($checkAuthToken);
+        if ($result['config_status'] == -1) {
+            $json_data = json_encode($result);
+            $data['response'] = $json_data;
+            $this->load->view('responseData', $data);
+            return;
+        }
+        if ($result['config_status'] == 0) {
+            $this->output->set_header("RESPONSE_CODE:0");
+            $json_data = json_encode($result);
+            $data['response'] = $json_data;
+            $this->load->view('responseData', $data);
+            return;
+        }
+        
+        $CI = & get_instance();
+        $CI->load->model('apiauthcheck_model');
+        $user_id = $CI->apiauthcheck_model->getUserIdbyToken($this->authToken);
+        $_REQUEST['filter']['retailer_id'] = $user_id;
+        $value = array();
+        if (isset($_REQUEST)) {
+            $value = $_REQUEST;
+        }
+        $this->load->library('Product');
+        $result = $this->product->productDetails($value);
+        $this->output->set_header('AUTH_TOKEN:'.$this->authToken);
+        $this->returnfunction($result);
+    }
+
+    public function serverDatetime() {
+        $checkAuthToken = TRUE;
+        $result = $this->checkAuth($checkAuthToken);
+        if ($result['status'] == 0 && $result['config_status'] != 1) {
+            $json_data = json_encode($result);
+            $data['response'] = $json_data;
+            $this->load->view('responseData', $data);
+            return;
+        }
+        $result = array();
+        date_default_timezone_set('Asia/Calcutta');
+        $result['status'] = 1;
+        $result['msg'] = "Server Date Time";
+        $result['errors'] = array();
+        $result['data']['current_date_time'] = date("Y-m-d H:i:s");
+        $this->output->set_header('AUTH_TOKEN:'.$this->authToken);
+        $this->returnfunction($result);
+    }
+}
