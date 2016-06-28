@@ -16,7 +16,7 @@ $message = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http
     margin: 8px 20px;"></a>
       </td>
       <td style="padding: 5px 10px; width:450px; background-color:#444;color: #fff;font-size: 24px; text-transform: uppercase; text-align:right;">
-        <span style="float:right;">+91 99999 99999</span>
+        <span style="float:right;">+91-11-3958-9893</span>
         <img src="'.$base_path.'emailimage/callIco-head.png" alt="call" width="25" style="float:right; margin:0 10px;"> 
       </td>
     </tr>
@@ -37,6 +37,14 @@ $message = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http
      </td>  
                 
    </tr>
+   <tr>
+      <td colspan="2" align="left" valign="top" style="margin:0;padding:5px"><p style="margin:0;padding:0;padding-left:10px;color:#565656; font-weight:bold;">Ordering: +91-11-3958-9893</p>
+       </td>
+    </tr>
+    <tr>
+      <td colspan="2" align="left" valign="top" style="margin:0;padding:5px"><p style="margin:0;padding:0;padding-left:10px;color:#565656; font-weight:bold;">Sales: +91-11-3958-9895</p>
+       </td>
+    </tr>
     <tr style="display: block; margin-top:0px;background: #444; padding: 15px 0;">
       <td colspan="2" style="width: 600px;">
         <ul style="display:block; width:100%; list-style-type:none; overflow: hidden;margin: 0;padding: 10px 0;">
