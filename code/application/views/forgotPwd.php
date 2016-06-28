@@ -55,15 +55,15 @@ span.s3 {
                          </td>
                       </tr>
                       <tr>
-                        <td colspan="2" align="left" valign="top" style="margin:0;padding:5px"><p style="margin:0;padding:0;color:#565656; font-weight:bold;">Ordering: +91-11-3958-9893</p>
+                        <td colspan="2" align="left" valign="top" style="margin:0;padding:5px"><p style="margin:0;padding:0;padding-left:10px;color:#565656; font-weight:bold;">Ordering: +91-11-3958-9893</p>
                          </td>
                       </tr>
                       <tr>
-                        <td colspan="2" align="left" valign="top" style="margin:0;padding:5px"><p style="margin:0;padding:0;color:#565656; font-weight:bold;">Sales: +91-11-3958-9895</p>
+                        <td colspan="2" align="left" valign="top" style="margin:0;padding:5px"><p style="margin:0;padding:0;padding-left:10px;color:#565656; font-weight:bold;">Sales: +91-11-3958-9895</p>
                          </td>
                       </tr>
                       <tr>
-                        <td align="center" valign="top" style="padding:15px 40px;margin:0;text-align:center;background-color:#f9f9f9" colspan="2" bgcolor="F9F9F9"><p style="padding:0;margin:0 0 7px 0"> <a title="" style="text-decoration:none;color:#565656" href="" target="_blank"><span style="color:#565656">groots.com</span></a> </p>
+                        <td align="center" valign="top" style="padding:15px 40px;margin:0;text-align:center;background-color:#f9f9f9" colspan="2" bgcolor="F9F9F9">
                           <p style="padding:10px 0 0 0;margin:0;border-top:solid 1px #cccccc;font-size:11px;color:#565656"> In case you need any help feel free to contact us at <a style="text-decoration:underline" href="" target="_blank"><span style="color:#666"><a href="mailto:contactus@groots.com">contactus@groots.com</a></p></td>
                       </tr>
                     </tbody>
