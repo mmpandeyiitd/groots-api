@@ -55,11 +55,11 @@ span.s3 {
                          </td>
                       </tr>
                       <tr>
-                        <td colspan="2" align="left" valign="top" style="margin:0;padding:5px"><p style="margin:0;padding:0;padding-left:10px;color:#565656; font-weight:bold;">Ordering: +91-11-3958-9893</p>
+                        <td colspan="2" align="left" valign="top" style="margin:0;padding:5px"><p style="margin:0;padding:0;padding-left:10px;color:#565656; font-weight:bold;">Ordering: 011-395-89893</p>
                          </td>
                       </tr>
                       <tr>
-                        <td colspan="2" align="left" valign="top" style="margin:0;padding:5px"><p style="margin:0;padding:0;padding-left:10px;color:#565656; font-weight:bold;">Sales: +91-11-3958-9895</p>
+                        <td colspan="2" align="left" valign="top" style="margin:0;padding:5px"><p style="margin:0;padding:0;padding-left:10px;color:#565656; font-weight:bold;">Sales: 011-395-89894</p>
                          </td>
                       </tr>
                       <tr>

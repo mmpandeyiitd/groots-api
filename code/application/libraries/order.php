@@ -291,6 +291,7 @@ class order extends CI_Controller {
                     $pdata['diameter'] = "'" . $products[$i]['diameter'] . "'"; 
                     $pdata['product_name'] = "'" . $products[$i]['product_name'] . "'";
                     $pdata['product_qty'] = $products[$i]['product_qty'];
+                    $pdata['delivered_qty'] = $products[$i]['product_qty'];
                     $pdata['unit_price'] = $products[$i]['unit_price'];
                     $pdata['price'] = $products[$i]['price'];
                     $pdata['tax'] = $products[$i]['tax'];
