@@ -499,7 +499,7 @@ class order extends CI_Controller {
                         $arr[$i]['product_details'][] = $r;
                     }
                     else 
-                    {
+                    { 
                         $arr[$i]['order_id'] = $order_header_data[$j]->order_id;
                         $arr[$i]['order_number'] = $order_header_data[$j]->order_number;
                         $arr[$i]['user_id'] = $order_header_data[$j]->user_id;
@@ -791,6 +791,35 @@ class order extends CI_Controller {
                 $result['errors'] = 'No data found';
             }
         } else {
+            $result['status'] = "Failed";
+        }
+        return $result;
+    }
+
+    public function fetchordersonly($params){
+        $CI = & get_instance();
+        $CI->load->model('order_model');
+        $CI->load->library('validation');
+        $CI->load->config('custom-config');
+        $result = $CI->validation->validate_fetch_order($params);
+        if ($result['status'] == 1) {
+            $order_header_data = $CI->order_model->getLimitedDataByOrderId($params);
+            if(isset($order_header_data) && !empty($order_header_data)){
+                if (isset($params['app'])) {
+                    $result['status'] = 'Success';
+                    $result['msg'] = 'User Order list.';
+                    $result['data']['count'] = count($order_header_data);
+                    $result['data']['list'] = $order_header_data;
+                } 
+                else {
+                    $result['status'] = 'SUCCESS';
+                    $result['msg'] = 'User Order list.';
+                    $result['count'] = count($order_header_data);
+                    $result['data'] = $order_header_data;
+                }
+            }
+        }
+        else {
             $result['status'] = "Failed";
         }
         return $result;

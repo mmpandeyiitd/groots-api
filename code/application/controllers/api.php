@@ -196,7 +196,7 @@ class api extends CI_Controller {
         $this->returnfunction($result);
     }
 
-    public function fetchorders() {
+    public function order() {
         $checkAuthToken = TRUE;
         $result = $this->checkAuth($checkAuthToken);
         if ($result['config_status'] == -1) {
@@ -221,7 +221,7 @@ class api extends CI_Controller {
             $value = $_REQUEST;
         }
         $this->load->library('order');
-        $result = $this->order->fetchorder($value);
+        $result = $this->order->fetchordersonly($value);
         $this->output->set_header('AUTH_TOKEN:'.$this->authToken);
         $this->returnfunction($result);
     }
