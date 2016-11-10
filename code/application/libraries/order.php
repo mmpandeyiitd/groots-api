@@ -630,44 +630,44 @@ class order extends CI_Controller {
 
                     $arr[$i]['order_id'] = $order_header_data[$j]->order_id;
                     $arr[$i]['order_number'] = $order_header_data[$j]->order_number;
-                    $arr[$i]['user_id'] = $order_header_data[$j]->user_id;
+                    // $arr[$i]['user_id'] = $order_header_data[$j]->user_id;
                     $arr[$i]['created_date'] = $order_header_data[$j]->created_date;
-                    $arr[$i]['payment_method'] = $order_header_data[$j]->payment_method;
-                    $arr[$i]['payment_status'] = $order_header_data[$j]->payment_status;
-                    $arr[$i]['billing_name'] = $order_header_data[$j]->billing_name;
-                    $arr[$i]['billing_phone'] = $order_header_data[$j]->billing_phone;
-                    $arr[$i]['billing_email'] = $order_header_data[$j]->billing_email;
-                    $arr[$i]['billing_address'] = $order_header_data[$j]->billing_address;
-                    $arr[$i]['billing_state'] = $order_header_data[$j]->billing_state;
-                    $arr[$i]['billing_city'] = $order_header_data[$j]->billing_city;
-                    $arr[$i]['billing_pincode'] = $order_header_data[$j]->billing_pincode;
-                    $arr[$i]['shipping_name'] = $order_header_data[$j]->shipping_name;
-                    $arr[$i]['shipping_phone'] = $order_header_data[$j]->shipping_phone;
-                    $arr[$i]['shipping_email'] = $order_header_data[$j]->shipping_email;
-                    $arr[$i]['shipping_address'] = $order_header_data[$j]->shipping_address;
-                    $arr[$i]['shipping_state'] = $order_header_data[$j]->shipping_state;
-                    $arr[$i]['shipping_city'] = $order_header_data[$j]->shipping_city;
-                    $arr[$i]['shipping_pincode'] = $order_header_data[$j]->shipping_pincode;
-                    $arr[$i]['shipping_charges'] = $order_header_data[$j]->shipping_charges;
+                    // $arr[$i]['payment_method'] = $order_header_data[$j]->payment_method;
+                    // $arr[$i]['payment_status'] = $order_header_data[$j]->payment_status;
+                    // $arr[$i]['billing_name'] = $order_header_data[$j]->billing_name;
+                    // $arr[$i]['billing_phone'] = $order_header_data[$j]->billing_phone;
+                    // $arr[$i]['billing_email'] = $order_header_data[$j]->billing_email;
+                    // $arr[$i]['billing_address'] = $order_header_data[$j]->billing_address;
+                    // $arr[$i]['billing_state'] = $order_header_data[$j]->billing_state;
+                    // $arr[$i]['billing_city'] = $order_header_data[$j]->billing_city;
+                    // $arr[$i]['billing_pincode'] = $order_header_data[$j]->billing_pincode;
+                    // $arr[$i]['shipping_name'] = $order_header_data[$j]->shipping_name;
+                    // $arr[$i]['shipping_phone'] = $order_header_data[$j]->shipping_phone;
+                    // $arr[$i]['shipping_email'] = $order_header_data[$j]->shipping_email;
+                    // $arr[$i]['shipping_address'] = $order_header_data[$j]->shipping_address;
+                    // $arr[$i]['shipping_state'] = $order_header_data[$j]->shipping_state;
+                    // $arr[$i]['shipping_city'] = $order_header_data[$j]->shipping_city;
+                    // $arr[$i]['shipping_pincode'] = $order_header_data[$j]->shipping_pincode;
+                    // $arr[$i]['shipping_charges'] = $order_header_data[$j]->shipping_charges;
                     $arr[$i]['total'] = $order_header_data[$j]->total;
                     $arr[$i]['total_payable_amount'] = $order_header_data[$j]->total_payable_amount;
                     $arr[$i]['total_paid_amount'] = $order_header_data[$j]->total_paid_amount;
-                    $arr[$i]['discount_amt'] = $order_header_data[$j]->discount_amt;
-                    $arr[$i]['coupon_code'] = $order_header_data[$j]->coupon_code;
-                    $arr[$i]['payment_ref_id'] = $order_header_data[$j]->payment_ref_id;
-                    $arr[$i]['payment_gateway_name'] = $order_header_data[$j]->payment_gateway_name;
-                    $arr[$i]['payment_source'] = $order_header_data[$j]->payment_source;
-                    $arr[$i]['timestamp'] = $order_header_data[$j]->timestamp;
-                    $arr[$i]['transaction_id'] = $order_header_data[$j]->transaction_id;
-                    $arr[$i]['bank_transaction_id'] = $order_header_data[$j]->bank_transaction_id;
-                    $arr[$i]['transaction_time'] = $order_header_data[$j]->transaction_time;
-                    $arr[$i]['payment_mod'] = $order_header_data[$j]->payment_mod;
-                    $arr[$i]['bankname'] = $order_header_data[$j]->bankname;
-                    $arr[$i]['status'] = $order_header_data[$j]->status;
-                    $arr[$i]['cron_processed_flag'] = $order_header_data[$j]->cron_processed_flag;
-                    $arr[$i]['campaign_id'] = $order_header_data[$j]->campaign_id;
-                    $arr[$i]['buyer_shipping_cost'] = $order_header_data[$j]->buyer_shipping_cost;
-                    $arr[$i]['order_type'] = $order_header_data[$j]->order_type;
+                    // $arr[$i]['discount_amt'] = $order_header_data[$j]->discount_amt;
+                    // $arr[$i]['coupon_code'] = $order_header_data[$j]->coupon_code;
+                    // $arr[$i]['payment_ref_id'] = $order_header_data[$j]->payment_ref_id;
+                    // $arr[$i]['payment_gateway_name'] = $order_header_data[$j]->payment_gateway_name;
+                    // $arr[$i]['payment_source'] = $order_header_data[$j]->payment_source;
+                    // $arr[$i]['timestamp'] = $order_header_data[$j]->timestamp;
+                    // $arr[$i]['transaction_id'] = $order_header_data[$j]->transaction_id;
+                    // $arr[$i]['bank_transaction_id'] = $order_header_data[$j]->bank_transaction_id;
+                    // $arr[$i]['transaction_time'] = $order_header_data[$j]->transaction_time;
+                    // $arr[$i]['payment_mod'] = $order_header_data[$j]->payment_mod;
+                    // $arr[$i]['bankname'] = $order_header_data[$j]->bankname;
+                    // $arr[$i]['status'] = $order_header_data[$j]->status;
+                    // $arr[$i]['cron_processed_flag'] = $order_header_data[$j]->cron_processed_flag;
+                    // $arr[$i]['campaign_id'] = $order_header_data[$j]->campaign_id;
+                    // $arr[$i]['buyer_shipping_cost'] = $order_header_data[$j]->buyer_shipping_cost;
+                    // $arr[$i]['order_type'] = $order_header_data[$j]->order_type;
                     
                     $same_product_count = 0;
                     $product_name = $order_header_data[$j]->product_name;
@@ -740,17 +740,15 @@ class order extends CI_Controller {
                 }
                 $order_id[$j] = $order_header_data[$j]->order_id;
             }
-            if (isset($params['app'])) {
+            // if (isset($params['app'])) {
                 $result['status'] = 'Success';
                 $result['msg'] = 'User Order Details.';
                 $result['data']['count'] = count($arr);
-                $result['data']['list'] = $arr;
-            } else {
-                $result['status'] = 'SUCCESS';
-                $result['msg'] = 'User Order Details.';
-                $result['count'] = count($arr);
-                $result['data'] = $arr;
-            }
+                $result['data']['responseHeader'] = $this->returnResponseHeader();
+                $result['data']['response'] = $this->returnResponse($arr, $params);
+            // } else {
+                
+            // }
         } else {
             $result['status'] = "Failed";
         }
@@ -797,6 +795,28 @@ class order extends CI_Controller {
         return $result;
     }
 
+    public function returnResponseHeader(){
+        $responseHeader = array();
+        $responseHeader['status'] = 0;
+        $responseHeader['QTime'] = null;
+        $responseHeader['params'] = null;
+        return $responseHeader;
+     }
+    public function returnResponse($data, $params){
+        $response = array();
+        if(isset($data) && !empty($data)){
+            $response['numFound'] = count($data);
+            $response['start'] = intval($params['page']);
+            $response['docs'] = $data;
+        }
+        else{
+            $response['numFound'] = null;
+            $response['start'] = null;
+            $response['docs'] = null;
+        }
+        return $response;
+    }
+
     public function fetchordersonly($params){
         $CI = & get_instance();
         $CI->load->model('order_model');
@@ -806,23 +826,17 @@ class order extends CI_Controller {
         if ($result['status'] == 1) {
             $order_header_data = $CI->order_model->getLimitedDataByOrderId($params);
             if(isset($order_header_data) && !empty($order_header_data)){
-                if (isset($params['app'])) {
-                    $result['status'] = 'Success';
-                    $result['msg'] = 'User Order list.';
-                    $result['data']['count'] = count($order_header_data);
-                    $result['data']['list'] = $order_header_data;
-                } 
-                else {
-                    $result['status'] = 'SUCCESS';
-                    $result['msg'] = 'User Order list.';
-                    $result['count'] = count($order_header_data);
-                    $result['data'] = $order_header_data;
-                }
+                $result['status'] = 1;
+                $result['msg'] = 'Order List';
+                $result['data']['responseHeader'] = $this->returnResponseHeader();
             }
         }
         else {
-            $result['status'] = "Failed";
+            $result['status'] = 0;
+            $result['msg'] = 'Could Not Find Order List';
+            $result['data']['responseHeader'] = $this->returnResponseHeader();
         }
+        $result['data']['response'] = $this->returnResponse($order_header_data, $params);
         return $result;
     }
 }

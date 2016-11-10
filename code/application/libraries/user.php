@@ -109,7 +109,6 @@ class user {
     
     public function userLogin($params) {
         try {
-
             $CI = & get_instance();
             $CI->load->model('user_model');
             $CI->load->library('validation');

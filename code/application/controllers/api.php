@@ -6,6 +6,16 @@ class api extends CI_Controller {
     
     protected $authToken;
     protected $verfiedAuth;
+    public $logger;
+
+    function __construct() {
+        parent::__construct();
+        // $this->load->model("order_model", "order1");
+        $this->load->library("log4php");
+        Logger::configure( dirname(__FILE__) . '/../third_party/log4php.xml');
+        $logger = Logger::getLogger("main");
+    }
+
 
     public function index() {
         //return "hi";
@@ -49,7 +59,6 @@ class api extends CI_Controller {
     }
     
     public function returnfunction($result) {
-
         if ($result['app'] == 1) {
             $result['status'] = strtolower($result['status']) == 'success' ? 1 : 0;
             if (isset($result['data'])) {
@@ -97,7 +106,9 @@ class api extends CI_Controller {
     }
 
     public function userLogin() {
-        
+        // $logger = Logger::getLogger("main");
+        // $logger->warn("Environment = ". var_dump($_POST));
+
         $checkAuthToken = FALSE;
         $result = $this->checkAuth($checkAuthToken);
         if ($result['status'] == 0 && $result['config_status'] != 1) {
@@ -196,7 +207,7 @@ class api extends CI_Controller {
         $this->returnfunction($result);
     }
 
-    public function order() {
+    public function orders() {
         $checkAuthToken = TRUE;
         $result = $this->checkAuth($checkAuthToken);
         if ($result['config_status'] == -1) {
@@ -215,10 +226,10 @@ class api extends CI_Controller {
         $CI = & get_instance();
         $CI->load->model('apiauthcheck_model');
         $user_id = $CI->apiauthcheck_model->getUserIdbyToken($this->authToken);
-        $_REQUEST['user_id'] = $user_id;
+        $_GET['user_id'] = $user_id;
         $value = array();
-        if (isset($_REQUEST)) {
-            $value = $_REQUEST;
+        if (isset($_GET)) {
+            $value = $_GET;
         }
         $this->load->library('order');
         $result = $this->order->fetchordersonly($value);
