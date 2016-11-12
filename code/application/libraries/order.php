@@ -876,10 +876,13 @@ class order extends CI_Controller {
                     $orderArray['unitPrice'] = $orderItemData->unit_price;
                     $orderArray['price'] = $orderItemData->price;
                     $product = array();
+                    $product_img = $CI->order_model->getImgByBaseId($order_header_data[$j]->base_product_id);
+                    $pro_img = $product_img[0]->thumb_url;
                     $product['title']=   $orderItemData->title;
                     $product['packSize'] = $orderItemData->pack_size;
                     $product['packUnit'] = $orderItemData->pack_unit;
                     $product['packSizeInGm'] = $orderItemData->pack_size_in_gm;
+                    $product['thumbImg'] = $CI->config->item('PRODUCT_IMG_PATH') . $pro_img;
                     $orderArray['product'] = $product;
                     array_push($orderItems, $orderArray);
                     $i++;  
