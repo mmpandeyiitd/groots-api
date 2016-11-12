@@ -940,6 +940,7 @@ class validation {
                 $result['msg'] = "User id required";
                 //$result['errors'][]="User id Required";
             }
+
             if ($CI->form_validation->numeric($params['user_id']) == False) {
                 $result['status'] = 0;
                 $result['msg'] = "User id must be numeric";
@@ -971,6 +972,34 @@ class validation {
             if ($CI->form_validation->numeric($params['user_id']) == False) {
                 $result['status'] = 0;
                 $result['msg'] = "User id must be numeric";
+                //$result['errors'][]="User id must be numeric";
+            }
+            if (empty($result)) {
+                $result['status'] = 1;
+                $result['msg'] = "valid data";
+            }
+            return $result;
+        } catch (Exception $ex) {
+            $result['status'] = "0";
+            $result['msg'] = "Fail to save data";
+            $result['errors'] = $ex->getMessage();
+            return $result;
+        }
+    }
+
+    public function validate_order_details_order_id($orderId){
+        try {
+            $CI = & get_instance();
+            $CI->load->library('form_validation');
+
+            if ($CI->form_validation->required($orderId) == False) {
+                $result['status'] = 0;
+                $result['msg'] = "Order id required";
+                //$result['errors'][]="User id Required";
+            }
+            if ($CI->form_validation->numeric($orderId) == False) {
+                $result['status'] = 0;
+                $result['msg'] = "Order id must be numeric";
                 //$result['errors'][]="User id must be numeric";
             }
             if (empty($result)) {
