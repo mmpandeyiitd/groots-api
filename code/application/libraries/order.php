@@ -831,6 +831,9 @@ class order extends CI_Controller {
                 $result['data']['responseHeader'] = $this->returnResponseHeader();
             }
         }
+        else if($result['status'] == 0){
+            return $result;
+        }
         else {
             $result['status'] = 0;
             $result['msg'] = 'Could Not Find Order List';
@@ -838,5 +841,68 @@ class order extends CI_Controller {
         }
         $result['data']['response'] = $this->returnResponse($order_header_data, $params);
         return $result;
+    }
+
+    public function getOrderDetail($params){
+        $CI = & get_instance();
+        $CI->load->model('order_model');
+        $CI->load->library('validation');
+        $CI->load->config('custom-config');
+        $result = $CI->validation->validate_fetch_order($params);
+        $result = $CI->validation->validate_order_details_order_id($params['order_id']);
+        if ($result['status'] == 1){
+            $currentOrderData = $CI->order_model->getOrderDetails($params);
+            if(isset($currentOrderData) && !empty($currentOrderData)){
+                $data = array();
+                $data['orderId'] = $currentOrderData[0]->order_id;
+                $data['status'] = $currentOrderData[0]->status;
+                $data['createdDate'] = $currentOrderData[0]->created_date;
+                $data['paymentMethod'] = $currentOrderData[0]->payment_method;
+                $data['shippingCharges'] = $currentOrderData[0]->shipping_charges;
+                $data['total'] = $currentOrderData[0]->total;
+                $data['userComment'] = $currentOrderData[0]->user_comment;
+                $data['warehouseId'] = $currentOrderData[0]->warehouse_id;
+                $data['warehouseName'] = $currentOrderData[0]->name;
+                $data['totalPayableAmount']=   $currentOrderData[0]->total_payable_amount;
+                $data['deliveryDate'] = $currentOrderData[0]->delivery_date;
+                $orderItems = array();
+                $i = 0;
+                foreach ($currentOrderData as $orderItemData) {
+                    $orderArray = array();
+                    $orderArray['productQty'] = $orderItemData->product_qty;
+                    $orderArray['subscribedProductId'] = $orderItemData->subscribed_product_id;
+                    $orderArray['baseProductId'] = $orderItemData->base_product_id;
+                    $orderArray['deliveredQty'] = $orderItemData->delivered_qty;
+                    $orderArray['unitPrice'] = $orderItemData->unit_price;
+                    $orderArray['price'] = $orderItemData->price;
+                    $product = array();
+                    $product['title']=   $orderItemData->title;
+                    $product['packSize'] = $orderItemData->pack_size;
+                    $product['packUnit'] = $orderItemData->pack_unit;
+                    
+                    $orderArray['product'] = $product;
+                    array_push($orderItems, $orderArray);
+                    $i++;  
+                }
+                $data['orderItems'] = $orderItems;
+                $order = array();
+                $order['order'] = $data;
+
+                $resut['status'] = 1;
+                $result['msg'] = 'Curent Order Details';
+            }
+        }
+        else if($result['status'] == 0){
+            return $result;
+        }
+        else{
+            $result['status'] = 0;
+            $result['msg'] = 'Could Not Find Order Details';
+        }
+        $result['data']['responseHeader'] = $this->returnResponseHeader();
+        
+        $result['data']['response'] = $this->returnResponse($order, $params);
+        return $result;
+
     }
 }

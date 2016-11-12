@@ -295,7 +295,7 @@ class order_model extends CI_Model {
 ///////////// vikas end //////////
     public function getLimitedDataByOrderId($getparams) {
         try {
-            $get_order_list_query = $this->legacy_db->query('select order_id as orderId, order_number as orderNumber, order_type as orderType, status, payment_status as paymentStatus, delivery_date as deliveryDate, total_payable_amount as totalPayableAmount from order_header where user_id = '.$getparams['user_id'].' order by order_id');
+            $get_order_list_query = $this->legacy_db->query('select order_id as orderId, order_number as orderNumber, order_type as orderType, status, payment_status as paymentStatus, delivery_date as deliveryDate, total_payable_amount as totalPayableAmount from order_header where user_id = '.$getparams['user_id'].' order by order_id limit '.$getparams['start'].', '.$getparams['rows']);
             $get_order_list = $get_order_list_query->result();
             if ($this->db->_error_message()) {
                 $dberrorObjs->error_code = $this->db->_error_number();
@@ -308,6 +308,26 @@ class order_model extends CI_Model {
                 return $get_order_list;
             }
         } catch (Exception $e) {
+            return FALSE;
+        }
+    }
+
+    public function getOrderDetails($params){
+        try{
+            $sql = 'select oh.order_id , oh.created_date, oh.payment_method, oh.shipping_charges, oh.total, oh.total_payable_amount, oh.status, oh.delivery_date, oh.user_comment, oh.warehouse_id, ol.subscribed_product_id, ol.base_product_id, ol.product_qty, ol.delivered_qty, ol.price, ol.unit_price, bp.pack_size, bp.pack_unit, bp.title, wa.name from groots_orders.order_header as oh inner join groots_orders.order_line as ol on ol.order_id = oh.order_id left join cb_dev_groots.base_product as bp on ol.base_product_id = bp.base_product_id left join cb_dev_groots.warehouses as wa on oh.warehouse_id = wa.id where oh.user_id = '.$params['user_id'].' and oh.order_id = '.$params['order_id'].' order by oh.order_id limit '.$params['start'].', '.$params['rows'];
+            $getOrderByOrderId = $this->legacy_db->query($sql);
+            $getCurrentOrderList = $getOrderByOrderId->result();
+            if ($this->db->_error_message()) {
+                $dberrorObjs->error_code = $this->db->_error_number();
+                $dberrorObjs->error_message = $this->db->_error_message();
+                $dberrorObjs->error_query = $this->db->last_query();
+                $dberrorObjs->error_time = date("Y-m-d H:i:s");
+                $this->db->insert('dberror', $dberrorObjs);
+                return FALSE;
+            } else {
+                return $getCurrentOrderList;
+            }
+        } catch(Exception $e) {
             return FALSE;
         }
     }
