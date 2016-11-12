@@ -879,7 +879,7 @@ class order extends CI_Controller {
                     $product['title']=   $orderItemData->title;
                     $product['packSize'] = $orderItemData->pack_size;
                     $product['packUnit'] = $orderItemData->pack_unit;
-                    
+                    $product['packSizeInGm'] = $orderItemData->pack_size_in_gm;
                     $orderArray['product'] = $product;
                     array_push($orderItems, $orderArray);
                     $i++;  
