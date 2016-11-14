@@ -890,7 +890,8 @@ class order extends CI_Controller {
                 }
                 $data['orderItems'] = $orderItems;
                 $order = array();
-                $order['order'] = $data;
+                array_push($order, $data);
+                
 
                 $resut['status'] = 1;
                 $result['msg'] = 'Curent Order Details';
