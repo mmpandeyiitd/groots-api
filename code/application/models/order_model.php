@@ -331,6 +331,27 @@ class order_model extends CI_Model {
             return FALSE;
         }
     }
+
+    public function getProductIds($orderId){
+        try{
+            $sql = 'select subscribed_product_id from order_line where order_id = '.$orderId;
+            $productId = $this->legacy_db->query($sql);
+            $productId = $productId->result();
+            if ($this->db->_error_message()) {
+                $dberrorObjs->error_code = $this->db->_error_number();
+                $dberrorObjs->error_message = $this->db->_error_message();
+                $dberrorObjs->error_query = $this->db->last_query();
+                $dberrorObjs->error_time = date("Y-m-d H:i:s");
+                $this->db->insert('dberror', $dberrorObjs);
+                return FALSE;
+            } else {
+                return $getCurrentOrderList;
+            }
+        } catch(Exception $e) {
+            return FALSE;
+        }
+        }
+    }
 }
 
 ?>
