@@ -843,8 +843,8 @@ class order extends CI_Controller {
         return $result;
     }
 
-    public function getOrderDetail($params){
-        die('here');
+    public function getOrderDetail($params)
+    {
         $CI = & get_instance();
         $CI->load->model('order_model');
         $CI->load->library('validation');
