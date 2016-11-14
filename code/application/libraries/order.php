@@ -844,6 +844,7 @@ class order extends CI_Controller {
     }
 
     public function getOrderDetail($params){
+        die('here');
         $CI = & get_instance();
         $CI->load->model('order_model');
         $CI->load->library('validation');
@@ -909,14 +910,14 @@ class order extends CI_Controller {
 
     }
 
-    public function updateOrder($params){
+    public function updateCurrentOrder($params){
         $CI = & get_instance();
         $CI->load->model('order_model');
         $CI->load->library('validation');
         $CI->load->config('custom-config');
         $result = $CI->validation->validate_order_details_order_id($params['order_id']);
         if($result['status'] == 1){
-            $mappedArray() = getIds($params['order_id']);
+            // $mappedArray() = getIds($params['order_id']);
         }
     }
 }
