@@ -879,10 +879,10 @@ class order extends CI_Controller {
                     $product_img = $CI->order_model->getImgByBaseId($order_header_data[$j]->base_product_id);
                     $pro_img = $product_img[0]->thumb_url;
                     $product['title']=   $orderItemData->title;
-                    $product['packSize'] = $orderItemData->pack_size;
-                    $product['packUnit'] = $orderItemData->pack_unit;
-                    $product['packSizeInGm'] = $orderItemData->pack_size_in_gm;
-                    $product['thumbImg'] = $CI->config->item('PRODUCT_IMG_PATH') . $pro_img;
+                    $product['pack_size'] = $orderItemData->pack_size;
+                    $product['pack_unit'] = $orderItemData->pack_unit;
+                    $product['pack_size_in_gm'] = $orderItemData->pack_size_in_gm;
+                    $product['thumb_url'] = $CI->config->item('PRODUCT_IMG_PATH') . $pro_img;
                     $orderArray['product'] = $product;
                     array_push($orderItems, $orderArray);
                     $i++;  
@@ -907,5 +907,16 @@ class order extends CI_Controller {
         $result['data']['response'] = $this->returnResponse($order, $params);
         return $result;
 
+    }
+
+    public function updateOrder($params){
+        $CI = & get_instance();
+        $CI->load->model('order_model');
+        $CI->load->library('validation');
+        $CI->load->config('custom-config');
+        $result = $CI->validation->validate_order_details_order_id($params['order_id']);
+        if($result['status'] == 1){
+            $mappedArray() = getIds($params['order_id']);
+        }
     }
 }
