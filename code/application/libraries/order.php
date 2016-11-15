@@ -897,22 +897,25 @@ class order extends CI_Controller {
         $result = $CI->validation->validate_order_details_order_id($params['order_id']);
         if ($result['status'] == 1) {
             $e = $CI->order_model->getProductIds($params['order_id']);
-            if ($e == false || is_a($e, 'Exception')) {
+            if ((is_bool($e) && $e == false) || is_a($e, 'Exception')) {
                 $result['status'] = 0;
                 $result['msg'] = 'Failed To Find Data For This Order Id. Please Try Again';
                 $result['error'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
                 return $result;
             }
-            $mappedArray = $productIds = array();
+            $mappedArray = $e;
+            $productIds = array();
+            $i= 0;
             foreach ($mappedArray as $key => $value) {
-                $productIds[$key] = $value->subscribed_product_id;
+                $productIds[$i] = $value->subscribed_product_id;
+                $i++;
             }
             $updateHeader['order_id'] = $params['order_id'];
             $updateHeader['total_payable_amount'] = $params['total_payable_amount'];
             $updateHeader['total'] = $params['total'];
             $where = array('order_id' => $params['order_id']);
             $e = $this->order_model->updateorderheader($updateHeader);
-            if ($e == false || is_a($e, 'Exception')) {
+            if ($e == false  || is_a($e, 'Exception')) {
                 $result['status'] = 0;
                 $result['msg'] = 'Cannot Save Data!!!! Please Try Again!';
                 $result['error'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
@@ -920,7 +923,7 @@ class order extends CI_Controller {
             } else {
                 foreach ($params['product_details'] as $key => $product) {
                     if (in_array($product['subscribed_product_id'], $productIds)) {
-                        $where['subscribed_product_id'] = $product[subscribed_product_id];
+                        $where['subscribed_product_id'] = $product['subscribed_product_id'];
                         $e = $this->order_model->updateOrderLine($where, $product);
                         if ($e == false || is_a($e, 'Exception')) {
                             $result['status'] = 0;
@@ -937,15 +940,16 @@ class order extends CI_Controller {
                             return $result;
                         }
                     }
-                    $index = array_search($params['subscribed_product_id'], $productIds);
-                    if ($index) {
+                    $index = array_search($product['subscribed_product_id'], $productIds);
+                    if(isset($index) && is_numeric($index)) {
                         unset($productIds[$index]);
                     }
                 }
             }
+            $count = count($productIds);
             $ids = implode(', ', $productIds);
             if (isset($ids) && !empty($ids)) {
-                $e = $this->order_model->deleteOrderLine($params['order_id'], $ids);
+                $e = $this->order_model->deleteOrderLine($params['order_id'], $ids, $count);
                 if ($e == false || is_a($e, 'Exception')) {
                     $result['status'] = 0;
                     $result['msg'] = 'Failed To Delete Data. Please Try Again';
