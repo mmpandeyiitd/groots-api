@@ -334,9 +334,9 @@ class order_model extends CI_Model {
 
     public function getProductIds($orderId){
         try{
-            $sql = 'select subscribed_product_id from order_line where order_id = '.$orderId;
-            $productId = $this->legacy_db->query($sql);
-            $productId = $productId->result();
+            $sql = 'select subscribed_product_id from groots_orders.order_line where order_id = '.$orderId;
+            $query = $this->legacy_db->query($sql);
+            $productId = $query->result();
             if ($this->db->_error_message()) {
                 $dberrorObjs->error_code = $this->db->_error_number();
                 $dberrorObjs->error_message = $this->db->_error_message();
@@ -345,13 +345,69 @@ class order_model extends CI_Model {
                 $this->db->insert('dberror', $dberrorObjs);
                 return FALSE;
             } else {
-                return $getCurrentOrderList;
+                return $productId;
             }
         } catch(Exception $e) {
             return FALSE;
         }
-        }
+    }
     
+    public function updateOrderLine($data, $where){
+        try {
+            $this->legacy_db->where($where);
+            $this->legacy_db->update('order_line', $data);
+            if($this->legacy_db->_error_message()){
+                $dberrorObjs->error_code = $this->legacy_db->_error_number();
+                $dberrorObjs->error_message = $this->legacy_db->_error_message();
+                $dberrorObjs->error_query = $this->legacy_db->last_query();
+                $dberrorObjs->error_time = date("Y-m-d H:i:s");
+                $this->legacy_db->insert('dberror', $dberrorObjs);
+                return FALSE;
+            } else{
+                return True;
+            }
+        } catch (Exception $e) {
+            return FALSE;
+        }
+    }
+    
+    public function insertOrderLine($data){
+        try {
+            $this->legacy_db->insert('order_line', $data);
+            if($this->legacy_db->_error_message()){
+                $dberrorObjs->error_code = $this->legacy_db->_error_number();
+                $dberrorObjs->error_message = $this->legacy_db->_error_message();
+                $dberrorObjs->error_query = $this->legacy_db->last_query();
+                $dberrorObjs->error_time = date("Y-m-d H:i:s");
+                $this->legacy_db->insert('dberror', $dberrorObjs);
+                return FALSE;
+            } else{
+                return True;
+            }
+        } catch (Exception $e) {
+            return FALSE;
+        }
+    }
+    
+    public function deleteOrderLine($orderId, $productIds){
+        try {
+            $sql = 'delete from  groots_orders.order_line where order_id = '.$orderId.'and subscribed_product_id in ('.$productIds.')';
+            $query = $this->legacy_db->query($sql);
+            $productId = $query->result();
+            if($this->legacy_db->_error_message()){
+                $dberrorObjs->error_code = $this->legacy_db->_error_number();
+                $dberrorObjs->error_message = $this->legacy_db->_error_message();
+                $dberrorObjs->error_query = $this->legacy_db->last_query();
+                $dberrorObjs->error_time = date("Y-m-d H:i:s");
+                $this->legacy_db->insert('dberror', $dberrorObjs);
+                return FALSE;
+            } else{
+                return True;
+            }
+        } catch (Exception $e) {
+            return FALSE;
+        }
+    }
 }
 
 ?>

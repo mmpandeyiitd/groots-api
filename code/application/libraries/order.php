@@ -877,13 +877,17 @@ class order extends CI_Controller {
                     $orderArray['unitPrice'] = $orderItemData->unit_price;
                     $orderArray['price'] = $orderItemData->price;
                     $product = array();
-                    $product_img = $CI->order_model->getImgByBaseId($order_header_data[$j]->base_product_id);
+                    $product_img = $CI->order_model->getImgByBaseId($orderItemData->base_product_id);
                     $pro_img = $product_img[0]->thumb_url;
                     $product['title']=   $orderItemData->title;
                     $product['pack_size'] = $orderItemData->pack_size;
                     $product['pack_unit'] = $orderItemData->pack_unit;
                     $product['pack_size_in_gm'] = $orderItemData->pack_size_in_gm;
-                    $product['thumb_url'] = $CI->config->item('PRODUCT_IMG_PATH') . $pro_img;
+                    $thumbUrl = $CI->config->item('PRODUCT_IMG_PATH') . $pro_img;
+                    $url = array();
+                    array_push($url, $thumbUrl);
+                    $product['thumb_url'] = $url; 
+
                     $orderArray['product'] = $product;
                     array_push($orderItems, $orderArray);
                     $i++;  
@@ -918,7 +922,63 @@ class order extends CI_Controller {
         $CI->load->config('custom-config');
         $result = $CI->validation->validate_order_details_order_id($params['order_id']);
         if($result['status'] == 1){
-            // $mappedArray() = getIds($params['order_id']);
+            $mappedArray = $CI->order_model->getProductIds($params['order_id']);
+            $productIds = array();
+           foreach ($mappedArray as $key => $value) {
+               $productIds[$key] = $value->subscribed_product_id;
+           }
+            $updateHeader['order_id'] = $params['order_id'];
+            $updateHeader['total_payable_amount'] = $params['total_payable_amount'];
+            $updateHeader['total'] = $params['total'];
+            $where = array('order_id' => $params['order_id']);
+            if(!($this->order_model->updateorderheader($updateHeader))){
+                $result['status'] = 0;
+                $result['msg'] = 'Cannot Save Data!!!! Please Try Again!';
+                $result['error'] = array();
+                return $result;
+            }
+            else{
+                foreach ($params['product_details'] as $key => $product) {
+                    if(in_array($product['subscribed_product_id'], $productIds)){
+                        $where['subscribed_product_id'] = $product[subscribed_product_id];
+                        if(!$this->order_model->updateOrderLine($where , $product)){
+                            $result['status'] = 0;
+                            $result['msg'] = 'Failed To Update Data. Please Try Again';
+                            return $result;
+                        }
+                    }
+                    else{
+                        if(!$this->order_model->insertOrderLine($product)){
+                            $result['status'] = 0;
+                            $result['msg'] = 'Failed To Insert Data. Please Try Again';
+                            return $result;
+                        }
+                    }
+                    $index = array_search($params['subscribed_product_id'], $productIds);
+                    if($index){
+                        unset($productIds[$index]);
+                    }
+                }
+            }
+            $ids = implode(', ', $productIds);
+            if(!$this->order_model->deleteOrderLine($params['order_id'], $ids)){
+                $result['status'] = 0;
+                $result['msg'] = 'Failed To Delete Data. Please Try Again';
+                return $result;
+            }
+            $result['status'] = 1;
+            $result['msg'] = 'Order Updated Successfully!!!';
         }
+        else if($result['status'] == 0){
+            return $result;
+        }
+        else{
+            $result['status'] = 0;
+            $result['msg'] = 'Could Not Find Your Order!! Please Try Again';
+            return $result;
+        }
+        $result['data']['responseHeader'] = $this->returnResponseHeader();
+        $result['data']['response'] = $this->returnResponse(null, $params);
+        return $result;
     }
 }
