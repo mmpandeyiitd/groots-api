@@ -353,7 +353,7 @@ class order_model extends CI_Model {
         }
     }
 
-    public function updateOrderLine($data, $where) {
+    public function updateOrderLine($where, $data) {
         try {
             $this->legacy_db->where($where);
             $this->legacy_db->update('order_line', $data);
@@ -398,7 +398,6 @@ class order_model extends CI_Model {
                 $sql = 'delete from  groots_orders.order_line where order_id = ' . $orderId . ' and subscribed_product_id = ' . $productIds;
             }
             $query = $this->legacy_db->query($sql);
-            $productId = $query->result();
             if ($this->legacy_db->_error_message()) {
                 $dberrorObjs->error_code = $this->legacy_db->_error_number();
                 $dberrorObjs->error_message = $this->legacy_db->_error_message();
