@@ -292,7 +292,7 @@ class api extends CI_Controller {
             $value = $_GET;
         }
         $this->load->library('order');
-        $result = $this->order->updateOrder($value);
+        $result = $this->order->updateCurrentOrder($value);
         $this->output->set_header('AUTH_TOKEN:'.$this->authToken);
         $this->returnfunction($result);   
     }

@@ -1,4 +1,5 @@
 <?php
+
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
@@ -18,8 +19,7 @@ class order extends CI_Controller {
             $CI->load->library('validation');
             $CI->load->config('custom-config');
             $CI->load->library('communicationengine');
-            if(!(isset($params_r['data']['order_prefix']) && $params_r['data']['order_prefix'] != ''))
-            {
+            if (!(isset($params_r['data']['order_prefix']) && $params_r['data']['order_prefix'] != '')) {
                 $params_r['data']['order_prefix'] = $CI->config->item('ORDER_PREFIX');
             }
             $log['inputs'] = json_encode($params_r);
@@ -29,7 +29,7 @@ class order extends CI_Controller {
             $result = $CI->validation->validate_order($params);
             if ($result['status'] == 1) {
                 $byr['id'] = $params['user_id'];
-                $buyer_data =  $CI->user_model->getUserDetails($byr);
+                $buyer_data = $CI->user_model->getUserDetails($byr);
                 $params['shipping_name'] = $buyer_data[0]->name;
                 $params['shipping_email'] = $buyer_data[0]->email;
                 $params['shipping_phone'] = $buyer_data[0]->mobile;
@@ -60,7 +60,7 @@ class order extends CI_Controller {
                         $result['status'] = 0;
                         $result['msg'] = "Fail to save data";
                         $result['errors'][] = "One or more products you have chosen is unavailable. Please clear your list and add items again.";
-                        $result['data'] = (object)array();
+                        $result['data'] = (object) array();
                         return $result;
                     }
                     $product_arr = $this->product_model->getProductData($cond);
@@ -68,29 +68,20 @@ class order extends CI_Controller {
                     $cond['retailer_id'] = $params['user_id'];
                     $price_data = $this->product_model->getPriceData($cond);
                     unset($cond['retailer_id']);
-                    if($price_data)
-                    {
-                        if($price_data['status'] == 1)
-                        {
+                    if ($price_data) {
+                        if ($price_data['status'] == 1) {
                             $result['status'] = 0;
                             $result['msg'] = "Fail to save data";
                             $result['errors'][] = "One or more products you have chosen is unavailable. Please clear your list and add items again.";
-                            $result['data'] = (object)array();
-                            return $result;    
-                        }
-                        else
-                        {
-                            if($price_data[0]->discount_per > 0)
-                            {
-                                $product_arr['store_offer_price'] = $product_arr['store_offer_price'] - ($product_arr['store_offer_price'] * $price_data[0]->discount_per/100);
-                            }
-                            else if ($price_data[0]->effective_price > 0)
-                            {
+                            $result['data'] = (object) array();
+                            return $result;
+                        } else {
+                            if ($price_data[0]->discount_per > 0) {
+                                $product_arr['store_offer_price'] = $product_arr['store_offer_price'] - ($product_arr['store_offer_price'] * $price_data[0]->discount_per / 100);
+                            } else if ($price_data[0]->effective_price > 0) {
                                 $product_arr['store_offer_price'] = ($price_data[0]->effective_price);
-                            } 
-                            else 
-                            {
-                                $product_arr['store_offer_price'] = ($price_data[0]->store_offer_price);  
+                            } else {
+                                $product_arr['store_offer_price'] = ($price_data[0]->store_offer_price);
                             }
                         }
                     }
@@ -98,7 +89,7 @@ class order extends CI_Controller {
                         $result['status'] = 0;
                         $result['msg'] = "Fail to save data";
                         $result['errors'][] = "One or more products you have chosen is unavailable. Please clear your list and add items again.";
-                        $result['data'] = (object)array();
+                        $result['data'] = (object) array();
                         return $result;
                     }
                     if (!empty($products[$i]['base_product_id'])) {
@@ -106,19 +97,19 @@ class order extends CI_Controller {
                             $result['status'] = 0;
                             $result['msg'] = "Fail to save data";
                             $result['errors'][] = "One or more products you have chosen is unavailable. Please clear your list and add items again.";
-                            $result['data'] = (object)array();
+                            $result['data'] = (object) array();
                             return $result;
                         }
                     } else {
                         $products[$i]['base_product_id'] = $product_arr['base_product_id'];
                     }
-                    
+
                     if (!empty($products[$i]['subscribed_product_id'])) {
                         if ($products[$i]['subscribed_product_id'] != $product_arr['subscribed_product_id']) {
                             $result['status'] = 0;
                             $result['msg'] = "Fail to save data";
                             $result['errors'][] = "One or more products you have chosen is unavailable. Please clear your list and add items again.";
-                            $result['data'] = (object)array();
+                            $result['data'] = (object) array();
                             return $result;
                         }
                     } else {
@@ -129,7 +120,7 @@ class order extends CI_Controller {
                             $result['status'] = 0;
                             $result['msg'] = "Fail to save data";
                             $result['errors'][] = "One or more products you have chosen is unavailable. Please clear your list and add items again.";
-                            $result['data'] = (object)array();
+                            $result['data'] = (object) array();
                             return $result;
                         }
                     } else {
@@ -141,14 +132,14 @@ class order extends CI_Controller {
                     //     $result['errors'] = "Invalid  quantity";
                     //     return $result;
                     // }
-                    if (round($products[$i]['unit_price'],2) != round($product_arr['store_offer_price'],2)) {
+                    if (round($products[$i]['unit_price'], 2) != round($product_arr['store_offer_price'], 2)) {
                         $result['status'] = 0;
                         $result['msg'] = "Fail to save data";
                         $result['errors'][] = "It seems that there is a price change. Please clear your list and add items again.";
-                        $result['data'] = (object)array();
+                        $result['data'] = (object) array();
                         return $result;
                     }
-                    $total = round($products[$i]['product_qty'],2) * round($product_arr['store_offer_price'],2);
+                    $total = round($products[$i]['product_qty'], 2) * round($product_arr['store_offer_price'], 2);
                     $grandtotal = $grandtotal + $total;
                     $totalTax = $totalTax + floatval($products[$i]['tax']);
                     $products[$i]['store_name'] = $product_arr['store_name'];
@@ -179,11 +170,11 @@ class order extends CI_Controller {
                     // );
                     $updateData = true;
                 }
-                if(round($grandtotal,2) != round($params['total'],2)) {
+                if (round($grandtotal, 2) != round($params['total'], 2)) {
                     $result['status'] = 0;
                     $result['msg'] = "Fail to save data";
                     $result['errors'][] = "Mismatch in order total - it seems that there is a price change. Please clear your list and add items again.";
-                    $result['data'] = (object)array();
+                    $result['data'] = (object) array();
                     return $result;
                 }
 
@@ -191,17 +182,17 @@ class order extends CI_Controller {
                     $result['status'] = 0;
                     $result['msg'] = "Fail to save data";
                     $result['errors'][] = "Invalid tax amount";
-                    $result['data'] = (object)array();
+                    $result['data'] = (object) array();
                     return $result;
                 }
 
                 $total_payable_amount = ($grandtotal - ($params['discount_amt']) + ($params['total_tax']));
-                
-                if (round($total_payable_amount,2) != (round($params['total_payable_amount'],2))) {
+
+                if (round($total_payable_amount, 2) != (round($params['total_payable_amount'], 2))) {
                     $result['status'] = 0;
                     $result['msg'] = "Fail to save data";
                     $result['errors'][] = "Mismatch in payable amount - it seems that there is a price change. Please try again.";
-                    $result['data'] = (object)array();
+                    $result['data'] = (object) array();
                     return $result;
                 }
 
@@ -242,21 +233,15 @@ class order extends CI_Controller {
                 $data['tax'] = $params['total_tax'];
                 $data['timestamp'] = "'" . date('Y-m-d H:i:s') . "'";
                 $data['user_id'] = $params['user_id'];
-                
-                if(isset($params['delivery_date']) && $params['delivery_date'] != '')
-                {
+
+                if (isset($params['delivery_date']) && $params['delivery_date'] != '') {
                     $delivery_date = $params['delivery_date'];
                     $data['delivery_date'] = "'" . $params['delivery_date'] . "'";
-                }
-                else
-                {
-                    if($current_time >= $start_time && $current_time <= $end_time)
-                    {
+                } else {
+                    if ($current_time >= $start_time && $current_time <= $end_time) {
                         $delivery_date = date('Y-m-d');
                         $data['delivery_date'] = "'" . date('Y-m-d') . "'";
-                    }
-                    else
-                    {
+                    } else {
                         $delivery_date = date('Y-m-d', strtotime(' +1 day'));
                         $data['delivery_date'] = "'" . date('Y-m-d', strtotime(' +1 day')) . "'";
                     }
@@ -288,14 +273,14 @@ class order extends CI_Controller {
                     $pdata['grade'] = "'" . $products[$i]['grade'] . "'";
                     $pdata['pack_size'] = "'" . $products[$i]['pack_size'] . "'";
                     $pdata['pack_unit'] = "'" . $products[$i]['pack_unit'] . "'";
-                    $pdata['diameter'] = "'" . $products[$i]['diameter'] . "'"; 
+                    $pdata['diameter'] = "'" . $products[$i]['diameter'] . "'";
                     $pdata['product_name'] = "'" . $products[$i]['product_name'] . "'";
                     $pdata['product_qty'] = $products[$i]['product_qty'];
                     $pdata['delivered_qty'] = $products[$i]['product_qty'];
                     $pdata['unit_price'] = $products[$i]['unit_price'];
                     $pdata['price'] = $products[$i]['price'];
                     $pdata['tax'] = $products[$i]['tax'];
-                    $pdata['shipping_charges'] = 0; 
+                    $pdata['shipping_charges'] = 0;
                     $pdata['created_date'] = $data['created_date'];
                     $pdata['weight'] = "'" . $products[$i]['weight'] . "'";
                     $pdata['weight_unit'] = "'" . $products[$i]['weight_unit'] . "'";
@@ -304,13 +289,13 @@ class order extends CI_Controller {
                     $pdata['category_name'] = "'" . $products[$i]['category_name'] . "'";
                     $LinesData[] = '(' . implode(',', $pdata) . ')';
                     $serialno = $i + 1;
-                    
+
                     //HTML data is using for sending email
                     $seller[$i]['name'] = $products[$i]['store_name'];
                     $seller[$i]['email'] = $products[$i]['store_email'];
-                    $seller[$i]['product'] = '<tr style="width: 556px; display: block;  border: 1px solid #ECECEC; padding: 10px;margin:10px;"> <td style="background:#fff; padding: 5px 0;  width: 180px; display: inline-block; font-size: 14px; text-transform: capitalize;" > ' . $products[$i]['product_name'] . '</td> <td style="background:#fff; padding: 5px 0;  width: 100px; display: inline-block; font-size: 14px;text-align: center;" ><p style="margin: 0;font-size: 10px; color: #AFAFAF;">Unit Price</p> Rs. ' . $products[$i]['unit_price'] . ' </td> <td style="background:#fff; padding: 5px 0;  width: 100px; display: inline-block; font-size: 14px; text-align: center;" > <p style="margin: 0;font-size: 10px; color: #AFAFAF;">QTY</p> ' . $products[$i]['product_qty'] .' x '. $products[$i]['pack_size'] . ' ' .$products[$i]['pack_unit'] . '</td> <td style="background:#fff; padding: 5px 0;  width: 100px; display: inline-block; font-size: 14px; text-align: center;" > <p style="margin: 0;font-size: 10px; color: #AFAFAF;">Total</p> Rs. '.$products[$i]['unit_price'] * $products[$i]['product_qty'].' </td> </tr>';
+                    $seller[$i]['product'] = '<tr style="width: 556px; display: block;  border: 1px solid #ECECEC; padding: 10px;margin:10px;"> <td style="background:#fff; padding: 5px 0;  width: 180px; display: inline-block; font-size: 14px; text-transform: capitalize;" > ' . $products[$i]['product_name'] . '</td> <td style="background:#fff; padding: 5px 0;  width: 100px; display: inline-block; font-size: 14px;text-align: center;" ><p style="margin: 0;font-size: 10px; color: #AFAFAF;">Unit Price</p> Rs. ' . $products[$i]['unit_price'] . ' </td> <td style="background:#fff; padding: 5px 0;  width: 100px; display: inline-block; font-size: 14px; text-align: center;" > <p style="margin: 0;font-size: 10px; color: #AFAFAF;">QTY</p> ' . $products[$i]['product_qty'] . ' x ' . $products[$i]['pack_size'] . ' ' . $products[$i]['pack_unit'] . '</td> <td style="background:#fff; padding: 5px 0;  width: 100px; display: inline-block; font-size: 14px; text-align: center;" > <p style="margin: 0;font-size: 10px; color: #AFAFAF;">Total</p> Rs. ' . $products[$i]['unit_price'] * $products[$i]['product_qty'] . ' </td> </tr>';
 
-                    $emailProductData.=$seller[$i]['product'];
+                    $emailProductData .= $seller[$i]['product'];
                 }
                 //$userAddress = '<span style="padding-left: 10px; margin: 0; font-size: 12px;  text-transform: uppercase; letter-spacing: 1px;">Delivery Address</span><p style="color: #333;font-size: 10px; line-height: 14px; text-align: left; margin: 5px 0; padding-left:10px;">' . $params['billing_name'] . '<br> ' . $params['billing_phone'] . '<br>' . $params['billing_address'] . '<br>' . $params['billing_city'] . '<br> ' . $params['billing_state'] . '</p></td><td style="  width: 300px; border-left: 1px solid #ccc;" ><span style="padding-left: 10px; margin: 0; font-size: 12px;  text-transform: uppercase; letter-spacing: 1px;">Shipping Address</span><p style="color: #333;font-size: 10px; line-height: 14px; text-align: left; margin: 5px 0;  padding-left:10px; padding-left: 10px; ">' . $params['shipping_name'] . '<br>' . $params['shipping_phone'] . '<br>' . $params['shipping_address'] . '<br>' . $params['shipping_city'] . '<br> ' . $params['shipping_state'] . ' </p>';
                 $userAddress = '<span style="padding-left: 10px; margin: 0; font-size: 12px;  text-transform: uppercase; letter-spacing: 1px;">Address: </span><p style="color: #333;font-size: 10px; line-height: 14px; text-align: left; margin: 5px 0; padding-left:10px;">' . $params['billing_name'] . '<br> ' . $params['billing_phone'] . '<br>' . $params['billing_address'] . '<br>' . $params['billing_city'] . '<br> ' . $params['billing_state'] . '</p>';
@@ -324,7 +309,7 @@ class order extends CI_Controller {
                     if ($updateData) {
                         //$update_res = $this->product_model->updateProductQuantity($updateData);
                         $update_header['order_id'] = $order_id;
-                        $update_header['order_number'] = $params['order_prefix'].$order_id;
+                        $update_header['order_number'] = $params['order_prefix'] . $order_id;
                         $updt_hdr = $this->order_model->updateorderheader($update_header);
                         $update_res = true;
                         //$resSolrbacklog = $this->solrBackLog($updateData);
@@ -362,19 +347,19 @@ class order extends CI_Controller {
                             $result['status'] = 0;
                             $result['msg'] = "Fail to save data";
                             $result['errors'][] = "Update Query not execute";
-                            $result['data'] = (object)array();
+                            $result['data'] = (object) array();
                         }
                     } else {
                         $result['status'] = 0;
                         $result['msg'] = "Fail to save data";
                         $result['errors'][] = "Update Query not execute";
-                        $result['data'] = (object)array();
+                        $result['data'] = (object) array();
                     }
                 } else {
                     $result['status'] = 0;
                     $result['msg'] = "Fail to save data";
                     $result['errors'][] = "Something is not right. We are unable to place your order. Please contact our support.";
-                    $result['data'] = (object)array();
+                    $result['data'] = (object) array();
                 }
             } else {
                 $result['status'] = 0;
@@ -384,7 +369,7 @@ class order extends CI_Controller {
             $result['status'] = 0;
             $result['errors'] = $ex->getMessage();
             $result['msg'] = "Unable to Place order";
-            $result['data'] = (object)array();
+            $result['data'] = (object) array();
             return $result;
         }
     }
@@ -463,9 +448,8 @@ class order extends CI_Controller {
                     $k++;
                     $product_img = $CI->order_model->getImgByBaseId($order_header_data[$j]->base_product_id);
                     $pro_img = $product_img[0]->thumb_url;
-                    
-                    if(isset($params['min']) && $params['min'] == 1)
-                    {
+
+                    if (isset($params['min']) && $params['min'] == 1) {
                         $arr[$i]['order_id'] = $order_header_data[$j]->order_id;
                         $arr[$i]['order_number'] = $order_header_data[$j]->order_number;
                         $arr[$i]['total'] = $order_header_data[$j]->total;
@@ -498,9 +482,7 @@ class order extends CI_Controller {
                         $r['price'] = $order_header_data[$j]->price;
                         $r['thumb_img'] = $CI->config->item('PRODUCT_IMG_PATH') . $pro_img;
                         $arr[$i]['product_details'][] = $r;
-                    }
-                    else 
-                    { 
+                    } else {
                         $arr[$i]['order_id'] = $order_header_data[$j]->order_id;
                         $arr[$i]['order_number'] = $order_header_data[$j]->order_number;
                         $arr[$i]['user_id'] = $order_header_data[$j]->user_id;
@@ -605,7 +587,7 @@ class order extends CI_Controller {
         }
         return $result;
     }
-    
+
     public function orderdetails($params) {
         $CI = & get_instance();
         $CI->load->model('order_model');
@@ -668,7 +650,7 @@ class order extends CI_Controller {
                     // $arr[$i]['campaign_id'] = $order_header_data[$j]->campaign_id;
                     // $arr[$i]['buyer_shipping_cost'] = $order_header_data[$j]->buyer_shipping_cost;
                     // $arr[$i]['order_type'] = $order_header_data[$j]->order_type;
-                    
+
                     $same_product_count = 0;
                     $product_name = $order_header_data[$j]->product_name;
                     $r['product_name'] = $order_header_data[$j]->product_name;
@@ -691,14 +673,13 @@ class order extends CI_Controller {
                     $r['data'][$same_product_count]['price'] = $order_header_data[$j]->price;
                     $r['data'][$same_product_count]['thumb_img'] = $CI->config->item('PRODUCT_IMG_PATH') . $pro_img;
                     $arr[$i]['product_details'][] = $r;
-                    
                 } else {
                     $k++;
                     $product_img = $CI->order_model->getImgByBaseId($order_header_data[$j]->base_product_id);
                     $pro_img = $product_img[0]->thumb_url;
 
-                    if($product_name == $order_header_data[$j]->product_name){
-                        $same_product_count = $same_product_count+1;
+                    if ($product_name == $order_header_data[$j]->product_name) {
+                        $same_product_count = $same_product_count + 1;
                         $r['data'][$same_product_count]['subscribed_product_id'] = $order_header_data[$j]->subscribed_product_id;
                         $r['data'][$same_product_count]['base_product_id'] = $order_header_data[$j]->base_product_id;
                         $r['data'][$same_product_count]['store_id'] = $order_header_data[$j]->store_id;
@@ -716,7 +697,7 @@ class order extends CI_Controller {
                         $r['data'][$same_product_count]['product_qty'] = $order_header_data[$j]->product_qty;
                         $r['data'][$same_product_count]['price'] = $order_header_data[$j]->price;
                         $r['data'][$same_product_count]['thumb_img'] = $CI->config->item('PRODUCT_IMG_PATH') . $pro_img;
-                    }else{
+                    } else {
                         $same_product_count == 0;
                         $r['data'][$same_product_count]['subscribed_product_id'] = $order_header_data[$j]->subscribed_product_id;
                         $r['data'][$same_product_count]['base_product_id'] = $order_header_data[$j]->base_product_id;
@@ -741,20 +722,19 @@ class order extends CI_Controller {
                 $order_id[$j] = $order_header_data[$j]->order_id;
             }
             // if (isset($params['app'])) {
-                $result['status'] = 'Success';
-                $result['msg'] = 'User Order Details.';
-                $result['data']['count'] = count($arr);
-                $result['data']['responseHeader'] = $this->returnResponseHeader();
-                $result['data']['response'] = $this->returnResponse($arr, $params);
+            $result['status'] = 'Success';
+            $result['msg'] = 'User Order Details.';
+            $result['data']['count'] = count($arr);
+            $result['data']['responseHeader'] = $this->returnResponseHeader();
+            $result['data']['response'] = $this->returnResponse($arr, $params);
             // } else {
-                
             // }
         } else {
             $result['status'] = "Failed";
         }
         return $result;
     }
-    
+
     public function ordertrackingdetails($params) {
         $CI = & get_instance();
         $CI->load->model('order_model');
@@ -763,28 +743,28 @@ class order extends CI_Controller {
         $result = $CI->validation->validate_order_details($params);
         if ($result['status'] == 1) {
             $order_header_data = $CI->order_model->getDataByOrderId_trackingdetails($params);
-            if($order_header_data){
-               $data = array();
-               $data['order_id'] = $order_header_data[0]->order_id;
-               $data['order_date'] = $order_header_data[0]->timestamp;
-               $data['order_status'] = $order_header_data[0]->status;
-               $data['brand_id'] = $order_header_data[0]->store_id;
-               $data['brand_name'] = $order_header_data[0]->store_name;
-               $products = array();
-               foreach ($order_header_data as $key => $val) {
-                   $products[$key]['product_id'] = $val->subscribed_product_id;
-                   $products[$key]['product_qty'] = $val->product_qty;
-                   $products[$key]['dispatch_qty'] = $val->qty;
-                   $products[$key]['remaining_qty'] = $val->product_qty - $val->qty;
-                   $products[$key]['tracking_id'] = $val->track_id;
-                   $products[$key]['status'] = $val->status;
-                   $products[$key]['product_id'] = $val->subscribed_product_id;
-               }
-               $data['dispatched_item_list'] = $products;
-               $result['status'] = 'Success';
-               $result['msg'] = 'Order tracking Details.';
-               $result['data'] = $data;
-            }else{
+            if ($order_header_data) {
+                $data = array();
+                $data['order_id'] = $order_header_data[0]->order_id;
+                $data['order_date'] = $order_header_data[0]->timestamp;
+                $data['order_status'] = $order_header_data[0]->status;
+                $data['brand_id'] = $order_header_data[0]->store_id;
+                $data['brand_name'] = $order_header_data[0]->store_name;
+                $products = array();
+                foreach ($order_header_data as $key => $val) {
+                    $products[$key]['product_id'] = $val->subscribed_product_id;
+                    $products[$key]['product_qty'] = $val->product_qty;
+                    $products[$key]['dispatch_qty'] = $val->qty;
+                    $products[$key]['remaining_qty'] = $val->product_qty - $val->qty;
+                    $products[$key]['tracking_id'] = $val->track_id;
+                    $products[$key]['status'] = $val->status;
+                    $products[$key]['product_id'] = $val->subscribed_product_id;
+                }
+                $data['dispatched_item_list'] = $products;
+                $result['status'] = 'Success';
+                $result['msg'] = 'Order tracking Details.';
+                $result['data'] = $data;
+            } else {
                 $result['status'] = 'Fail';
                 $result['msg'] = 'Unable to fetch tracking.';
                 $result['errors'] = 'No data found';
@@ -795,21 +775,21 @@ class order extends CI_Controller {
         return $result;
     }
 
-    public function returnResponseHeader(){
+    public function returnResponseHeader() {
         $responseHeader = array();
         $responseHeader['status'] = 0;
         $responseHeader['QTime'] = null;
         $responseHeader['params'] = null;
         return $responseHeader;
-     }
-    public function returnResponse($data, $params){
+    }
+
+    public function returnResponse($data, $params) {
         $response = array();
-        if(isset($data) && !empty($data)){
+        if (isset($data) && !empty($data)) {
             $response['numFound'] = count($data);
             $response['start'] = intval($params['page']);
             $response['docs'] = $data;
-        }
-        else{
+        } else {
             $response['numFound'] = null;
             $response['start'] = null;
             $response['docs'] = null;
@@ -817,7 +797,7 @@ class order extends CI_Controller {
         return $response;
     }
 
-    public function fetchordersonly($params){
+    public function fetchordersonly($params) {
         $CI = & get_instance();
         $CI->load->model('order_model');
         $CI->load->library('validation');
@@ -825,16 +805,14 @@ class order extends CI_Controller {
         $result = $CI->validation->validate_fetch_order($params);
         if ($result['status'] == 1) {
             $order_header_data = $CI->order_model->getLimitedDataByOrderId($params);
-            if(isset($order_header_data) && !empty($order_header_data)){
+            if (isset($order_header_data) && !empty($order_header_data)) {
                 $result['status'] = 1;
                 $result['msg'] = 'Order List';
                 $result['data']['responseHeader'] = $this->returnResponseHeader();
             }
-        }
-        else if($result['status'] == 0){
+        } else if ($result['status'] == 0) {
             return $result;
-        }
-        else {
+        } else {
             $result['status'] = 0;
             $result['msg'] = 'Could Not Find Order List';
             $result['data']['responseHeader'] = $this->returnResponseHeader();
@@ -843,17 +821,16 @@ class order extends CI_Controller {
         return $result;
     }
 
-    public function getOrderDetail($params)
-    {
+    public function getOrderDetail($params) {
         $CI = & get_instance();
         $CI->load->model('order_model');
         $CI->load->library('validation');
         $CI->load->config('custom-config');
         $result = $CI->validation->validate_fetch_order($params);
         $result = $CI->validation->validate_order_details_order_id($params['order_id']);
-        if ($result['status'] == 1){
+        if ($result['status'] == 1) {
             $currentOrderData = $CI->order_model->getOrderDetails($params);
-            if(isset($currentOrderData) && !empty($currentOrderData)){
+            if (isset($currentOrderData) && !empty($currentOrderData)) {
                 $data = array();
                 $data['orderId'] = $currentOrderData[0]->order_id;
                 $data['status'] = $currentOrderData[0]->status;
@@ -864,7 +841,7 @@ class order extends CI_Controller {
                 $data['userComment'] = $currentOrderData[0]->user_comment;
                 $data['warehouseId'] = $currentOrderData[0]->warehouse_id;
                 $data['warehouseName'] = $currentOrderData[0]->name;
-                $data['totalPayableAmount']=   $currentOrderData[0]->total_payable_amount;
+                $data['totalPayableAmount'] = $currentOrderData[0]->total_payable_amount;
                 $data['deliveryDate'] = $currentOrderData[0]->delivery_date;
                 $orderItems = array();
                 $i = 0;
@@ -877,48 +854,121 @@ class order extends CI_Controller {
                     $orderArray['unitPrice'] = $orderItemData->unit_price;
                     $orderArray['price'] = $orderItemData->price;
                     $product = array();
-                    $product_img = $CI->order_model->getImgByBaseId($order_header_data[$j]->base_product_id);
+                    $product_img = $CI->order_model->getImgByBaseId($orderItemData->base_product_id);
                     $pro_img = $product_img[0]->thumb_url;
-                    $product['title']=   $orderItemData->title;
+                    $product['title'] = $orderItemData->title;
                     $product['pack_size'] = $orderItemData->pack_size;
                     $product['pack_unit'] = $orderItemData->pack_unit;
                     $product['pack_size_in_gm'] = $orderItemData->pack_size_in_gm;
-                    $product['thumb_url'] = $CI->config->item('PRODUCT_IMG_PATH') . $pro_img;
+                    $thumbUrl = $CI->config->item('PRODUCT_IMG_PATH') . $pro_img;
+                    $url = array();
+                    array_push($url, $thumbUrl);
+                    $product['thumb_url'] = $url;
+
                     $orderArray['product'] = $product;
                     array_push($orderItems, $orderArray);
-                    $i++;  
+                    $i++;
                 }
                 $data['orderItems'] = $orderItems;
                 $order = array();
                 array_push($order, $data);
-                
+
 
                 $resut['status'] = 1;
                 $result['msg'] = 'Curent Order Details';
             }
-        }
-        else if($result['status'] == 0){
+        } else if ($result['status'] == 0) {
             return $result;
-        }
-        else{
+        } else {
             $result['status'] = 0;
             $result['msg'] = 'Could Not Find Order Details';
         }
         $result['data']['responseHeader'] = $this->returnResponseHeader();
-        
+
         $result['data']['response'] = $this->returnResponse($order, $params);
         return $result;
-
     }
 
-    public function updateCurrentOrder($params){
+    public function updateCurrentOrder($params) {
         $CI = & get_instance();
         $CI->load->model('order_model');
         $CI->load->library('validation');
         $CI->load->config('custom-config');
         $result = $CI->validation->validate_order_details_order_id($params['order_id']);
-        if($result['status'] == 1){
-            // $mappedArray() = getIds($params['order_id']);
+        if ($result['status'] == 1) {
+            $e = $CI->order_model->getProductIds($params['order_id']);
+            if ((is_bool($e) && $e == false) || is_a($e, 'Exception')) {
+                $result['status'] = 0;
+                $result['msg'] = 'Failed To Find Data For This Order Id. Please Try Again';
+                $result['error'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
+                return $result;
+            }
+            $mappedArray = $e;
+            $productIds = array();
+            $i= 0;
+            foreach ($mappedArray as $key => $value) {
+                $productIds[$i] = $value->subscribed_product_id;
+                $i++;
+            }
+            $updateHeader['order_id'] = $params['order_id'];
+            $updateHeader['total_payable_amount'] = $params['total_payable_amount'];
+            $updateHeader['total'] = $params['total'];
+            $where = array('order_id' => $params['order_id']);
+            $e = $this->order_model->updateorderheader($updateHeader);
+            if ($e == false  || is_a($e, 'Exception')) {
+                $result['status'] = 0;
+                $result['msg'] = 'Cannot Save Data!!!! Please Try Again!';
+                $result['error'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
+                return $result;
+            } else {
+                foreach ($params['product_details'] as $key => $product) {
+                    if (in_array($product['subscribed_product_id'], $productIds)) {
+                        $where['subscribed_product_id'] = $product['subscribed_product_id'];
+                        $e = $this->order_model->updateOrderLine($where, $product);
+                        if ($e == false || is_a($e, 'Exception')) {
+                            $result['status'] = 0;
+                            $result['msg'] = 'Failed To Update Data. Please Try Again';
+                            $result['error'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
+                            return $result;
+                        }
+                    } else {
+                        $e = $this->order_model->insertOrderLine($product);
+                        if ($e == false || is_a($e, 'Exception')) {
+                            $result['status'] = 0;
+                            $result['msg'] = 'Failed To Insert Data. Please Try Again';
+                            $result['error'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
+                            return $result;
+                        }
+                    }
+                    $index = array_search($product['subscribed_product_id'], $productIds);
+                    if(isset($index) && is_numeric($index)) {
+                        unset($productIds[$index]);
+                    }
+                }
+            }
+            $count = count($productIds);
+            $ids = implode(', ', $productIds);
+            if (isset($ids) && !empty($ids)) {
+                $e = $this->order_model->deleteOrderLine($params['order_id'], $ids, $count);
+                if ($e == false || is_a($e, 'Exception')) {
+                    $result['status'] = 0;
+                    $result['msg'] = 'Failed To Delete Data. Please Try Again';
+                    $result['error'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
+                    return $result;
+                }
+            }
+            $result['status'] = 1;
+            $result['msg'] = 'Order Updated Successfully!!!';
+        } else if ($result['status'] == 0) {
+            return $result;
+        } else {
+            $result['status'] = 0;
+            $result['msg'] = 'Could Not Find Your Order!! Please Try Again';
+            return $result;
         }
+        $result['data']['responseHeader'] = $this->returnResponseHeader();
+        $result['data']['response'] = $this->returnResponse(null, $params);
+        return $result;
     }
+
 }
