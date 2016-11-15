@@ -860,7 +860,7 @@ class order extends CI_Controller {
                     $product['pack_size'] = $orderItemData->pack_size;
                     $product['pack_unit'] = $orderItemData->pack_unit;
                     $product['pack_size_in_gm'] = $orderItemData->pack_size_in_gm;
-                    $thumbUrl = $CI->config->item('PRODUCT_IMG_PATH') . $pro_img;
+                    $thumbUrl = $CI->config->item('URL') . $pro_img;
                     $url = array();
                     array_push($url, $thumbUrl);
                     $product['thumb_url'] = $url;
