@@ -343,7 +343,7 @@ class order_model extends CI_Model {
                 $dberrorObjs->error_query = $this->db->last_query();
                 $dberrorObjs->error_time = date("Y-m-d H:i:s");
                 $this->db->insert('dberror', $dberrorObjs);
-                return FALSE;
+                return new Exception('Found Error : '.$dberrorObjs->error_message);
             } else {
                 return $productId;
             }
@@ -362,7 +362,7 @@ class order_model extends CI_Model {
                 $dberrorObjs->error_query = $this->legacy_db->last_query();
                 $dberrorObjs->error_time = date("Y-m-d H:i:s");
                 $this->legacy_db->insert('dberror', $dberrorObjs);
-                return FALSE;
+                return new Exception('Found Error : '.$dberrorObjs->error_message);
             } else{
                 return True;
             }
@@ -380,18 +380,18 @@ class order_model extends CI_Model {
                 $dberrorObjs->error_query = $this->legacy_db->last_query();
                 $dberrorObjs->error_time = date("Y-m-d H:i:s");
                 $this->legacy_db->insert('dberror', $dberrorObjs);
-                return FALSE;
+                return new Exception('Found Error : '.$dberrorObjs->error_message);
             } else{
                 return True;
             }
         } catch (Exception $e) {
-            return FALSE;
+            return $e;
         }
     }
     
     public function deleteOrderLine($orderId, $productIds){
         try {
-            $sql = 'delete from  groots_orders.order_line where order_id = '.$orderId.'and subscribed_product_id in ('.$productIds.')';
+            $sql = 'delete from  groots_orders.order_line where order_id = '.$orderId.' and subscribed_product_id in ('.$productIds.')';
             $query = $this->legacy_db->query($sql);
             $productId = $query->result();
             if($this->legacy_db->_error_message()){
@@ -400,7 +400,7 @@ class order_model extends CI_Model {
                 $dberrorObjs->error_query = $this->legacy_db->last_query();
                 $dberrorObjs->error_time = date("Y-m-d H:i:s");
                 $this->legacy_db->insert('dberror', $dberrorObjs);
-                return FALSE;
+                return new Exception('Found Error : '.$dberrorObjs->error_message);
             } else{
                 return True;
             }
