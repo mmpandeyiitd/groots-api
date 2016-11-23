@@ -296,7 +296,7 @@ class order_model extends CI_Model {
 ///////////// vikas end //////////
     public function getLimitedDataByOrderId($getparams) {
         try {
-            $get_order_list_query = $this->legacy_db->query('select order_id as orderId, order_number as orderNumber, order_type as orderType, status, payment_status as paymentStatus, delivery_date as deliveryDate, total_payable_amount as totalPayableAmount from order_header where user_id = ' . $getparams['user_id'] . ' order by order_id limit ' . $getparams['start'] . ', ' . $getparams['rows']);
+            $get_order_list_query = $this->legacy_db->query('select order_id as orderId, order_number as orderNumber, order_type as orderType, status, payment_status as paymentStatus, delivery_date as deliveryDate, total_payable_amount as totalPayableAmount from order_header where user_id = ' . $getparams['user_id'] . ' order by delivery_date desc, order_id desc limit ' . $getparams['start'] . ', ' . $getparams['rows']);
             $get_order_list = $get_order_list_query->result();
             if ($this->db->_error_message()) {
                 $dberrorObjs->error_code = $this->db->_error_number();
