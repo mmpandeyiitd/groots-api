@@ -296,7 +296,7 @@ class order_model extends CI_Model {
 ///////////// vikas end //////////
     public function getLimitedDataByOrderId($getparams) {
         try {
-            $get_order_list_query = $this->legacy_db->query('select order_id as orderId, order_number as orderNumber, order_type as orderType, status, payment_status as paymentStatus, delivery_date as deliveryDate, total_payable_amount as totalPayableAmount from order_header where user_id = ' . $getparams['user_id'] . ' order by order_id limit ' . $getparams['start'] . ', ' . $getparams['rows']);
+            $get_order_list_query = $this->legacy_db->query('select order_id as orderId, order_number as orderNumber, order_type as orderType, status, payment_status as paymentStatus, delivery_date as deliveryDate, total_payable_amount as totalPayableAmount from order_header where user_id = ' . $getparams['user_id'] . ' order by delivery_date desc, order_id desc limit ' . $getparams['start'] . ', ' . $getparams['rows']);
             $get_order_list = $get_order_list_query->result();
             if ($this->db->_error_message()) {
                 $dberrorObjs->error_code = $this->db->_error_number();
@@ -353,7 +353,7 @@ class order_model extends CI_Model {
         }
     }
 
-    public function updateOrderLine($data, $where) {
+    public function updateOrderLine($where, $data) {
         try {
             $this->legacy_db->where($where);
             $this->legacy_db->update('order_line', $data);
@@ -398,7 +398,6 @@ class order_model extends CI_Model {
                 $sql = 'delete from  groots_orders.order_line where order_id = ' . $orderId . ' and subscribed_product_id = ' . $productIds;
             }
             $query = $this->legacy_db->query($sql);
-            $productId = $query->result();
             if ($this->legacy_db->_error_message()) {
                 $dberrorObjs->error_code = $this->legacy_db->_error_number();
                 $dberrorObjs->error_message = $this->legacy_db->_error_message();
