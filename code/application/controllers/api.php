@@ -431,4 +431,35 @@ class api extends CI_Controller {
         $this->output->set_header('AUTH_TOKEN:'.$this->authToken);
         $this->returnfunction($result);   
     }
+
+    public function submitFeedback(){
+        $checkAuthToken = TRUE;
+        $result = $this->checkAuth($checkAuthToken);
+        if ($result['config_status'] == -1) {
+            $json_data = json_encode($result);
+            $data['response'] = $json_data;
+            $this->load->view('responseData', $data);
+            return;
+        }
+        if ($result['config_status'] == 0) {
+            $this->output->set_header("RESPONSE_CODE:0");
+            $json_data = json_encode($result);
+            $data['response'] = $json_data;
+            $this->load->view('responseData', $data);
+            return;
+        }
+        $CI = & get_instance();
+        $CI->load->model('apiauthcheck_model');
+        $user_id = $CI->apiauthcheck_model->getUserIdbyToken($this->authToken);
+        $_GET['user_id'] = $user_id;
+        $value = array();
+        if (isset($_GET)) {
+            $value = $_GET;
+        }
+        // die(json_encode($value));
+        $this->load->library('feedback');
+        $result = $this->feedback->submitFeedback($value);
+        $this->output->set_header('AUTH_TOKEN:'.$this->authToken);
+        $this->returnfunction($result);
+    }
 }

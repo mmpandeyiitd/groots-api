@@ -24,10 +24,11 @@ class feedback extends CI_Controller{
         $order_feedback = array();
         $order_feedback['order_id'] = $e[0]->order_id;
         if($e[0]->feedback_status == 'Submitted'){
-        $order_feedback['feedback_status'] = false;
+            $order_feedback['feedback_status'] = false;
         }
-        else
+        else{
             $order_feedback['feedback_status'] = true;
+        }
         $result['status'] = 1;
         $result['msg'] = 'Order Feedback';
         $responseHeader = array();
@@ -42,6 +43,51 @@ class feedback extends CI_Controller{
         $result['response'] = $response;
         return $result; 
 	}
+
+    public function submitFeedback($params){
+        try{
+            $CI = & get_instance();
+            $CI->load->library('validation');
+            $CI->load->config('custom-config');
+            $result = $CI->validation->validate_feedback_data($params);
+            $e = $CI->feedback_model->setFeedbackStatus($params);
+            // die(json_encode($params));
+            if($e == false || is_a($e, 'Exception')) {
+                $result['status'] = 0;
+                $result['msg'] = 'Failed To Update Data. Please Try Again';
+                $result['error'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
+                return $result;
+            }
+            else{
+                $data = array();
+                foreach ($params['feedback']['feedback_id'] as $key => $value) {
+                    $temp = array(
+                            'order_id' => $params['order_id'],
+                            'feedback_id' => intval($value),
+                            'rating' => $params['rating'],
+                            'comment' => $params['feedback']['comment'][$key],
+                            'created_at' => date('Y-m-d'),
+                            'updated_by' => '1');//use urder_id or what?????
+                    array_push($data, $temp);
+                }
+                $e = $this->feedback_model->insertFeedbackData($data);
+                if($e == false || is_a($e, 'Exception')) {
+                    $result['status'] = 0;
+                    $result['msg'] = 'Failed To Insert Data. Please Try Again';
+                    $result['error'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
+                    return $result;
+                }
+            }
+            $result['status'] = 1;
+            $result['msg'] = 'Feedback Submitted Successfully!';
+            return $result;
+        } catch(Exception $e){
+            $result['status'] = 0;
+            $result['msg'] = 'Failed To Insert Data. Please Try Again';
+            $result['error'] = '';
+            return $result;
+        }
+    }
 
 }
 ?>
