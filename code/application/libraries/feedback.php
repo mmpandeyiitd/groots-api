@@ -32,17 +32,18 @@ class feedback extends CI_Controller{
         }
         $result['status'] = 1;
         $result['msg'] = 'Order Feedback';
+        $result['data'] = array();
         $responseHeader = array();
         $responseHeader['status'] = 0;
         $responseHeader['QTime'] = null;
         $responseHeader['params'] = null;
+        $result['data']['responseHeader'] = $responseHeader;
         $response = array();
         $response['numFound'] = count($order_feedback);
         $response['start'] = intval($params['page']);
         $response['docs'] = array();
         array_push($response['docs'], $order_feedback);
-        $result['responseHeader'] = $responseHeader;
-        $result['response'] = $response;
+        $result['data']['response'] = $response;
         return $result; 
 	}
 
