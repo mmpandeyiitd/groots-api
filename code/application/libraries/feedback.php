@@ -45,6 +45,7 @@ class feedback extends CI_Controller{
 	}
 
     public function submitFeedback($params){
+        // die(json_encode($params));
         try{
             $CI = & get_instance();
             $CI->load->library('validation');
@@ -60,12 +61,12 @@ class feedback extends CI_Controller{
             }
             else{
                 $data = array();
-                foreach ($params['feedback']['feedback_id'] as $key => $value) {
+                foreach ($params['feedback'] as $key => $value) {
                     $temp = array(
                             'order_id' => $params['order_id'],
-                            'feedback_id' => intval($value),
+                            'feedback_id' => $value['feedback_id'],
                             'rating' => $params['rating'],
-                            'comment' => $params['feedback']['comment'][$key],
+                            'comment' => $value['comment'],
                             'created_at' => date('Y-m-d'),
                             'updated_by' => '1');//use urder_id or what?????
                     array_push($data, $temp);
