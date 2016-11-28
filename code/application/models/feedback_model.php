@@ -8,7 +8,7 @@ class feedback_model extends CI_Model {
 
     public function checkFeedbackStatus($params){
     	try {
-            $sql = 'select order_id, feedback_status from groots_orders.order_header where user_id = '.$params['user_id'].' and status = "Delivered" order by order_id desc limit 1' ;
+            $sql = 'select order_id, feedback_status, delivery_date from groots_orders.order_header where user_id = '.$params['user_id'].' and status = "Delivered" order by order_id desc limit 1' ;
             $query = $this->legacy_db->query($sql);
             $order_feedback = $query->result();
             if ($this->db->_error_message()) {

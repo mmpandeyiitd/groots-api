@@ -23,6 +23,7 @@ class feedback extends CI_Controller{
         }
         $order_feedback = array();
         $order_feedback['orderId'] = $e[0]->order_id;
+        $order_feedback['deliveryDate'] = $e[0]->delivery_date;
         if($e[0]->feedback_status == 'Submitted'){
             $order_feedback['feedbackStatus'] = false;
         }
