@@ -1556,4 +1556,62 @@ class validation {
         }
     }
 
+    public function validate_feedback_data($params){
+        try{
+            $CI = & get_instance();
+            $CI->load->library('form_validation');
+            if($CI->form_validation->required($params['orderId']) == False){
+                $result['status'] = 0;
+                $result['msg'] = 'Fail To Save Data';
+                $result['errors'] = 'Order Id required';
+            }
+            if($CI->form_validation->numeric($params['orderId']) == False){
+                $result['status'] = 0;
+                $result['msg'] = 'Fail To Save Data';
+                $result['errors'] = 'Order Id Must Be Numeric';
+            }
+            if($CI->form_validation->required($params['rating']) == False){
+                $result['status'] = 0;
+                $result['msg'] = 'Fail To Save Data';
+                $result['errors'] = 'Rating required';
+            }
+            if($CI->form_validation->numeric($params['rating']) == False){
+                $result['status'] = 0;
+                $result['msg'] = 'Fail To Save Data';
+                $result['errors'] = 'Rating Must Be Numeric';
+            }
+            if($params['rating'] != 5 && isset($params['feedback']) && !empty($params['feedback'])){
+                foreach ($params['feedback'] as $key => $value) {
+                    if($CI->form_validation->required($value['feedbackId']) == False){
+                        $result['status'] = 0;
+                        $result['msg'] = 'Fail To Save Data';
+                        $result['errors'] = 'Feedback Category Id required';
+                    }
+                    if($CI->form_validation->numeric($value['feedbackId']) == False){
+                        $result['status'] = 0;
+                        $result['msg'] = 'Fail To Save Data';
+                        $result['errors'] = 'Feedback Category Id Must Be Numeric';
+                    }
+                    if(isset($value['feedback_id']) && $value['feedbackId'] == 6){
+                        if($CI->form_validation->required($value['comment']) == False){
+                            $result['status'] = 0;
+                            $result['msg'] = 'Fail To Save Data';
+                            $result['errors'] = 'Comment required For "Others" Option';
+                        }
+                    }
+                }
+            }
+            if (empty($result)) {
+                $result['status'] = 1;
+                $result['msg'] = "valid data";
+            }
+            return $result;
+        } catch(Exception $ex){
+            $result['status'] = 0;
+            $result['msg'] = 'Fail To Save Data';
+            $result['errors'] = $ex->getMessage();
+            return $result;
+        }
+    }
+
 }
