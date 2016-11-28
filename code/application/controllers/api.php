@@ -451,12 +451,11 @@ class api extends CI_Controller {
         $CI = & get_instance();
         $CI->load->model('apiauthcheck_model');
         $user_id = $CI->apiauthcheck_model->getUserIdbyToken($this->authToken);
-        $_GET['user_id'] = $user_id;
         $value = array();
-        if (isset($_GET)) {
-            $value = $_GET;
+        if (isset($_POST)) {
+            $value = $_POST;
         }
-        // die(json_encode($value));
+        $value['user_id'] = $user_id;
         $this->load->library('feedback');
         $result = $this->feedback->submitFeedback($value);
         $this->output->set_header('AUTH_TOKEN:'.$this->authToken);
