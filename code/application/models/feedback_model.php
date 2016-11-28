@@ -28,7 +28,7 @@ class feedback_model extends CI_Model {
 
     public function setFeedbackStatus($params){
         try{
-            $sql = 'update order_header set feedback_status = "Submitted" where order_id = '.$params['order_id'];
+            $sql = 'update order_header set feedback_status = "Submitted" where order_id = '.$params['orderId'];
             $orderHeaderQuery = $this->legacy_db->query($sql);
             if ($this->db->_error_message()) {
                 $dberrorObjs->error_code = $this->db->_error_number();
@@ -47,10 +47,12 @@ class feedback_model extends CI_Model {
 
     public function insertFeedbackData($data){
         try{
-            //$sql = $this->legacy_db->set($data)->get_compiled_insert('feedbacks');
-            //echo $sql;
-            //die;
-            $this->legacy_db->insert_batch('feedbacks', $data);
+            if(count($data) == count($data, COUNT_RECURSIVE)){
+                $this->legacy_db->insert('feedbacks', $data);
+            }
+            else{
+                $this->legacy_db->insert_batch('feedbacks', $data);
+            }
             if ($this->db->_error_message()) {
                 $dberrorObjs->error_code = $this->db->_error_number();
                 $dberrorObjs->error_message = $this->db->_error_message();

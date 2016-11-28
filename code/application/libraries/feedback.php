@@ -22,12 +22,12 @@ class feedback extends CI_Controller{
             return $result;
         }
         $order_feedback = array();
-        $order_feedback['order_id'] = $e[0]->order_id;
+        $order_feedback['orderId'] = $e[0]->order_id;
         if($e[0]->feedback_status == 'Submitted'){
-            $order_feedback['feedback_status'] = false;
+            $order_feedback['feedbackStatus'] = false;
         }
         else{
-            $order_feedback['feedback_status'] = true;
+            $order_feedback['feedbackStatus'] = true;
         }
         $result['status'] = 1;
         $result['msg'] = 'Order Feedback';
@@ -45,47 +45,59 @@ class feedback extends CI_Controller{
 	}
 
     public function submitFeedback($params){
-        // die(json_encode($params));
         try{
             $CI = & get_instance();
             $CI->load->library('validation');
             $CI->load->config('custom-config');
             $result = $CI->validation->validate_feedback_data($params);
-            $e = $CI->feedback_model->setFeedbackStatus($params);
-            // die(json_encode($params));
-            if($e == false || is_a($e, 'Exception')) {
-                $result['status'] = 0;
-                $result['msg'] = 'Failed To Update Data. Please Try Again';
-                $result['error'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
-                return $result;
-            }
-            else{
-                $data = array();
-                foreach ($params['feedback'] as $key => $value) {
-                    $temp = array(
-                            'order_id' => $params['order_id'],
-                            'feedback_id' => $value['feedback_id'],
-                            'rating' => $params['rating'],
-                            'comment' => $value['comment'],
-                            'created_at' => date('Y-m-d'),
-                            'updated_by' => '1');//use urder_id or what?????
-                    array_push($data, $temp);
-                }
-                $e = $this->feedback_model->insertFeedbackData($data);
+            if($result['status'] == 1){
+                $e = $CI->feedback_model->setFeedbackStatus($params);
                 if($e == false || is_a($e, 'Exception')) {
                     $result['status'] = 0;
-                    $result['msg'] = 'Failed To Insert Data. Please Try Again';
+                    $result['msg'] = 'Failed To Update Data. Please Try Again';
                     $result['error'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
                     return $result;
                 }
+                else{
+                    $data = array();
+                    if($params['rating'] == 5 && (!isset($params['feedback']) || empty($params['feedback']))){
+                        $data = array(
+                                'order_id' => $params['orderId'],
+                                'rating' => $params['rating'],
+                                'created_at' => date('Y-m-d'),
+                                'updated_by' => $params['user_id']);
+                    }
+                    else{
+                        foreach ($params['feedback'] as $key => $value) {
+                            $temp = array(
+                                    'order_id' => $params['orderId'],
+                                    'feedback_id' => $value['feedbackId'],
+                                    'rating' => $params['rating'],
+                                    'comment' => $value['comment'],
+                                    'created_at' => date('Y-m-d'),
+                                    'updated_by' => $params['user_id']);
+                            array_push($data, $temp);
+                        }
+                    }
+                    $e = $this->feedback_model->insertFeedbackData($data);
+                    if($e == false || is_a($e, 'Exception')) {
+                        $result['status'] = 0;
+                        $result['msg'] = 'Failed To Insert Data. Please Try Again';
+                        $result['error'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
+                        return $result;
+                    }
+                }
+                $result['status'] = 1;
+                $result['msg'] = 'Feedback Submitted Successfully!';
+                return $result;
             }
-            $result['status'] = 1;
-            $result['msg'] = 'Feedback Submitted Successfully!';
-            return $result;
+            else{
+                return $result;
+            }
         } catch(Exception $e){
             $result['status'] = 0;
             $result['msg'] = 'Failed To Insert Data. Please Try Again';
-            $result['error'] = '';
+            $result['error'] = $e->getMessage();
             return $result;
         }
     }
