@@ -39,7 +39,8 @@ class feedback extends CI_Controller{
         $response = array();
         $response['numFound'] = count($order_feedback);
         $response['start'] = intval($params['page']);
-        $response['docs'] = $order_feedback;
+        $response['docs'] = array();
+        array_push($response['docs'], $order_feedback);
         $result['responseHeader'] = $responseHeader;
         $result['response'] = $response;
         return $result; 
