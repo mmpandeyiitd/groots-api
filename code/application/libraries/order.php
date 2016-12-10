@@ -804,11 +804,28 @@ class order extends CI_Controller {
         $CI->load->config('custom-config');
         $result = $CI->validation->validate_fetch_order($params);
         if ($result['status'] == 1) {
-            $order_header_data = $CI->order_model->getLimitedDataByOrderId($params);
-            if (isset($order_header_data) && !empty($order_header_data)) {
+            $order_payment = $CI->order_model->getOrderPaymentData($params);
+            //die(json_encode($order_payment));
+            $idArray = $this->getOrderPaymentArrays($order_payment);
+            $order_header_data = $CI->order_model->getLimitedDataByOrderId($idArray['orderIds']);
+            $retailer_payments_data = $CI->order_model->getRetailerPayements($idArray['paymentIds']);
+            if ($order_header_data == false  || is_a($order_header_data, 'Exception')) {
+                $result['status'] = 0;
+                $result['msg'] = 'Could Not Find Order';
+                $result['error'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
+                return $result;
+            }
+            if ($retailer_payments_data == false  || is_a($retailer_payments_data, 'Exception')) {
+                $result['status'] = 0;
+                $result['msg'] = 'Could Not Find Order';
+                $result['error'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
+                return $result;
+            } 
+            if (isset($order_header_data) && !empty($order_header_data) && isset($retailer_payments_data) && !empty($retailer_payments_data)) {
                 $result['status'] = 1;
                 $result['msg'] = 'Order List';
                 $result['data']['responseHeader'] = $this->returnResponseHeader();
+                $data = $this->prepareLedgerData($order_header_data, $retailer_payments_data, $order_payment);
             }
         } else if ($result['status'] == 0) {
             return $result;
@@ -817,7 +834,7 @@ class order extends CI_Controller {
             $result['msg'] = 'Could Not Find Order List';
             $result['data']['responseHeader'] = $this->returnResponseHeader();
         }
-        $result['data']['response'] = $this->returnResponse($order_header_data, $params);
+        $result['data']['response'] = $this->returnResponse($data, $params);
         return $result;
     }
 
@@ -970,5 +987,54 @@ class order extends CI_Controller {
         $result['data']['response'] = $this->returnResponse(null, $params);
         return $result;
     }
+
+
+    public function prepareLedgerData($order_header_data, $retailer_payments_data, $order_payment){
+        // die(json_encode($order_payment));
+        try{
+            $orderMap = array();
+            $paymentMap = array();
+            $result = array();
+            foreach ($order_header_data as $key => $value) {
+                $orderMap[$value->orderId] = $value;
+            }
+            foreach ($retailer_payments_data as $key => $value) {
+                $paymentMap[$value->id] = $value;
+            }
+            foreach ($order_payment as $key => $value) {
+                $temp = array();
+                $temp = $orderMap[$value->order_id];
+                $invoice_number = 'GFV'.substr($value->delivery_date, 0, 4).substr($value->delivery_date, 5, 2).$value->order_id;
+                $temp->invoiceNo = $invoice_number;
+                if(isset($value->id) && !empty($value->id)){
+                    $temp->payment = array();
+                    $temp->payment = $paymentMap[$value->id];
+                }
+                array_push($result, $temp);
+            }
+            return $result;
+
+        } catch (Exception $e) {
+            return $e;
+        }
+    }
+
+    public function getOrderPaymentArrays($order_payment){
+        $orderIds = array();
+        $paymentIds = array();
+        $map = array();
+        foreach ($order_payment as $key => $value) {
+            if(! in_array($value->order_id, $orderIds) && !empty($value->order_id)){
+                array_push($orderIds, $value->order_id);
+            }
+            if(! in_array($value->id, $paymentIds) && !empty($value->id)){
+                array_push($paymentIds, $value->id);
+            }
+        }
+        $map['orderIds'] = $orderIds;
+        $map['paymentIds'] = $paymentIds;
+        return $map;
+    }
+
 
 }
