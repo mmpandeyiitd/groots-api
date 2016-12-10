@@ -805,7 +805,7 @@ class order extends CI_Controller {
         $result = $CI->validation->validate_fetch_order($params);
         if ($result['status'] == 1) {
             $order_payment = $CI->order_model->getOrderPaymentData($params);
-            //die(json_encode($order_payment));
+            die(json_encode($order_payment));
             $idArray = $this->getOrderPaymentArrays($order_payment);
             $order_header_data = $CI->order_model->getLimitedDataByOrderId($idArray['orderIds']);
             $retailer_payments_data = $CI->order_model->getRetailerPayements($idArray['paymentIds']);
