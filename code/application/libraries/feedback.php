@@ -76,13 +76,15 @@ class feedback extends CI_Controller{
                                     'order_id' => $params['orderId'],
                                     'feedback_id' => $value['feedbackId'],
                                     'rating' => $params['rating'],
-                                    'comment' => $value['comment'],
+                                    //'comment' => $value['comment'],
                                     'created_at' => date('Y-m-d'),
                                     'updated_by' => $params['user_id']);
                             array_push($data, $temp);
                         }
+
                     }
-                    $e = $this->feedback_model->insertFeedbackData($data);
+                    $comment = array('comment' => $params['comment']);
+                    $e = $this->feedback_model->insertFeedbackData($data, $comment);
                     if($e == false || is_a($e, 'Exception')) {
                         $result['status'] = 0;
                         $result['msg'] = 'Failed To Insert Data. Please Try Again';

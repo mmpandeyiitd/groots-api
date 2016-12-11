@@ -45,13 +45,15 @@ class feedback_model extends CI_Model {
         }
     }
 
-    public function insertFeedbackData($data){
+    public function insertFeedbackData($data, $comment){
         try{
             if(count($data) == count($data, COUNT_RECURSIVE)){
                 $this->legacy_db->insert('feedbacks', $data);
             }
             else{
                 $this->legacy_db->insert_batch('feedbacks', $data);
+                $this->legacy_db->where('order_id', $data['order_id']);
+                $this->legacy_db->update('order_header', $comment);
             }
             if ($this->db->_error_message()) {
                 $dberrorObjs->error_code = $this->db->_error_number();

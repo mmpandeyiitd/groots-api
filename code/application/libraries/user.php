@@ -217,14 +217,38 @@ class user {
             $CI = & get_instance();
             $CI->load->model('user_model');
             $user_details = $CI->user_model->getUserDetails($params);
+            if ($user_details == false || is_a($user_details, 'Exception')) {
+                $result['status'] = 0;
+                $result['msg'] = 'Cannot Find Data. Please Try Again';
+                $result['error'] = is_a($user_details, 'Exception') ? $user_details->getMessage() : 'Cannot Find Error';
+                return $result;
+            }
+            $order_amount = $CI->user_model->getUserTotalOrderAmount($params);
+            if ($order_amount == false || is_a($order_amount, 'Exception')) {
+                $result['status'] = 0;
+                $result['msg'] = 'Cannot Find Data. Please Try Again';
+                $result['error'] = is_a($order_amount, 'Exception') ? $order_amount->getMessage() : 'Cannot Find Error';
+                return $result;
+            }
+            $payment_amount = $CI->user_model->getUserTotalPaymentAmount($params);
+            if ($payment_amount == false || is_a($payment_amount, 'Exception')) {
+                $result['status'] = 0;
+                $result['msg'] = 'Cannot Find Data. Please Try Again';
+                $result['error'] = is_a($payment_amount, 'Exception') ? $payment_amount->getMessage() : 'Cannot Find Error';
+                return $result;
+            }
+            // print_r($user_details->retailerName); die;
+            $user_details = $this->mergeUserDetails($user_details, $order_amount, $payment_amount);
             $result['status']       = 1;
             $result['msg']          = 'User details found in Database';
             $result['data']['responseHeader'] = $this->returnResponseHeader();
             $result['data']['response'] = $this->returnResponse($user_details, $params);
             return $result;
         } catch (Exception $ex) {
-            $result['status'] = "Fail";
+            $result['status'] = 0;
             $result['errors'] = $ex->getMessage();
+            $result['msg'] = "User Details Fail";
+            $result['data'] = (object)array();
             return $result;
         }
     }
@@ -254,6 +278,20 @@ class user {
         } 
     }
 
+    public function mergeUserDetails($user_details, $order_amount, $payment_amount){
+        $outstanding = 0;
+        foreach ($order_amount as $key => $value) {
+            $outstanding+=$value->total_payable_amount;
+        }
+        foreach ($payment_amount as $key => $value) {
+            $outstanding-=$value->paid_amount;
+        }
+        foreach ($user_details as $key => $value) {
+            $value->outstandingAmount = $outstanding;
+        }
+        return $user_details;
+    }
+
     public function returnResponseHeader() {
         $responseHeader = array();
         $responseHeader['status'] = 0;
@@ -275,4 +313,5 @@ class user {
         }
         return $response;
     }
+
 }

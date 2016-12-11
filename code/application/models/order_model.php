@@ -297,7 +297,7 @@ class order_model extends CI_Model {
 
     public function getOrderPaymentData($params){
         try{
-            $sql = 'select * from order_payment_view where user_id = '.$params['user_id'].' or retailer_id = '.$params['user_id'].' order by delivery_date desc , order_id desc limit '.$params['start'].', '.$params['rows'];
+            $sql = 'select * from order_payment_view where retailer_id = '.$params['user_id'].' order by date desc , order_id desc limit '.$params['start'].', '.$params['rows'];
             //echo $sql; die;
             $order_payment = $this->legacy_db->query($sql);
             $order_payment = $order_payment->result();
@@ -316,49 +316,56 @@ class order_model extends CI_Model {
         }
     }
 
-    public function getLimitedDataByOrderId($orderIds) {
-        try {
-            $ids = implode(',', $orderIds);
-            $sql = 'select order_id as orderId, order_number as orderNumber, order_type as orderType, status, payment_status as paymentStatus, delivery_date as deliveryDate, total_payable_amount as totalPayableAmount from order_header where order_id in ('.$ids.') order by delivery_date desc, order_id desc';
-            $get_order_list_query = $this->legacy_db->query($sql);
-            $get_order_list = $get_order_list_query->result();
-            if ($this->db->_error_message()) {
-                $dberrorObjs->error_code = $this->db->_error_number();
-                $dberrorObjs->error_message = $this->db->_error_message();
-                $dberrorObjs->error_query = $this->db->last_query();
-                $dberrorObjs->error_time = date("Y-m-d H:i:s");
-                $this->db->insert('dberror', $dberrorObjs);
-                return FALSE;
-            } else {
-                return $get_order_list;
-            }
-        } catch (Exception $e) {
-            return FALSE;
-        }
-    }
+    // public function getLimitedDataByOrderId($orderIds) {
+    //     try {
+    //         if(!isset($orderIds) && empty($orderIds))
+    //             return 1;
+    //         $ids = implode(',', $orderIds);
+    //         $sql = 'select order_id as orderId, order_number as orderNumber, order_type as orderType, status, payment_status as paymentStatus, delivery_date as deliveryDate, total_payable_amount as totalPayableAmount from order_header where order_id in ('.$ids.') order by delivery_date desc, order_id desc';
+    //         $get_order_list_query = $this->legacy_db->query($sql);
+    //         $get_order_list = $get_order_list_query->result();
+    //         if ($this->db->_error_message()) {
+    //             $dberrorObjs->error_code = $this->db->_error_number();
+    //             $dberrorObjs->error_message = $this->db->_error_message();
+    //             $dberrorObjs->error_query = $this->db->last_query();
+    //             $dberrorObjs->error_time = date("Y-m-d H:i:s");
+    //             $this->db->insert('dberror', $dberrorObjs);
+    //             return FALSE;
+    //         } else {
+    //             return $get_order_list;
+    //         }
+    //     } catch (Exception $e) {
+    //         return FALSE;
+    //     }
+    // }
 
-    public function getRetailerPayements($paymentIds){
-        try{
-            $ids = implode(',', $paymentIds);
-            $sql = 'select id ,paid_amount as amountPaid, payment_type as modeOfPayment, cheque_status as chequeStatus, cheque_no as referenceNo, status , date from retailer_payments where id in ('.$ids.') order by date desc';
-            $sql = $this->legacy_db->query($sql);
-            $result = $sql->result();
-            if ($this->db->_error_message()) {
-                $dberrorObjs->error_code = $this->db->_error_number();
-                $dberrorObjs->error_message = $this->db->_error_message();
-                $dberrorObjs->error_query = $this->db->last_query();
-                $dberrorObjs->error_time = date("Y-m-d H:i:s");
-                $this->db->insert('dberror', $dberrorObjs);
-                return new Exception('Found Error : ' . $dberrorObjs->error_message);
-            } else {
-                return $result;
-            }
+    // public function getRetailerPayements($paymentIds){
+    //     try{
+    //         if(empty($paymentIds))
+    //             return 1;
+    //         else{
+    //             $ids = implode(',', $paymentIds);
+    //             $sql = 'select id ,paid_amount as amountPaid, payment_type as modeOfPayment, cheque_status as chequeStatus, cheque_no as referenceNo, status , date from retailer_payments where id in ('.$ids.') order by date desc';
+    //             echo $sql;die;
+    //             $sql = $this->legacy_db->query($sql);
+    //             $result = $sql->result();
+    //             if ($this->legacy_db->_error_message()) {
+    //                 $dberrorObjs->error_code = $this->legacy_db->_error_number();
+    //                 $dberrorObjs->error_message = $this->legcy_db->_error_message();
+    //                 $dberrorObjs->error_query = $this->legacy_db->last_query();
+    //                 $dberrorObjs->error_time = date("Y-m-d H:i:s");
+    //                 $this->db->insert('dberror', $dberrorObjs);
+    //                 return new Exception('Found Error : ' . $dberrorObjs->error_message);
+    //             } else {
+    //                 return $result;
+    //             }
+    //         }
 
-        } catch (Exception $e) {
-            return FALSE;
-        }
+    //     } catch (Exception $e) {
+    //         return FALSE;
+    //     }
 
-    }
+    // }
 
     public function getOrderDetails($params) {
         try {
