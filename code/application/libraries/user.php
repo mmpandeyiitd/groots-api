@@ -224,17 +224,17 @@ class user {
                 return $result;
             }
             $order_amount = $CI->user_model->getUserTotalOrderAmount($params);
-            if ($order_amount == false || is_a($order_amount, 'Exception')) {
+            if (is_a($order_amount, 'Exception')) {
                 $result['status'] = 0;
-                $result['msg'] = 'Cannot Find Data. Please Try Again';
-                $result['error'] = is_a($order_amount, 'Exception') ? $order_amount->getMessage() : 'Cannot Find Error';
+                $result['msg'] = 'Cannot Find Order Data. Please Try Again';
+                $result['error'] = $order_amount->getMessage();
                 return $result;
             }
             $payment_amount = $CI->user_model->getUserTotalPaymentAmount($params);
-            if ($payment_amount == false || is_a($payment_amount, 'Exception')) {
+            if (is_a($payment_amount, 'Exception')) {
                 $result['status'] = 0;
-                $result['msg'] = 'Cannot Find Data. Please Try Again';
-                $result['error'] = is_a($payment_amount, 'Exception') ? $payment_amount->getMessage() : 'Cannot Find Error';
+                $result['msg'] = 'Cannot Find Payment Data. Please Try Again';
+                $result['error'] = $payment_amount->getMessage();
                 return $result;
             }
             // print_r($user_details->retailerName); die;

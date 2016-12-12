@@ -18,7 +18,7 @@ class feedback extends CI_Controller{
         if($e == false || is_a($e, 'Exception') || !isset($e) || empty($e) || $e == null){
         	$result['status'] = 0;
             $result['msg'] = 'Failed To Find Data. Please Try Again';
-            $result['error'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
+            $result['errors'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
             return $result;
         }
         $order_feedback = array();
@@ -47,7 +47,7 @@ class feedback extends CI_Controller{
         return $result; 
 	}
 
-    public function submitFeedback($params){
+    public function submitFeedback($params, $logger){
         try{
             $CI = & get_instance();
             $CI->load->library('validation');
@@ -58,7 +58,7 @@ class feedback extends CI_Controller{
                 if($e == false || is_a($e, 'Exception')) {
                     $result['status'] = 0;
                     $result['msg'] = 'Failed To Update Data. Please Try Again';
-                    $result['error'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
+                    $result['errors'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
                     return $result;
                 }
                 else{
@@ -71,24 +71,26 @@ class feedback extends CI_Controller{
                                 'updated_by' => $params['user_id']);
                     }
                     else{
+
                         foreach ($params['feedback'] as $key => $value) {
+                            $temp = array();
                             $temp = array(
                                     'order_id' => $params['orderId'],
                                     'feedback_id' => $value['feedbackId'],
                                     'rating' => $params['rating'],
-                                    //'comment' => $value['comment'],
                                     'created_at' => date('Y-m-d'),
                                     'updated_by' => $params['user_id']);
                             array_push($data, $temp);
                         }
 
                     }
-                    $comment = array('comment' => $params['comment']);
-                    $e = $this->feedback_model->insertFeedbackData($data, $comment);
+                    $logger->warn(var_dump($data));
+                    //die('here');
+                    $e = $this->feedback_model->insertFeedbackData($data, $params, $logger);
                     if($e == false || is_a($e, 'Exception')) {
                         $result['status'] = 0;
                         $result['msg'] = 'Failed To Insert Data. Please Try Again';
-                        $result['error'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
+                        $result['errors'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
                         return $result;
                     }
                 }
@@ -102,7 +104,7 @@ class feedback extends CI_Controller{
         } catch(Exception $e){
             $result['status'] = 0;
             $result['msg'] = 'Failed To Insert Data. Please Try Again';
-            $result['error'] = $e->getMessage();
+            $result['errors'] = $e->getMessage();
             return $result;
         }
     }

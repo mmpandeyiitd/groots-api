@@ -13,7 +13,6 @@ class api extends CI_Controller {
         // $this->load->model("order_model", "order1");
         $this->load->library("log4php");
         Logger::configure( dirname(__FILE__) . '/../third_party/log4php.xml');
-        $logger = Logger::getLogger("main");
     }
 
 
@@ -106,7 +105,6 @@ class api extends CI_Controller {
     }
 
     public function userLogin() {
-        // $logger = Logger::getLogger("main");
         // $logger->warn("Environment = ". var_dump($_POST));
 
         $checkAuthToken = FALSE;
@@ -433,6 +431,12 @@ class api extends CI_Controller {
     }
 
     public function submitFeedback(){
+        die($_REQUEST);
+        $logger = Logger::getLogger("main");
+        
+        foreach ($_POST as $key => $value) {
+            $logger->warn($key. ' ---'. $value);
+        }
         $checkAuthToken = TRUE;
         $result = $this->checkAuth($checkAuthToken);
         if ($result['config_status'] == -1) {
@@ -457,7 +461,7 @@ class api extends CI_Controller {
         }
         $value['user_id'] = $user_id;
         $this->load->library('feedback');
-        $result = $this->feedback->submitFeedback($value);
+        $result = $this->feedback->submitFeedback($value, $logger);
         $this->output->set_header('AUTH_TOKEN:'.$this->authToken);
         $this->returnfunction($result);
     }

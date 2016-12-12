@@ -1,9 +1,13 @@
 <?php
 
 class feedback_model extends CI_Model {
+
+    public $logger;
     public function __construct(){
     	parent::__construct();
     	$this->legacy_db = $this->load->database('group2', true);
+        $this->load->library("log4php");
+        Logger::configure( dirname(__FILE__) . '/../third_party/log4php.xml');
     }
 
     public function checkFeedbackStatus($params){
@@ -45,15 +49,23 @@ class feedback_model extends CI_Model {
         }
     }
 
-    public function insertFeedbackData($data, $comment){
+    public function insertFeedbackData($data, $params, $logger){
+        $logger = Logger::getLogger("main");
+        $logger->warn("test hello");
+        foreach ($data as $key => $value) {
+            $logger->warn($value);
+        }
         try{
-            if(count($data) == count($data, COUNT_RECURSIVE)){
-                $this->legacy_db->insert('feedbacks', $data);
+            // die('here');
+            if(isset($data[0]) && is_array($data[0])){
+                $this->legacy_db->insert_batch('feedbacks', $data);
+                $sql = 'update order_header set user_comment = CONCAT(user_comment,"feedback_comment = '.$params['comment'].'") where order_id = '.$params['orderId'];
+                //echo $sql ; die;
+                $logger->warn($sql);
+                $query = $this->legacy_db->query($sql);
             }
             else{
-                $this->legacy_db->insert_batch('feedbacks', $data);
-                $this->legacy_db->where('order_id', $data['order_id']);
-                $this->legacy_db->update('order_header', $comment);
+               $this->legacy_db->insert('feedbacks', $data); 
             }
             if ($this->db->_error_message()) {
                 $dberrorObjs->error_code = $this->db->_error_number();

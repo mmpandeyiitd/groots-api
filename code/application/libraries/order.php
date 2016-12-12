@@ -798,18 +798,28 @@ class order extends CI_Controller {
     }
 
     public function fetchordersonly($params) {
+        //die('here');
         $CI = & get_instance();
         $CI->load->model('order_model');
         $CI->load->library('validation');
         $CI->load->config('custom-config');
         $result = $CI->validation->validate_fetch_order($params);
+        $data = array();
         if ($result['status'] == 1) {
             $order_payment_data = $CI->order_model->getOrderPaymentData($params);
             //die(json_encode($order_payment_data));
+            if(empty($order_payment_data)){
+                $result['status'] = 1;
+                $result['msg'] = 'No Orders or  Payments';
+                $result['errors'] = array('No more data to show');
+                $result['data']['responseHeader'] = $this->returnResponseHeader();
+                $result['data']['response'] = $this->returnResponse($data, $params);
+                return $result;
+            }
             if ($order_payment_data == false  || is_a($order_payment_data, 'Exception')) {
                 $result['status'] = 0;
                 $result['msg'] = 'Could Not Find Order';
-                $result['error'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
+                $result['errors'] = is_a($e, 'Exception') ? $e->getMessage() : array('Cannot Find Error');
                 return $result;
             }
             if (isset($order_payment_data) && !empty($order_payment_data)) {
@@ -825,6 +835,7 @@ class order extends CI_Controller {
         } else {
             $result['status'] = 0;
             $result['msg'] = 'Could Not Find Order List';
+            $result['errors'] = array('Order List Finished Or No Orders');
             $result['data']['responseHeader'] = $this->returnResponseHeader();
         }
         $result['data']['response'] = $this->returnResponse($data, $params);
@@ -910,7 +921,7 @@ class order extends CI_Controller {
             if ((is_bool($e) && $e == false) || is_a($e, 'Exception')) {
                 $result['status'] = 0;
                 $result['msg'] = 'Failed To Find Data For This Order Id. Please Try Again';
-                $result['error'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
+                $result['errors'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
                 return $result;
             }
             $mappedArray = $e;
@@ -928,7 +939,7 @@ class order extends CI_Controller {
             if ($e == false  || is_a($e, 'Exception')) {
                 $result['status'] = 0;
                 $result['msg'] = 'Cannot Save Data!!!! Please Try Again!';
-                $result['error'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
+                $result['errors'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
                 return $result;
             } else {
                 foreach ($params['product_details'] as $key => $product) {
@@ -938,7 +949,7 @@ class order extends CI_Controller {
                         if ($e == false || is_a($e, 'Exception')) {
                             $result['status'] = 0;
                             $result['msg'] = 'Failed To Update Data. Please Try Again';
-                            $result['error'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
+                            $result['errors'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
                             return $result;
                         }
                     } else {
@@ -946,7 +957,7 @@ class order extends CI_Controller {
                         if ($e == false || is_a($e, 'Exception')) {
                             $result['status'] = 0;
                             $result['msg'] = 'Failed To Insert Data. Please Try Again';
-                            $result['error'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
+                            $result['errors'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
                             return $result;
                         }
                     }
@@ -963,7 +974,7 @@ class order extends CI_Controller {
                 if ($e == false || is_a($e, 'Exception')) {
                     $result['status'] = 0;
                     $result['msg'] = 'Failed To Delete Data. Please Try Again';
-                    $result['error'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
+                    $result['errors'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
                     return $result;
                 }
             }
