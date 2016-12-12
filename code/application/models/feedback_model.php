@@ -50,18 +50,11 @@ class feedback_model extends CI_Model {
     }
 
     public function insertFeedbackData($data, $params, $logger){
-        $logger = Logger::getLogger("main");
-        $logger->warn("test hello");
-        foreach ($data as $key => $value) {
-            $logger->warn($value);
-        }
         try{
-            // die('here');
-            if(isset($data[0]) && is_array($data[0])){
+            if(count($data) != count($data, COUNT_RECURSIVE)){
+                //var_dump($data);
                 $this->legacy_db->insert_batch('feedbacks', $data);
-                $sql = 'update order_header set user_comment = CONCAT(user_comment,"feedback_comment = '.$params['comment'].'") where order_id = '.$params['orderId'];
-                //echo $sql ; die;
-                $logger->warn($sql);
+                $sql = 'update order_header set user_comment = CONCAT(user_comment," feedback_comment = '.$params['comment'].'") where order_id = '.$params['orderId'];
                 $query = $this->legacy_db->query($sql);
             }
             else{

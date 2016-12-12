@@ -13,6 +13,7 @@ class api extends CI_Controller {
         // $this->load->model("order_model", "order1");
         $this->load->library("log4php");
         Logger::configure( dirname(__FILE__) . '/../third_party/log4php.xml');
+        $logger = Logger::getLogger("main");
     }
 
 
@@ -431,7 +432,6 @@ class api extends CI_Controller {
     }
 
     public function submitFeedback(){
-        die($_REQUEST);
         $logger = Logger::getLogger("main");
         
         foreach ($_POST as $key => $value) {

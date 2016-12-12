@@ -52,6 +52,8 @@ class feedback extends CI_Controller{
             $CI = & get_instance();
             $CI->load->library('validation');
             $CI->load->config('custom-config');
+            $feedbacks = json_decode($params['feedback'], true);
+            $params['feedback'] = $feedbacks;
             $result = $CI->validation->validate_feedback_data($params);
             if($result['status'] == 1){
                 $e = $CI->feedback_model->setFeedbackStatus($params);
@@ -71,12 +73,11 @@ class feedback extends CI_Controller{
                                 'updated_by' => $params['user_id']);
                     }
                     else{
-
-                        foreach ($params['feedback'] as $key => $value) {
+                        foreach ($feedbacks as $value) {
                             $temp = array();
                             $temp = array(
                                     'order_id' => $params['orderId'],
-                                    'feedback_id' => $value['feedbackId'],
+                                    'feedback_id' => intval($value['feedbackId']),
                                     'rating' => $params['rating'],
                                     'created_at' => date('Y-m-d'),
                                     'updated_by' => $params['user_id']);
@@ -84,8 +85,7 @@ class feedback extends CI_Controller{
                         }
 
                     }
-                    $logger->warn(var_dump($data));
-                    //die('here');
+                    //var_dump($data);die;
                     $e = $this->feedback_model->insertFeedbackData($data, $params, $logger);
                     if($e == false || is_a($e, 'Exception')) {
                         $result['status'] = 0;
