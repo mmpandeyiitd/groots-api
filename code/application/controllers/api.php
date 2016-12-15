@@ -316,11 +316,8 @@ class api extends CI_Controller {
         $CI = & get_instance();
         $CI->load->model('apiauthcheck_model');
         $user_id = $CI->apiauthcheck_model->getUserIdbyToken($this->authToken);
-        $_GET['user_id'] = $user_id;
         $value = array();
-        if (isset($_GET)) {
-            $value = $_GET;
-        }
+        $value['user_id'] = $user_id;
         $this->load->library('user');
         $result = $this->user->fetchuserdetails($value);
         $this->output->set_header('AUTH_TOKEN:'.$this->authToken);
