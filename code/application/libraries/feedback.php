@@ -47,7 +47,7 @@ class feedback extends CI_Controller{
         return $result; 
 	}
 
-    public function submitFeedback($params, $logger){
+    public function submitFeedback($params){
         try{
             $CI = & get_instance();
             $CI->load->library('validation');
@@ -84,7 +84,7 @@ class feedback extends CI_Controller{
 
                     }
                     //var_dump($data);die;
-                    $e = $this->feedback_model->insertFeedbackData($data, $params, $logger);
+                    $e = $this->feedback_model->insertFeedbackData($data, $params);
                     if($e == false || is_a($e, 'Exception')) {
                         $result['status'] = 0;
                         $result['msg'] = 'Failed To Insert Data. Please Try Again';

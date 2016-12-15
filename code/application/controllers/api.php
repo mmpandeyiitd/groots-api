@@ -107,7 +107,7 @@ class api extends CI_Controller {
 
     public function userLogin() {
         // $logger->warn("Environment = ". var_dump($_POST));
-
+        //die('here');
         $checkAuthToken = FALSE;
         $result = $this->checkAuth($checkAuthToken);
         if ($result['status'] == 0 && $result['config_status'] != 1) {
@@ -117,8 +117,8 @@ class api extends CI_Controller {
             return;
         }
         $value = array();
-        if (isset($_REQUEST)) {
-            $value = $_REQUEST;
+        if (isset($_POST)) {
+            $value = $_POST;
         }
         $this->load->library('user');
         $result = $this->user->userLogin($value);
@@ -432,11 +432,7 @@ class api extends CI_Controller {
     }
 
     public function submitFeedback(){
-        $logger = Logger::getLogger("main");
-        
-        foreach ($_POST as $key => $value) {
-            $logger->warn($key. ' ---'. $value);
-        }
+        //$logger = Logger::getLogger("main");
         $checkAuthToken = TRUE;
         $result = $this->checkAuth($checkAuthToken);
         if ($result['config_status'] == -1) {
@@ -461,7 +457,7 @@ class api extends CI_Controller {
         }
         $value['user_id'] = $user_id;
         $this->load->library('feedback');
-        $result = $this->feedback->submitFeedback($value, $logger);
+        $result = $this->feedback->submitFeedback($value);
         $this->output->set_header('AUTH_TOKEN:'.$this->authToken);
         $this->returnfunction($result);
     }

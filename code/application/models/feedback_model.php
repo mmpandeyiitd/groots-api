@@ -49,7 +49,7 @@ class feedback_model extends CI_Model {
         }
     }
 
-    public function insertFeedbackData($data, $params, $logger){
+    public function insertFeedbackData($data, $params){
         try{
             if(count($data) != count($data, COUNT_RECURSIVE)){
                 //var_dump($data);
