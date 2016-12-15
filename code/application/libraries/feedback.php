@@ -68,7 +68,6 @@ class feedback extends CI_Controller{
                     if($params['rating'] == 5 && (!isset($params['feedback']) || empty($params['feedback']))){
                         $data = array(
                                 'order_id' => $params['orderId'],
-                                'rating' => $params['rating'],
                                 'created_at' => date('Y-m-d'),
                                 'updated_by' => $params['user_id']);
                     }
@@ -78,7 +77,6 @@ class feedback extends CI_Controller{
                             $temp = array(
                                     'order_id' => $params['orderId'],
                                     'feedback_id' => intval($value['feedbackId']),
-                                    'rating' => $params['rating'],
                                     'created_at' => date('Y-m-d'),
                                     'updated_by' => $params['user_id']);
                             array_push($data, $temp);
