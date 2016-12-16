@@ -1614,4 +1614,42 @@ class validation {
         }
     }
 
+    public function validate_reatailer_leads_data($params){
+        try{
+            $CI = & get_instance();
+            $CI->load->library('form_validation');
+            $result = array();
+            if($CI->form_validation->required($params['name']) == False){
+                $result['status'] = 0;
+                $result['msg'] = 'Fail To Save Data';
+                $result['errors'] = 'Name required';
+            }
+            if($CI->form_validation->required($params['orgName']) == False){
+                $result['status'] = 0;
+                $result['msg'] = 'Fail To Save Data';
+                $result['errors'] = 'Organisation Name Required';
+            }
+            if($CI->form_validation->required($params['contactNo']) == False){
+                $result['status'] = 0;
+                $result['msg'] = 'Fail To Save Data';
+                $result['errors'] = 'Contact Number Required';
+            }
+            if($CI->form_validation->numeric($params['contactNo']) == False){
+                $result['status'] = 0;
+                $result['msg'] = 'Fail To Save Data';
+                $result['errors'] = 'Contact Number Must Be Numeric';
+            }
+            if(empty($result)){
+                $result['status'] = 1;
+                $result['msg'] = 'Valid Data';
+            }
+            return $result;
+        } catch(Exception $ex) {
+            $result['status'] = 0;
+            $result['msg'] = 'Fail To Save Data';
+            $result['errors'] = $ex->getMessage();
+            return $result;
+        }
+    }
+
 }

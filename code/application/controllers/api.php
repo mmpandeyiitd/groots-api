@@ -489,4 +489,14 @@ class api extends CI_Controller {
         $this->returnfunction($result);
     }
 
+    public function signUp(){
+        $value = array();
+        if (isset($_POST)) {
+            $value = $_POST;
+        }
+        $this->load->library('user');
+        $result = $this->user->insertRetailerLeads($value);
+        $this->returnfunction($result);
+    }
+
 }

@@ -314,4 +314,42 @@ class user {
         return $response;
     }
 
+    public function insertRetailerLeads($params){
+        try{
+            $result = array();
+            $CI = & get_instance();
+            $CI->load->model('user_model');
+            $CI->load->library('validation');
+            $result = $CI->validation->validate_reatailer_leads_data($params);
+            if($result['status'] = 0){
+                return $result;
+            }
+            else{
+                $data['name'] = '"' . $params['name'] . '"';
+                $data['org_name'] = '"' . $params['orgName'] . '"';
+                $data['designation'] = (empty($params['designation'])) ? null:'"' . $params['designation'] . '"';
+                $data['contact_number'] = '"' . $params['contactNo'] . '"';
+                $data['email'] = '"' . $params['emailId'] . '"';
+                $data['created_at'] = '"' . date('Y-m-d H:i:s') . '"';
+                $data['updated_by'] = 1;
+                $e = $CI->user_model->insertRetailerLeads($data);
+                if(is_a($e, 'Exception')){
+                    $result['status'] = 0;
+                    $result['msg'] = 'Fail To Save Data';
+                    $result['errors'] = $e->getMessage();
+                    return $result;
+                }
+                else{
+                    $result['status'] = 1;
+                    $result['msg'] = 'Form Submitted Successfully';
+                    return $result;
+                }
+            }
+        } catch (Exception $e){
+            $result['status'] = 0;
+            $result['msg'] = 'Fail To Save Data';
+            $result['errors'] = $e->getMessage();
+            return $result; 
+        }
+    }
 }

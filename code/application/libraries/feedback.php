@@ -15,7 +15,13 @@ class feedback extends CI_Controller{
         $CI->load->config('custom-config');
         $e = $CI->feedback_model->checkFeedbackStatus($params);
         $result = array();
-        if($e == false || is_a($e, 'Exception') || !isset($e) || empty($e) || $e == null){
+        if(!isset($e) || empty($e) || $e == null){
+            $result['status'] = 1;
+            $result['msg'] = 'No order Delivered Yet';
+            $result['errors'] = '';
+            return $result;
+        }
+        if($e == false || is_a($e, 'Exception')){
         	$result['status'] = 0;
             $result['msg'] = 'Failed To Find Data. Please Try Again';
             $result['errors'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
