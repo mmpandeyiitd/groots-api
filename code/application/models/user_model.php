@@ -188,7 +188,7 @@ class user_model extends CI_Model {
     
     public function getUserDetails($params) {
        try{
-            $query = 'SELECT r.id, r.name as retailerName, r.due_date as outstandingDate, r.total_payable_amount as outstandingAmount, c.name as collectionRepName, ge.employee_name as salesRepName  FROM retailer as r left join collection_agent as c on r.collection_agent_id = c.id left join groots_employee as ge on r.sales_rep_id = ge.employee_id where r.id="'.$params['user_id'].'"';
+            $query = 'SELECT r.id, r.name as retailerName, r.due_date as outstandingDate, r.total_payable_amount as outstandingAmount, c.name as collectionRepName, ge.name as salesRepName  FROM retailer as r left join collection_agent as c on r.collection_agent_id = c.id left join groots_employee as ge on r.sales_rep_id = ge.id where r.id="'.$params['user_id'].'"';
             //echo $query; die;
             $user_details_query = $this->db2->query($query);
             $user_details  = $user_details_query->result();
