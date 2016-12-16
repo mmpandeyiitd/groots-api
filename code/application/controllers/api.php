@@ -106,9 +106,8 @@ class api extends CI_Controller {
     }
 
     public function userLogin() {
-        // $logger = Logger::getLogger("main");
         // $logger->warn("Environment = ". var_dump($_POST));
-
+        //die('here');
         $checkAuthToken = FALSE;
         $result = $this->checkAuth($checkAuthToken);
         if ($result['status'] == 0 && $result['config_status'] != 1) {
@@ -118,8 +117,8 @@ class api extends CI_Controller {
             return;
         }
         $value = array();
-        if (isset($_REQUEST)) {
-            $value = $_REQUEST;
+        if (isset($_POST)) {
+            $value = $_POST;
         }
         $this->load->library('user');
         $result = $this->user->userLogin($value);
@@ -317,11 +316,8 @@ class api extends CI_Controller {
         $CI = & get_instance();
         $CI->load->model('apiauthcheck_model');
         $user_id = $CI->apiauthcheck_model->getUserIdbyToken($this->authToken);
-        $_REQUEST['id'] = $user_id;
         $value = array();
-        if (isset($_REQUEST)) {
-            $value = $_REQUEST;
-        }
+        $value['user_id'] = $user_id;
         $this->load->library('user');
         $result = $this->user->fetchuserdetails($value);
         $this->output->set_header('AUTH_TOKEN:'.$this->authToken);
@@ -433,6 +429,7 @@ class api extends CI_Controller {
     }
 
     public function submitFeedback(){
+        //$logger = Logger::getLogger("main");
         $checkAuthToken = TRUE;
         $result = $this->checkAuth($checkAuthToken);
         if ($result['config_status'] == -1) {
@@ -461,4 +458,35 @@ class api extends CI_Controller {
         $this->output->set_header('AUTH_TOKEN:'.$this->authToken);
         $this->returnfunction($result);
     }
+
+    public function userPayments(){
+        $checkAuthToken = TRUE;
+        $result = $this->checkAuth($checkAuthToken);
+        if ($result['config_status'] == -1) {
+            $json_data = json_encode($result);
+            $data['response'] = $json_data;
+            $this->load->view('responseData', $data);
+            return;
+        }
+        if ($result['config_status'] == 0) {
+            $this->output->set_header("RESPONSE_CODE:0");
+            $json_data = json_encode($result);
+            $data['response'] = $json_data;
+            $this->load->view('responseData', $data);
+            return;
+        }
+        $CI = & get_instance();
+        $CI->load->model('apiauthcheck_model');
+        $user_id = $CI->apiauthcheck_model->getUserIdbyToken($this->authToken);
+        $_GET['user_id'] = 129;
+        $value = array();
+        if (isset($_GET)) {
+            $value = $_GET;
+        }
+        $this->load->library('user');
+        $result = $this->user->getUserPayments($value);
+        $this->output->set_header('AUTH_TOKEN:'.$this->authToken);
+        $this->returnfunction($result);
+    }
+
 }

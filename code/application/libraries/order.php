@@ -798,26 +798,47 @@ class order extends CI_Controller {
     }
 
     public function fetchordersonly($params) {
+        //die('here');
         $CI = & get_instance();
         $CI->load->model('order_model');
         $CI->load->library('validation');
         $CI->load->config('custom-config');
         $result = $CI->validation->validate_fetch_order($params);
+        $data = array();
         if ($result['status'] == 1) {
-            $order_header_data = $CI->order_model->getLimitedDataByOrderId($params);
-            if (isset($order_header_data) && !empty($order_header_data)) {
+            $order_payment_data = $CI->order_model->getOrderPaymentData($params);
+            //die(json_encode($order_payment_data));
+            if(empty($order_payment_data)){
+                $result['status'] = 1;
+                $result['msg'] = 'No Orders or  Payments';
+                $result['errors'] = array('No more data to show');
+                $result['data']['responseHeader'] = $this->returnResponseHeader();
+                $result['data']['response'] = $this->returnResponse($data, $params);
+                return $result;
+            }
+            if ($order_payment_data == false  || is_a($order_payment_data, 'Exception')) {
+                $result['status'] = 0;
+                $result['msg'] = 'Could Not Find Order';
+                $result['errors'] = is_a($e, 'Exception') ? $e->getMessage() : array('Cannot Find Error');
+                return $result;
+            }
+            if (isset($order_payment_data) && !empty($order_payment_data)) {
                 $result['status'] = 1;
                 $result['msg'] = 'Order List';
                 $result['data']['responseHeader'] = $this->returnResponseHeader();
+                //die(json_encode($order_payment_data));
+                $data = $this->prepareLedgerData($order_payment_data);
+                //die(json_encode($data));
             }
         } else if ($result['status'] == 0) {
             return $result;
         } else {
             $result['status'] = 0;
             $result['msg'] = 'Could Not Find Order List';
+            $result['errors'] = array('Order List Finished Or No Orders');
             $result['data']['responseHeader'] = $this->returnResponseHeader();
         }
-        $result['data']['response'] = $this->returnResponse($order_header_data, $params);
+        $result['data']['response'] = $this->returnResponse($data, $params);
         return $result;
     }
 
@@ -900,7 +921,7 @@ class order extends CI_Controller {
             if ((is_bool($e) && $e == false) || is_a($e, 'Exception')) {
                 $result['status'] = 0;
                 $result['msg'] = 'Failed To Find Data For This Order Id. Please Try Again';
-                $result['error'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
+                $result['errors'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
                 return $result;
             }
             $mappedArray = $e;
@@ -918,7 +939,7 @@ class order extends CI_Controller {
             if ($e == false  || is_a($e, 'Exception')) {
                 $result['status'] = 0;
                 $result['msg'] = 'Cannot Save Data!!!! Please Try Again!';
-                $result['error'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
+                $result['errors'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
                 return $result;
             } else {
                 foreach ($params['product_details'] as $key => $product) {
@@ -928,7 +949,7 @@ class order extends CI_Controller {
                         if ($e == false || is_a($e, 'Exception')) {
                             $result['status'] = 0;
                             $result['msg'] = 'Failed To Update Data. Please Try Again';
-                            $result['error'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
+                            $result['errors'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
                             return $result;
                         }
                     } else {
@@ -936,7 +957,7 @@ class order extends CI_Controller {
                         if ($e == false || is_a($e, 'Exception')) {
                             $result['status'] = 0;
                             $result['msg'] = 'Failed To Insert Data. Please Try Again';
-                            $result['error'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
+                            $result['errors'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
                             return $result;
                         }
                     }
@@ -953,7 +974,7 @@ class order extends CI_Controller {
                 if ($e == false || is_a($e, 'Exception')) {
                     $result['status'] = 0;
                     $result['msg'] = 'Failed To Delete Data. Please Try Again';
-                    $result['error'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
+                    $result['errors'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
                     return $result;
                 }
             }
@@ -970,5 +991,92 @@ class order extends CI_Controller {
         $result['data']['response'] = $this->returnResponse(null, $params);
         return $result;
     }
+
+
+    public function prepareLedgerData($order_payment_data){
+        //die(json_encode($order_payment_data));
+        try{
+            $start = true;
+            $prevOrderId  = '';
+            $prevPaymentId= '';
+            $result = array();
+            foreach ($order_payment_data as $key => $value) {
+                if($start){
+                    if($value->order_id == null){
+                        $result = $this->addOnlyPaymentInLedger($result, $value);
+                    }
+                    else if($value->payment_id == null){
+                        $result = $this->addOnlyOrderInLedger($result, $value);
+                    }
+                    else{
+                        $result = $this->addOrderPaymentInLedger($result, $value);
+                    }
+                }
+                else{
+                    if($value->order_id == null || $prevOrderId == $value->order_id){
+                        $result = $this->addOnlyPaymentInLedger($result, $value);
+                    }
+                    else if($value->payment_id == null || $prevPaymentId == $value->payment_id){
+                        $result = $this->addOnlyOrderInLedger($result, $value);
+                    }
+                    else{
+                        $result = $this->addOrderPaymentInLedger($result, $value);
+                    }
+                }
+                $start = false;
+                $prevPaymentId = $value->payment_id;
+                $prevOrderId = $value->order_id;
+            }
+            return $result;
+        } catch (Exception $e) {
+            return $e;
+        }
+    }
+
+    public function addOnlyOrderInLedger($result, $value){
+        $temp = array();
+        $temp['orderId'] = $value->order_id;
+        $temp['deliveryDate'] = $value->date;
+        $temp['orderNumber'] = 'GRT'.$value->order_id;
+        $temp['totalPayableAmount'] = $value->total_payable_amount;
+        $temp['invoiceNo'] = 'GFV'.substr($value->date, 0,4).substr($value->date, 5, 2).$value->order_id;
+        $temp['status'] = $value->order_status;
+
+        array_push($result, $temp);
+        return $result;
+    }
+
+    public function addOnlyPaymentInLedger($result, $value){
+        $temp = array();
+        $temp2 = array();
+        $temp2['invoiceNo'] = null;
+        $temp['id'] = $value->payment_id;
+        $temp['amountPaid'] = $value->paid_amount;
+        $temp['modeOfPayment'] = $value->payment_type;
+        $temp['chequeStatus'] = $value->cheque_status;
+        $temp['referenceNo'] = $value->cheque_no;
+        $temp['date'] = $value->date;
+        $temp2['payment'] = $temp;
+        array_push($result, $temp2);
+        return $result;
+    }
+
+    public function addOrderPaymentInLedger($result, $value){
+        $result = $this->addOnlyOrderInLedger($result, $value);
+        $size = count($result);
+        $temp = array();
+        $temp['id'] = $value->payment_id;
+        $temp['amountPaid'] = $value->paid_amount;
+        $temp['modeOfPayment'] = $value->payment_type;
+        $temp['chequeStatus'] = $value->cheque_status;
+        $temp['referenceNo'] = $value->cheque_no;
+        $temp['date'] = $value->date;
+        $result[$size-1]['payment'] = (object)$temp;
+        return $result;
+
+    }
+
+    
+
 
 }

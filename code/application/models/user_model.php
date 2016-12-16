@@ -188,7 +188,9 @@ class user_model extends CI_Model {
     
     public function getUserDetails($params) {
        try{
-            $user_details_query = $this->db2->query('SELECT name, email, retailer_code,VAT_number,mobile,telephone,address,city,state,pincode,image,website,contact_person1,contact_person2,product_categories,categories_of_interest,store_size FROM retailer where id="'.$params['id'].'"');
+            $query = 'SELECT r.id, r.name as retailerName, r.due_date as outstandingDate, r.total_payable_amount as outstandingAmount, c.name as collectionRepName, ge.employee_name as salesRepName  FROM retailer as r left join collection_agent as c on r.collection_agent_id = c.id left join groots_employee as ge on r.sales_rep_id = ge.employee_id where r.id="'.$params['user_id'].'"';
+            //echo $query; die;
+            $user_details_query = $this->db2->query($query);
             $user_details  = $user_details_query->result();
             if($this->db2->_error_message()){
                 $dberrorObjs->error_code = $this->db2->_error_number();
@@ -202,6 +204,72 @@ class user_model extends CI_Model {
             }
         }  catch (Exception $e){
            return FALSE;
+        }
+    }
+
+    public function getUserPayments($params){
+        try{
+            $this->db1= $this->load->database('group2', true);
+            $query = 'select * from retailer_payments where retailer_id = '.$params['user_id'].' order by date desc';
+            $user_payments = $this->db1->query($query);
+            if($this->db1->_error_message()){
+                $dberrorObjs->error_code = $this->db1->_error_number();
+                $dberrorObjs->error_message = $this->db1->_error_message();
+                $dberrorObjs->error_query = $this->db1->last_query();
+                $dberrorObjs->error_time = date("Y-m-d H:i:s");
+                $this->db1->insert('dberror', $dberrorObjs);
+                return new Exception('Found Error : ' . $dberrorObjs->error_message);
+            }
+            else{
+                $user_payments = $user_payments->result();
+                return $user_payments;
+            }
+        } catch (Exception $e){
+            return false;
+        }
+    }
+
+    public function getUserTotalOrderAmount($params){
+        try{
+            $this->db1 = $this->load->database('group2', true);
+            $orderSql= 'select total_payable_amount from order_header where user_id = '.$params['user_id'].' and delivery_date >= "2016-09-01" and status = "Delivered"';
+            $order_amount = $this->db1->query($orderSql);
+            if($this->db1->_error_message()){
+                $dberrorObjs->error_code = $this->db1->_error_number();
+                $dberrorObjs->error_message = $this->db1->_error_message();
+                $dberrorObjs->error_query = $this->db1->last_query();
+                $dberrorObjs->error_time = date("Y-m-d H:i:s");
+                $this->db1->insert('dberror', $dberrorObjs);
+                return new Exception('Found Error : ' . $dberrorObjs->error_message);
+            }
+            else{
+                $order_amount = $order_amount->result();
+                return $order_amount;
+            }
+        } catch (Exception $e){
+            return false;
+        }
+    }
+
+    public function getUserTotalPaymentAmount($params){
+        try{
+            $this->db1= $this->load->database('group2', true);
+            $paymentSql = 'select paid_amount from retailer_payments where retailer_id = '.$params['user_id'].' and date >= "2016-09-01" and status != 0';
+            $paymentAmount = $this->db1->query($paymentSql);
+            if($this->db1->_error_message()){
+                $dberrorObjs->error_code = $this->db1->_error_number();
+                $dberrorObjs->error_message = $this->db1->_error_message();
+                $dberrorObjs->error_query = $this->db1->last_query();
+                $dberrorObjs->error_time = date("Y-m-d H:i:s");
+                $this->db1->insert('dberror', $dberrorObjs);
+                return new Exception('Found Error : ' . $dberrorObjs->error_message);
+            }
+            else{
+                $paymentAmount = $paymentAmount->result();
+                return $paymentAmount;
+            }
+        } catch (Exception $e){
+            return false;
         }
     }
 
