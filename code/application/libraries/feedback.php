@@ -18,7 +18,7 @@ class feedback extends CI_Controller{
         if($e == false || is_a($e, 'Exception') || !isset($e) || empty($e) || $e == null){
         	$result['status'] = 0;
             $result['msg'] = 'Failed To Find Data. Please Try Again';
-            $result['error'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
+            $result['errors'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
             return $result;
         }
         $order_feedback = array();
@@ -52,13 +52,15 @@ class feedback extends CI_Controller{
             $CI = & get_instance();
             $CI->load->library('validation');
             $CI->load->config('custom-config');
+            $feedbacks = json_decode($params['feedback'], true);
+            $params['feedback'] = $feedbacks;
             $result = $CI->validation->validate_feedback_data($params);
             if($result['status'] == 1){
                 $e = $CI->feedback_model->setFeedbackStatus($params);
                 if($e == false || is_a($e, 'Exception')) {
                     $result['status'] = 0;
                     $result['msg'] = 'Failed To Update Data. Please Try Again';
-                    $result['error'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
+                    $result['errors'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
                     return $result;
                 }
                 else{
@@ -66,27 +68,27 @@ class feedback extends CI_Controller{
                     if($params['rating'] == 5 && (!isset($params['feedback']) || empty($params['feedback']))){
                         $data = array(
                                 'order_id' => $params['orderId'],
-                                'rating' => $params['rating'],
                                 'created_at' => date('Y-m-d'),
                                 'updated_by' => $params['user_id']);
                     }
                     else{
-                        foreach ($params['feedback'] as $key => $value) {
+                        foreach ($feedbacks as $value) {
+                            $temp = array();
                             $temp = array(
                                     'order_id' => $params['orderId'],
-                                    'feedback_id' => $value['feedbackId'],
-                                    'rating' => $params['rating'],
-                                    'comment' => $value['comment'],
+                                    'feedback_id' => intval($value['feedbackId']),
                                     'created_at' => date('Y-m-d'),
                                     'updated_by' => $params['user_id']);
                             array_push($data, $temp);
                         }
+
                     }
-                    $e = $this->feedback_model->insertFeedbackData($data);
+                    //var_dump($data);die;
+                    $e = $this->feedback_model->insertFeedbackData($data, $params);
                     if($e == false || is_a($e, 'Exception')) {
                         $result['status'] = 0;
                         $result['msg'] = 'Failed To Insert Data. Please Try Again';
-                        $result['error'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
+                        $result['errors'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
                         return $result;
                     }
                 }
@@ -100,7 +102,7 @@ class feedback extends CI_Controller{
         } catch(Exception $e){
             $result['status'] = 0;
             $result['msg'] = 'Failed To Insert Data. Please Try Again';
-            $result['error'] = $e->getMessage();
+            $result['errors'] = $e->getMessage();
             return $result;
         }
     }

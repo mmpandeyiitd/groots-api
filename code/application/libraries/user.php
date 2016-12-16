@@ -216,17 +216,102 @@ class user {
         try {
             $CI = & get_instance();
             $CI->load->model('user_model');
-            $data['id']        = $params['id'];
-            $user_details = $CI->user_model->getUserDetails($data);
-            $result['status']       = 'SUCCESS';
+            $user_details = $CI->user_model->getUserDetails($params);
+            if ($user_details == false || is_a($user_details, 'Exception')) {
+                $result['status'] = 0;
+                $result['msg'] = 'Cannot Find Data. Please Try Again';
+                $result['error'] = is_a($user_details, 'Exception') ? $user_details->getMessage() : 'Cannot Find Error';
+                return $result;
+            }
+            $order_amount = $CI->user_model->getUserTotalOrderAmount($params);
+            if (is_a($order_amount, 'Exception')) {
+                $result['status'] = 0;
+                $result['msg'] = 'Cannot Find Order Data. Please Try Again';
+                $result['error'] = $order_amount->getMessage();
+                return $result;
+            }
+            $payment_amount = $CI->user_model->getUserTotalPaymentAmount($params);
+            if (is_a($payment_amount, 'Exception')) {
+                $result['status'] = 0;
+                $result['msg'] = 'Cannot Find Payment Data. Please Try Again';
+                $result['error'] = $payment_amount->getMessage();
+                return $result;
+            }
+            // print_r($user_details->retailerName); die;
+            $user_details = $this->mergeUserDetails($user_details, $order_amount, $payment_amount);
+            $result['status']       = 1;
             $result['msg']          = 'User details found in Database';
-            $result['data']         = $user_details;
+            $result['data']['responseHeader'] = $this->returnResponseHeader();
+            $result['data']['response'] = $this->returnResponse($user_details, $params);
             return $result;
         } catch (Exception $ex) {
-            $result['status'] = "Fail";
+            $result['status'] = 0;
             $result['errors'] = $ex->getMessage();
+            $result['msg'] = "User Details Fail";
+            $result['data'] = (object)array();
             return $result;
         }
+    }
+
+    public function getUserPayments($params){
+        try{
+            $CI = & get_instance();
+            $CI->load->model('user_model');
+            $user_payments = $CI->user_model->getUserPayments($params);
+            if ($user_payments == false || is_a($user_payments, 'Exception')) {
+                $result['status'] = 0;
+                $result['msg'] = 'Cannot Find Data. Please Try Again';
+                $result['error'] = is_a($user_payments, 'Exception') ? $user_payments->getMessage() : 'Cannot Find Error';
+                return $result;
+                }
+            $result['status']       = 1;
+            $result['msg']          = 'User Payments found in Database';
+            $result['data']['responseHeader'] = $this->returnResponseHeader();
+            $result['data']['response'] = $this->returnResponse($user_payments, $params);
+            return $result;
+        } catch (Exception $e){
+            $result['status'] = 0;
+            $result['errors'] = $ex->getMessage();
+            $result['msg'] = "User Payments Fail";
+            $result['data'] = (object)array();
+            return $result;
+        } 
+    }
+
+    public function mergeUserDetails($user_details, $order_amount, $payment_amount){
+        $outstanding = 0;
+        foreach ($order_amount as $key => $value) {
+            $outstanding+=$value->total_payable_amount;
+        }
+        foreach ($payment_amount as $key => $value) {
+            $outstanding-=$value->paid_amount;
+        }
+        foreach ($user_details as $key => $value) {
+            $value->outstandingAmount = $outstanding;
+        }
+        return $user_details;
+    }
+
+    public function returnResponseHeader() {
+        $responseHeader = array();
+        $responseHeader['status'] = 0;
+        $responseHeader['QTime'] = null;
+        $responseHeader['params'] = null;
+        return $responseHeader;
+    }
+
+    public function returnResponse($data, $params) {
+        $response = array();
+        if (isset($data) && !empty($data)) {
+            $response['numFound'] = count($data);
+            $response['start'] = intval($params['page']);
+            $response['docs'] = $data;
+        } else {
+            $response['numFound'] = null;
+            $response['start'] = null;
+            $response['docs'] = null;
+        }
+        return $response;
     }
 
 }

@@ -1575,7 +1575,7 @@ class validation {
                 $result['msg'] = 'Fail To Save Data';
                 $result['errors'] = 'Rating required';
             }
-            if($CI->form_validation->numeric($params['rating']) == False){
+            if($CI->form_validation->numeric(intval($params['rating'])) == False){
                 $result['status'] = 0;
                 $result['msg'] = 'Fail To Save Data';
                 $result['errors'] = 'Rating Must Be Numeric';
