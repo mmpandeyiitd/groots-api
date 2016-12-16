@@ -316,6 +316,7 @@ class user {
 
     public function insertRetailerLeads($params){
         try{
+            //die(print_r($params));
             $result = array();
             $CI = & get_instance();
             $CI->load->model('user_model');

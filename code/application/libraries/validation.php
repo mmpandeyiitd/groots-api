@@ -1634,7 +1634,7 @@ class validation {
                 $result['msg'] = 'Fail To Save Data';
                 $result['errors'] = 'Contact Number Required';
             }
-            if($CI->form_validation->numeric($params['contactNo']) == False){
+            if(!$CI->form_validation->numeric(intval($params['contactNo']))){
                 $result['status'] = 0;
                 $result['msg'] = 'Fail To Save Data';
                 $result['errors'] = 'Contact Number Must Be Numeric';
