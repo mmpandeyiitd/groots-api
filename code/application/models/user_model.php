@@ -297,7 +297,7 @@ class user_model extends CI_Model {
     public function insertRetailerLeads($params){
         try{
             $params = '(' . implode(',', $params) . ')';
-            $sql = 'insert into retailer_leads1 (name, organisation_name, designation, contact_number, email, created_at, updated_by) values'.$params;
+            $sql = 'insert into retailer_leads (name, organisation_name, designation, contact_number, email, created_at, updated_by) values'.$params;
             //die($sql);
             $query = $this->db2->query($sql);
             if($this->db2->_error_message()){

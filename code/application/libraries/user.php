@@ -334,22 +334,22 @@ class user {
                 $data['email'] = '"' . $params['emailId'] . '"';
                 $data['created_at'] = '"' . date('Y-m-d H:i:s') . '"';
                 $data['updated_by'] = 1;
-                $res = $this->sendSignUpEmail($params);
-                if($res['status'] == 1){
-                    $e = $CI->user_model->insertRetailerLeads($data);
-                    if(is_a($e, 'Exception')){
-                        $result['status'] = 0;
-                        $result['msg'] = 'Fail To Save Data';
-                        $result['errors'] = $e->getMessage();
-                        return $result;
-                    }
-                    else{
-                        $result['status'] = 1;
-                        $result['msg'] = 'Form Submitted Successfully';
-                        return $result;
-                    }
+                $e = $CI->user_model->insertRetailerLeads($data);
+                if(is_a($e, 'Exception')){
+                    $result['status'] = 0;
+                    $result['msg'] = 'Fail To Save Data';
+                    $result['errors'] = $e->getMessage();
+                    return $result;
                 }
-                else return $res;
+                else{
+                    $result['status'] = 1;
+                    $result['msg'] = 'Form Submitted Successfully';
+                    $res = $this->sendSignUpEmail($params);
+                    if($res['status'] == 1){
+                        return $result;
+                    }
+                    else return $result;
+                }
             }
         } catch (Exception $e){
             $result['status'] = 0;
