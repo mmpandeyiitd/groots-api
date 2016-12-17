@@ -71,7 +71,7 @@ span.s3 {
                          </td>
                       </tr>
                       <tr>
-                        <td colspan="2" align="left" valign="top" style="margin:0;padding:5px"><p style="margin:0;padding:0;padding-left:10px;color:#905527; font-weight:bold;">Designamtion : '.$designation.'</p>
+                        <td colspan="2" align="left" valign="top" style="margin:0;padding:5px"><p style="margin:0;padding:0;padding-left:10px;color:#905527; font-weight:bold;">Designation : '.$designation.'</p>
                          </td>
                       </tr>
                     </tbody>
