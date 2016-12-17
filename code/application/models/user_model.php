@@ -188,7 +188,8 @@ class user_model extends CI_Model {
     
     public function getUserDetails($params) {
        try{
-            $user_details_query = $this->db2->query('SELECT name, email, retailer_code,VAT_number,mobile,telephone,address,city,state,pincode,image,website,contact_person1,contact_person2,product_categories,categories_of_interest,store_size FROM retailer where id="'.$params['id'].'"');
+            $query = 'SELECT '.$params['fields'].' FROM retailer where id="'.$params['user_id'].'"';
+            $user_details_query = $this->db2->query($query);
             $user_details  = $user_details_query->result();
             if($this->db2->_error_message()){
                 $dberrorObjs->error_code = $this->db2->_error_number();
@@ -202,6 +203,28 @@ class user_model extends CI_Model {
             }
         }  catch (Exception $e){
            return FALSE;
+        }
+    }
+
+    public function getUserPayments($params){
+        try{
+            $this->db1= $this->load->database('group2', true);
+            $query = 'select * from retailer_payments where retailer_id = '.$params['user_id'].' order by date desc';
+            $user_payments = $this->db1->query($query);
+            if($this->db1->_error_message()){
+                $dberrorObjs->error_code = $this->db1->_error_number();
+                $dberrorObjs->error_message = $this->db1->_error_message();
+                $dberrorObjs->error_query = $this->db1->last_query();
+                $dberrorObjs->error_time = date("Y-m-d H:i:s");
+                $this->db1->insert('dberror', $dberrorObjs);
+                return new Exception('Found Error : ' . $dberrorObjs->error_message);
+            }
+            else{
+                $user_payments = $user_payments->result();
+                return $user_payments;
+            }
+        } catch (Exception $e){
+            return false;
         }
     }
 
