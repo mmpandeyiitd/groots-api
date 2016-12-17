@@ -303,7 +303,7 @@ class order_model extends CI_Model {
 
     public function getOrderPaymentData($params){
         try{
-            $sql = 'select * from order_payment_view where retailer_id = '.$params['user_id'].' order by date desc , order_id desc limit 60, 10';
+            $sql = 'select * from order_payment_view where retailer_id = '.$params['user_id'].' order by date desc , order_id desc limit '.$params['start'].', '.$params['rows'];
             //echo $sql; die;
             $order_payment = $this->legacy_db->query($sql);
             $order_payment = $order_payment->result();

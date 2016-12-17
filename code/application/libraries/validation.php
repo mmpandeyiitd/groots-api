@@ -1623,27 +1623,30 @@ class validation {
                 $result['status'] = 0;
                 $result['msg'] = 'Fail To Save Data';
                 $result['errors'] = 'Name required';
+                return $result;
             }
-            if($CI->form_validation->required($params['orgName']) == False){
+            else if($CI->form_validation->required($params['orgName']) == False){
                 $result['status'] = 0;
                 $result['msg'] = 'Fail To Save Data';
                 $result['errors'] = 'Organisation Name Required';
+                return $result;
             }
-            if($CI->form_validation->required($params['contactNo']) == False){
+            else if($CI->form_validation->required($params['contactNo']) == False){
                 $result['status'] = 0;
                 $result['msg'] = 'Fail To Save Data';
                 $result['errors'] = 'Contact Number Required';
+                return $result;
             }
-            if(!$CI->form_validation->numeric(intval($params['contactNo']))){
+            else if(!$CI->form_validation->numeric($params['contactNo'])){
                 $result['status'] = 0;
                 $result['msg'] = 'Fail To Save Data';
                 $result['errors'] = 'Contact Number Must Be Numeric';
+                return $result;
             }
-            if(empty($result)){
+            else {
                 $result['status'] = 1;
                 $result['msg'] = 'Valid Data';
             }
-            return $result;
         } catch(Exception $ex) {
             $result['status'] = 0;
             $result['msg'] = 'Fail To Save Data';

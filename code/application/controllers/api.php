@@ -198,8 +198,8 @@ class api extends CI_Controller {
         $CI = & get_instance();
         $CI->load->model('apiauthcheck_model');
         $value = array();
-        if (isset($_REQUEST)) {
-            $value = $_REQUEST;
+        if (isset($_POST)) {
+            $value = $_POST;
         }
         $this->load->library('user');
         $result = $this->user->forgotPassword($value);
