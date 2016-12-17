@@ -11,6 +11,7 @@ class communicationengine {
      * @return multitype:string
 	 */
     public function emailCommunication($data) { // SendGrid API - Mail Service
+        //die(print_r($data));
         $CI = & get_instance();
         $CI->load->config('custom-config');
         $from_email = $CI->config->item('FROM_EMAIL');

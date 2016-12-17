@@ -2,10 +2,13 @@
 
 class order_model extends CI_Model {
 
+    public $logger;
     public function __construct() {
         parent::__construct();
         // $this->load->database('group1', TRUE);
         $this->legacy_db = $this->load->database('group2', true);
+        Logger::configure( dirname(__FILE__) . '/../third_party/log4php.xml');
+        $logger = Logger::getLogger("main");
     }
 
     /**
@@ -16,8 +19,11 @@ class order_model extends CI_Model {
      */
     public function saveOrderHeaderAndLinesData($data) {
         try {
+            // $logger = Logger::getLogger("main");
+            // $logger->warn(print_r($data));
             $this->legacy_db->trans_begin();
-            $sql = 'INSERT INTO order_header (order_number,created_date,payment_status,billing_name,billing_email,billing_phone,billing_address,billing_city,billing_state,billing_pincode,shipping_name,shipping_email,shipping_phone,shipping_address,shipping_state,shipping_city,shipping_pincode,total,total_payable_amount,discount_amt,status,order_type,coupon_code,shipping_charges,tax,timestamp,user_id,delivery_date,user_comment,invoice_number) VALUES ' . $data['header'];
+            $sql = 'INSERT INTO order_header (order_number,created_date,payment_status,billing_name,billing_email,billing_phone,billing_address,billing_city,billing_state,billing_pincode,shipping_name,shipping_email,shipping_phone,shipping_address,shipping_state,shipping_city,shipping_pincode,total,total_payable_amount,discount_amt,status,order_type,coupon_code,shipping_charges,tax,timestamp,user_id,delivery_date,user_comment,invoice_number, warehouse_id) VALUES ' . $data['header'];
+            //die($sql);
             $this->legacy_db->query($sql);
             $id = $this->legacy_db->insert_id();
             $data['line'] = str_replace("##ORDERID##", $id, $data['line']);
@@ -297,7 +303,7 @@ class order_model extends CI_Model {
 
     public function getOrderPaymentData($params){
         try{
-            $sql = 'select * from order_payment_view where retailer_id = '.$params['user_id'].' order by date desc , order_id desc limit 60, 10';
+            $sql = 'select * from order_payment_view where retailer_id = '.$params['user_id'].' order by date desc , order_id desc limit '.$params['start'].', '.$params['rows'];
             //echo $sql; die;
             $order_payment = $this->legacy_db->query($sql);
             $order_payment = $order_payment->result();

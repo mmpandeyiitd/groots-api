@@ -188,7 +188,7 @@ class user_model extends CI_Model {
     
     public function getUserDetails($params) {
        try{
-            $query = 'SELECT r.id, r.name as retailerName, r.due_date as outstandingDate, r.total_payable_amount as outstandingAmount, c.name as collectionRepName, ge.employee_name as salesRepName  FROM retailer as r left join collection_agent as c on r.collection_agent_id = c.id left join groots_employee as ge on r.sales_rep_id = ge.employee_id where r.id="'.$params['user_id'].'"';
+            $query = 'SELECT r.id, r.name as retailerName, r.due_date as outstandingDate, r.total_payable_amount as outstandingAmount, c.name as collectionRepName, ge.name as salesRepName  FROM retailer as r left join collection_agent as c on r.collection_agent_id = c.id left join groots_employee as ge on r.sales_rep_id = ge.id where r.id="'.$params['user_id'].'"';
             //echo $query; die;
             $user_details_query = $this->db2->query($query);
             $user_details  = $user_details_query->result();
@@ -270,6 +270,47 @@ class user_model extends CI_Model {
             }
         } catch (Exception $e){
             return false;
+        }
+    }
+
+    public function getUserDetailsAll($params) {
+       try{
+            $query = 'SELECT * from retailer where id = '.$params['id'];
+            //echo $query; die;
+            $user_details_query = $this->db2->query($query);
+            $user_details  = $user_details_query->result();
+            if($this->db2->_error_message()){
+                $dberrorObjs->error_code = $this->db2->_error_number();
+                $dberrorObjs->error_message = $this->db2->_error_message();
+                $dberrorObjs->error_query = $this->db2->last_query();
+                $dberrorObjs->error_time = date("Y-m-d H:i:s");
+                $this->db2->insert('dberror', $dberrorObjs);
+                return FALSE;
+            } else{
+                return $user_details;
+            }
+        }  catch (Exception $e){
+           return FALSE;
+        }
+    }
+
+    public function insertRetailerLeads($params){
+        try{
+            $params = '(' . implode(',', $params) . ')';
+            $sql = 'insert into retailer_leads (name, organisation_name, designation, contact_number, email, created_at, updated_by) values'.$params;
+            //die($sql);
+            $query = $this->db2->query($sql);
+            if($this->db2->_error_message()){
+                $dberrorObjs->error_code = $this->db2->_error_number();
+                $dberrorObjs->error_message = $this->db2->_error_message();
+                $dberrorObjs->error_query = $this->db2->last_query();
+                $dberrorObjs->error_time = date("Y-m-d H:i:s");
+                $this->db2->insert('dberror', $dberrorObjs);
+                return new Exception($dberrorObjs->error_message);
+            }
+            else return array();
+        } catch (Exception $e){
+            return $e;
         }
     }
 

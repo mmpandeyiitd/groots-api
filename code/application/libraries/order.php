@@ -29,7 +29,7 @@ class order extends CI_Controller {
             $result = $CI->validation->validate_order($params);
             if ($result['status'] == 1) {
                 $byr['id'] = $params['user_id'];
-                $buyer_data = $CI->user_model->getUserDetails($byr);
+                $buyer_data = $CI->user_model->getUserDetailsAll($byr);
                 $params['shipping_name'] = $buyer_data[0]->name;
                 $params['shipping_email'] = $buyer_data[0]->email;
                 $params['shipping_phone'] = $buyer_data[0]->mobile;
@@ -44,6 +44,7 @@ class order extends CI_Controller {
                 $params['billing_city'] = $buyer_data[0]->city;
                 $params['billing_state'] = $buyer_data[0]->state;
                 $params['billing_pincode'] = $buyer_data[0]->pincode;
+                $params['warehouse_id'] = $buyer_data[0]->allocated_warehouse_id;
                 $grandtotal = 0.0;
                 $totalpayableamount = 0.0;
                 $totalTax = 0.0;
@@ -253,6 +254,7 @@ class order extends CI_Controller {
                 $date = date('d', strtotime($delivery_date));
                 $invoice_prefix = $name . $mont . $year . $date;
                 $data['invoice_number'] = "'" . $invoice_prefix . $orderno . "'";
+                $data['warehouse_id'] = $params['warehouse_id'];
                 $FinalData['header'] = '(' . implode(',', $data) . ')';
                 $count = count($products);
                 $emailUserData = '';

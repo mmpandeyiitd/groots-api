@@ -15,7 +15,7 @@ class feedback extends CI_Controller{
         $CI->load->config('custom-config');
         $e = $CI->feedback_model->checkFeedbackStatus($params);
         $result = array();
-        if($e == false || is_a($e, 'Exception') || !isset($e) || empty($e) || $e == null){
+        if(is_a($e, 'Exception')){
         	$result['status'] = 0;
             $result['msg'] = 'Failed To Find Data. Please Try Again';
             $result['errors'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
@@ -24,11 +24,11 @@ class feedback extends CI_Controller{
         $order_feedback = array();
         $order_feedback['orderId'] = $e[0]->order_id;
         $order_feedback['deliveryDate'] = $e[0]->delivery_date;
-        if($e[0]->feedback_status == 'Submitted'){
-            $order_feedback['feedbackStatus'] = false;
+        if((!empty($e[0]->feedback_status)) && $e[0]->feedback_status != 'Submitted'){
+            $order_feedback['feedbackStatus'] = true;
         }
         else{
-            $order_feedback['feedbackStatus'] = true;
+            $order_feedback['feedbackStatus'] = false;
         }
         $result['status'] = 1;
         $result['msg'] = 'Order Feedback';

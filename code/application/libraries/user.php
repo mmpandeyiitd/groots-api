@@ -314,4 +314,73 @@ class user {
         return $response;
     }
 
+    public function insertRetailerLeads($params){
+        try{
+            //die(print_r($params));
+            $result = array();
+            $CI = & get_instance();
+            $CI->load->model('user_model');
+            $CI->load->library('validation');
+            $result = $CI->validation->validate_reatailer_leads_data($params);
+            if(!empty($result['status']) && $result['status'] == 0){
+                die(print_r($result));
+                return $result;
+            }
+            else{
+                $data['name'] = '"' . $params['name'] . '"';
+                $data['org_name'] = '"' . $params['orgName'] . '"';
+                $data['designation'] = (empty($params['designation'])) ? null:'"' . $params['designation'] . '"';
+                $data['contact_number'] = '"' . $params['contactNo'] . '"';
+                $data['email'] = '"' . $params['emailId'] . '"';
+                $data['created_at'] = '"' . date('Y-m-d H:i:s') . '"';
+                $data['updated_by'] = 1;
+                $e = $CI->user_model->insertRetailerLeads($data);
+                if(is_a($e, 'Exception')){
+                    $result['status'] = 0;
+                    $result['msg'] = 'Fail To Save Data';
+                    $result['errors'] = $e->getMessage();
+                    return $result;
+                }
+                else{
+                    $result['status'] = 1;
+                    $result['msg'] = 'Form Submitted Successfully';
+                    $res = $this->sendSignUpEmail($params);
+                    if($res['status'] == 1){
+                        return $result;
+                    }
+                    else return $result;
+                }
+            }
+        } catch (Exception $e){
+            $result['status'] = 0;
+            $result['msg'] = 'Fail To Save Data';
+            $result['errors'] = $e->getMessage();
+            return $result; 
+        }
+    }
+
+    public function sendSignUpEmail($data){
+        $CI = & get_instance();
+        $CI->load->library('communicationengine');
+        $CI->load->config('custom-config');
+        $viewdata = array();
+        $data['base_path'] = $CI->config->item('URL');
+        $message = $CI->load->view('signUpBody', $data, TRUE);
+        $emailData['body'] = $message;
+        $emailData['subject'] = "Sign Up App Data";
+        $emailData['email'] = $CI->config->item('NIM_EMAIL');
+        $res = $CI->communicationengine->emailCommunication($emailData);
+        if ($res) {
+            $result['status'] = 1;
+            $result['msg'] = "Sign Up Mail Sent";
+            $result['errors'] = array();
+            $result['data'] = json_decode($res);
+        } else {
+            $result['status'] = 0;
+            $result['msg'] = "Sign Up Mail Failed";
+            $result['errors'][] = "Fail to send email";
+            $result['data'] = (object)array();
+        }
+        return $result;
+    }
 }

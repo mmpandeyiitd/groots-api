@@ -198,8 +198,8 @@ class api extends CI_Controller {
         $CI = & get_instance();
         $CI->load->model('apiauthcheck_model');
         $value = array();
-        if (isset($_REQUEST)) {
-            $value = $_REQUEST;
+        if (isset($_POST)) {
+            $value = $_POST;
         }
         $this->load->library('user');
         $result = $this->user->forgotPassword($value);
@@ -486,6 +486,16 @@ class api extends CI_Controller {
         $this->load->library('user');
         $result = $this->user->getUserPayments($value);
         $this->output->set_header('AUTH_TOKEN:'.$this->authToken);
+        $this->returnfunction($result);
+    }
+
+    public function signUp(){
+        $value = array();
+        if (isset($_POST)) {
+            $value = $_POST;
+        }
+        $this->load->library('user');
+        $result = $this->user->insertRetailerLeads($value);
         $this->returnfunction($result);
     }
 
