@@ -1048,6 +1048,52 @@ class CI_Form_validation {
 
 	// --------------------------------------------------------------------
 
+// --------------------------------------------------------------------
+
+	/**
+	 * Valid Email
+	 *
+	 * @access	public
+	 * @param	string
+	 * @return	bool
+	 */
+
+
+     public function valid_contact($str) {
+    $numbersOnly = ereg_replace("[^0-9+]", "", $str);
+    $numberOfDigits = strlen($numbersOnly);
+    if ($numberOfDigits == 10) {
+        //echo $numbersOnly;
+        return True;
+    } else {
+        return False;
+        //echo 'Invalid Phone Number';
+    }
+}
+
+
+
+
+
+	/*public function valid_contact($str)
+	{
+		if(preg_match("/^[0-9]{3}-[0-9]{4}-[0-9]{4}$/", $str)) {
+			return true;
+  // $phone is valid
+}
+else {
+return	False;
+}
+	}
+*/
+	// --------------------------------------------------------------------
+
+
+
+
+
+
+
 	/**
 	 * Valid Emails
 	 *

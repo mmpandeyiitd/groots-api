@@ -61,7 +61,25 @@ class user_model extends CI_Model {
 
     public function userLogin($data) {
         try {
-           $user_query = $this->db2->query("SELECT id,name,contact_person1 FROM retailer where email='" . $data['email'] . "' and password='".$data['password']."' AND status = 1");
+
+             if (!empty($data['email'])){
+
+                $user_query = $this->db2->query("SELECT id,email,name,contact_person1 FROM retailer where email='" . $data['email'] . "' and password='".$data['password']."' AND status = 1");
+
+
+                 
+            }
+            elseif (!empty($data['contact'])){
+
+                $user_query = $this->db2->query("SELECT id,email,name,contact_person1 FROM retailer where mobile='" . $data['contact'] . "' and password='".$data['password']."' AND status = 1");
+
+            }
+
+
+
+
+
+          /* $user_query = $this->db2->query("SELECT id,name,contact_person1 FROM retailer where email='" . $data['email'] . "' and password='".$data['password']."' AND status = 1");*/
             if ($user_query->num_rows() > 0) {
                 $row = $user_query->row_array();
                 return $row;
@@ -133,8 +151,21 @@ class user_model extends CI_Model {
 
     public function userExists($data) {
         try {
+
+            if (!empty($data['email'])){
+
+                $user_query = $this->db2->query("SELECT id,email,name,contact_person1 FROM retailer where email='" . $data['email'] . "' AND STATUS = 1");
+
+
+                 
+            }
+            elseif (!empty($data['contact'])){
+
+                $user_query = $this->db2->query("SELECT id,email,name,contact_person1 FROM retailer where mobile='" . $data['contact'] . "' AND STATUS = 1");
+
+            }
            
-            $user_query = $this->db2->query("SELECT id,email,name,contact_person1 FROM retailer where email='" . $data['email'] . "' AND STATUS = 1");
+           
             if ($user_query->num_rows() > 0) {
                 $row = $user_query->row_array();
                 return $row;
