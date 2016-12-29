@@ -803,18 +803,49 @@ class validation {
         try {
             $CI = & get_instance();
             $CI->load->library('form_validation');
-            if ($CI->form_validation->required($params['email']) == False) {
-                $result['status'] = 0;
-                $result['errors'][] = "email required";
+
+
+            
+
+
+
+
+            if (!empty($params['email'])){
+
+
+
+
+                if ($CI->form_validation->required($params['email']) == False) {
+                    $result['status'] = 0;
+                    $result['errors'][] = "email required";
+                }
+                if ($CI->form_validation->valid_email($params['email']) == False) {
+                    $result['status'] = 0;
+                    $result['errors'][] = "invalid email Address";
+                }
+                if ($CI->form_validation->required($params['password']) == False) {
+                    $result['status'] = 0;
+                    $result['errors'][] = "password Required";
+                }
             }
-            if ($CI->form_validation->valid_email($params['email']) == False) {
-                $result['status'] = 0;
-                $result['errors'][] = "invalid email Address";
-            }
-            if ($CI->form_validation->required($params['password']) == False) {
-                $result['status'] = 0;
-                $result['errors'][] = "password Required";
-            }
+            elseif (!empty($params['contact'])) {
+
+                 if ($CI->form_validation->required($params['contact']) == False) {
+                    $result['status'] = 0;
+                    $result['errors'][] = "contact required";
+                }
+                if ($CI->form_validation->valid_contact($params['contact']) == False) {
+                    $result['status'] = 0;
+                    $result['errors'][] = "invalid contact no";
+                }
+                if ($CI->form_validation->required($params['password']) == False) {
+                    $result['status'] = 0;
+                    $result['errors'][] = "password Required";
+                }
+
+
+                 # code...
+             } 
             if (empty($result)) {
                 $result['status'] = 1;
                 $result['msg'] = "valid data";
