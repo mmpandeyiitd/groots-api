@@ -136,7 +136,7 @@ class order extends CI_Controller {
                     if (round($products[$i]['unit_price'], 2) != round($product_arr['store_offer_price'], 2)) {
                         $result['status'] = 0;
                         $result['msg'] = "Fail to save data";
-                        $result['errors'][] = "It seems that there is a price change. Please clear your list and add items again.";
+                        $result['errors'][] = "Mismatch in unit Price : It seems that there is a price change. Please clear your list and add items again.";
                         $result['data'] = (object) array();
                         return $result;
                     }
@@ -255,6 +255,7 @@ class order extends CI_Controller {
                 $invoice_prefix = $name . $mont . $year . $date;
                 $data['invoice_number'] = "'" . $invoice_prefix . $orderno . "'";
                 $data['warehouse_id'] = $params['warehouse_id'];
+                $data['order_platform'] = "'Android'";
                 $FinalData['header'] = '(' . implode(',', $data) . ')';
                 $count = count($products);
                 $emailUserData = '';
