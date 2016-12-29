@@ -264,8 +264,6 @@
 	$class  = $RTR->fetch_class();
 	$method = $RTR->fetch_method();
 
-
-
 	if ( ! class_exists($class)
 		OR strncmp($method, '_', 1) == 0
 		OR in_array(strtolower($method), array_map('strtolower', get_class_methods('CI_Controller')))
@@ -292,7 +290,6 @@
 		}
 	}
 
-
 /*
  * ------------------------------------------------------
  *  Is there a "pre_controller" hook?
@@ -309,6 +306,7 @@
 	$BM->mark('controller_execution_time_( '.$class.' / '.$method.' )_start');
 
 	$CI = new $class();
+
 /*
  * ------------------------------------------------------
  *  Is there a "post_controller_constructor" hook?
@@ -322,8 +320,6 @@
  * ------------------------------------------------------
  */
 	// Is there a "remap" function? If so, we call it instead
-
-
 	if (method_exists($CI, '_remap'))
 	{
 		$CI->_remap($method, array_slice($URI->rsegments, 2));
