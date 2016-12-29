@@ -173,7 +173,7 @@ class validation {
                         $result['errors'][] = "Product Quantity required";
                     }
                     
-                    if ($CI->form_validation->is_natural_no_zero($params['product_details'][$i]['product_qty']) == False || $params['product_details'][$i]['product_qty'] < 0) {
+                    if ($CI->form_validation->numeric($params['product_details'][$i]['product_qty']) == False || $params['product_details'][$i]['product_qty'] < 0) {
                         $result['errors'][] = "Product Quantity should be numeric and greater than zero";
                     }
 
