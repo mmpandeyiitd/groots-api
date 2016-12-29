@@ -288,8 +288,9 @@ class api extends CI_Controller {
         $_GET['user_id'] = $user_id;
         $value = array();
         if (isset($_GET)) {
-            $value = $_GET;
+            $value = $_GET['data'];
         }
+        print_r($value);die;
         $this->load->library('order');
         $result = $this->order->updateCurrentOrder($value);
         $this->output->set_header('AUTH_TOKEN:'.$this->authToken);
