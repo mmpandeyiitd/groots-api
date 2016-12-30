@@ -988,6 +988,7 @@ class validation {
     }
 
     public function validate_order_details_order_id($orderId){
+        //die('hee');
         try {
             $CI = & get_instance();
             $CI->load->library('form_validation');
@@ -1647,6 +1648,47 @@ class validation {
                 $result['status'] = 1;
                 $result['msg'] = 'Valid Data';
             }
+        } catch(Exception $ex) {
+            $result['status'] = 0;
+            $result['msg'] = 'Fail To Save Data';
+            $result['errors'] = $ex->getMessage();
+            return $result;
+        }
+    }
+
+    public function validate_product_details_new($params){
+        try{
+            $CI = & get_instance();
+            $CI->load->library('form_validation');
+            $result = array();
+            if($CI->form_validation->required($params['subscribed_product_id']) == False){
+                die(print_r($params));
+                $result['errors'] = 'Subscribed Product Id Required';
+            }
+            else if($CI->form_validation->numeric($params['subscribed_product_id']) == False){
+                $result['errors'] = 'Subscribed Product Id should be numeric';
+            }
+            else if($CI->form_validation->required($params['unit_price']) == False){
+                $result['errors'] = 'Unit Price Required';
+            }
+            else if($CI->form_validation->numeric($params['unit_price']) == False){
+                $result['errors'] = 'Unit Price should be decimal';
+            }
+            else if($CI->form_validation->required($params['product_qty']) == False){
+                $result['errors'] = 'Product Quantity Required';
+            }
+            else if($CI->form_validation->numeric($params['product_qty']) == False){
+                $result['errors'] = 'Product Quantity shoul be decimal';
+            }
+            if($result['errors'] != false){
+                $result['status'] = 0;
+                $result['msg'] = 'Fail To Save Data';
+            }
+            else{
+                $result['status'] = 1;
+                $result['msg'] = 'Valid Data';
+            }
+            return $result;
         } catch(Exception $ex) {
             $result['status'] = 0;
             $result['msg'] = 'Fail To Save Data';
