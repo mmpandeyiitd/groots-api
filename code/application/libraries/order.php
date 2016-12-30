@@ -965,7 +965,6 @@ class order extends CI_Controller {
                             return $result;
                         }
                     } else {
-                        $product['created_date'] = date('Y-m-d');
                         $e = $this->order_model->insertOrderLine($product);
                         if ($e == false || is_a($e, 'Exception')) {
                             $result['status'] = 0;
@@ -1099,6 +1098,7 @@ class order extends CI_Controller {
             $product['order_id'] = $orderId;
             $price = round($product['unit_price'] * $product['product_qty'], 2);
             $product['price'] = $price;
+            $product['created_date'] = date('Y-m-d');
             $result['product'] = $product;
             return $result;
         }
