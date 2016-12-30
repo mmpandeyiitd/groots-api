@@ -163,7 +163,7 @@ class order_model extends CI_Model {
                 $dberrorObjs->error_query = $this->legacy_db->last_query();
                 $dberrorObjs->error_time = date("Y-m-d H:i:s");
                 $this->legacy_db->insert('dberror', $dberrorObjs);
-                return FALSE;
+                return new Exception('Found Error : ' . $dberrorObjs->error_message);
             } else {
                 return True;
             }

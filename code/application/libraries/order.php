@@ -913,12 +913,14 @@ class order extends CI_Controller {
         return $result;
     }
 
-    public function updateCurrentOrder($params) {
+    public function updateCurrentOrder($params_r) {
+        $params = $params_r['data'];
         $CI = & get_instance();
         $CI->load->model('order_model');
         $CI->load->library('validation');
         $CI->load->config('custom-config');
         $result = $CI->validation->validate_order_details_order_id($params['order_id']);
+        //die('here');
         if ($result['status'] == 1) {
             $e = $CI->order_model->getProductIds($params['order_id']);
             if ((is_bool($e) && $e == false) || is_a($e, 'Exception')) {
@@ -937,6 +939,7 @@ class order extends CI_Controller {
             $updateHeader['order_id'] = $params['order_id'];
             $updateHeader['total_payable_amount'] = $params['total_payable_amount'];
             $updateHeader['total'] = $params['total'];
+            $updateHeader['delivery_date'] = $params['delivery_date'];
             $where = array('order_id' => $params['order_id']);
             $e = $this->order_model->updateorderheader($updateHeader);
             if ($e == false  || is_a($e, 'Exception')) {
@@ -945,7 +948,13 @@ class order extends CI_Controller {
                 $result['errors'] = is_a($e, 'Exception') ? $e->getMessage() : 'Cannot Find Error';
                 return $result;
             } else {
+                //($params['product_details']);die;
                 foreach ($params['product_details'] as $key => $product) {
+                    $result = $this->prepareOrderLineRow($product, $params['order_id']);
+                    if($result['status'] == 1){
+                        $product = $result['product'];
+                    }
+                    else return $result;
                     if (in_array($product['subscribed_product_id'], $productIds)) {
                         $where['subscribed_product_id'] = $product['subscribed_product_id'];
                         $e = $this->order_model->updateOrderLine($where, $product);
@@ -956,6 +965,7 @@ class order extends CI_Controller {
                             return $result;
                         }
                     } else {
+                        $product['created_date'] = date('Y-m-d');
                         $e = $this->order_model->insertOrderLine($product);
                         if ($e == false || is_a($e, 'Exception')) {
                             $result['status'] = 0;
@@ -992,6 +1002,7 @@ class order extends CI_Controller {
         }
         $result['data']['responseHeader'] = $this->returnResponseHeader();
         $result['data']['response'] = $this->returnResponse(null, $params);
+        unset($result['product']);
         return $result;
     }
 
@@ -1077,6 +1088,21 @@ class order extends CI_Controller {
         $result[$size-1]['payment'] = (object)$temp;
         return $result;
 
+    }
+
+    public function prepareOrderLineRow($product, $orderId){
+        $CI = & get_instance();
+        $CI->load->model('order_model');
+        $CI->load->library('validation');
+        $result = $CI->validation->validate_product_details_new($product);  
+        if($result['status'] == 1){
+            $product['order_id'] = $orderId;
+            $price = round($product['unit_price'] * $product['product_qty'], 2);
+            $product['price'] = $price;
+            $result['product'] = $product;
+            return $result;
+        }
+        else return $result;
     }
 
     
