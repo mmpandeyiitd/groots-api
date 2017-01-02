@@ -834,7 +834,7 @@ class validation {
                     $result['status'] = 0;
                     $result['errors'][] = "contact required";
                 }
-                if ($CI->form_validation->valid_contact($params['contact']) == False) {
+                if ($this->valid_contact($params['contact']) == False) {
                     $result['status'] = 0;
                     $result['errors'][] = "invalid contact no";
                 }
@@ -1684,6 +1684,19 @@ class validation {
             $result['errors'] = $ex->getMessage();
             return $result;
         }
+    }
+
+    public function valid_contact($str) {
+        $numbersOnly = ereg_replace("[^0-9+]", "", $str);
+        $numberOfDigits = strlen($numbersOnly);
+        if ($numberOfDigits == 10) {
+            //echo $numbersOnly;
+            return True;
+        } else {
+            return False;
+            //echo 'Invalid Phone Number';
+        }
+
     }
 
 }
