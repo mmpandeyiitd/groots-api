@@ -805,7 +805,10 @@ class validation {
             $CI->load->library('form_validation');
 
 
-            
+            if ($CI->form_validation->required($params['password']) == False) {
+                    $result['status'] = 0;
+                    $result['errors'][] = "password Required";
+                }
 
 
 
@@ -823,10 +826,7 @@ class validation {
                     $result['status'] = 0;
                     $result['errors'][] = "invalid email Address";
                 }
-                if ($CI->form_validation->required($params['password']) == False) {
-                    $result['status'] = 0;
-                    $result['errors'][] = "password Required";
-                }
+                
             }
             elseif (!empty($params['contact'])) {
 
@@ -838,10 +838,10 @@ class validation {
                     $result['status'] = 0;
                     $result['errors'][] = "invalid contact no";
                 }
-                if ($CI->form_validation->required($params['password']) == False) {
+                /*if ($CI->form_validation->required($params['password']) == False) {
                     $result['status'] = 0;
                     $result['errors'][] = "password Required";
-                }
+                }*/
 
 
                  # code...
@@ -1687,16 +1687,22 @@ class validation {
     }
 
     public function valid_contact($str) {
-        $numbersOnly = ereg_replace("[^0-9+]", "", $str);
-        $numberOfDigits = strlen($numbersOnly);
-        if ($numberOfDigits == 10) {
-            //echo $numbersOnly;
-            return True;
-        } else {
+        if (preg_match("[^0-9]", $str)){
             return False;
-            //echo 'Invalid Phone Number';
         }
+        else{ 
 
+            //$numbersOnly = ereg_replace("[^0-9]", "", $str);
+            $numberOfDigits = strlen(trim($str));
+
+            if ($numberOfDigits == 10) {
+                //echo $numbersOnly;
+                return True;
+            } else {
+                return False;
+                //echo 'Invalid Phone Number';
+            }
+        }
     }
 
 }
