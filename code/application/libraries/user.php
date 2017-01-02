@@ -139,13 +139,14 @@ class user {
                     } else {
                         $result['status'] = 0;
                         $result['msg'] = "User Login Fail";
-                        $result['errors'][] = "Invalid email or password";
+                        $result['errors'][] = "Invalid email/contact or password";
+                    
                         $result['data'] = (object)array();
                     }
                 } else {
                     $result['status'] = 0;
                     $result['msg'] = "User Login Fail";
-                    $result['errors'][] = "Invalid email or password";
+                    $result['errors'][] = "Invalid email/contact or password";
                     $result['data'] = (object)array();
                 }
                 

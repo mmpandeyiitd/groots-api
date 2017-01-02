@@ -803,18 +803,49 @@ class validation {
         try {
             $CI = & get_instance();
             $CI->load->library('form_validation');
-            if ($CI->form_validation->required($params['email']) == False) {
-                $result['status'] = 0;
-                $result['errors'][] = "email required";
-            }
-            if ($CI->form_validation->valid_email($params['email']) == False) {
-                $result['status'] = 0;
-                $result['errors'][] = "invalid email Address";
-            }
+
+
             if ($CI->form_validation->required($params['password']) == False) {
-                $result['status'] = 0;
-                $result['errors'][] = "password Required";
+                    $result['status'] = 0;
+                    $result['errors'][] = "password Required";
+                }
+
+
+
+
+            if (!empty($params['email'])){
+
+
+
+
+                if ($CI->form_validation->required($params['email']) == False) {
+                    $result['status'] = 0;
+                    $result['errors'][] = "email required";
+                }
+                if ($CI->form_validation->valid_email($params['email']) == False) {
+                    $result['status'] = 0;
+                    $result['errors'][] = "invalid email Address";
+                }
+                
             }
+            elseif (!empty($params['contact'])) {
+
+                 if ($CI->form_validation->required($params['contact']) == False) {
+                    $result['status'] = 0;
+                    $result['errors'][] = "contact required";
+                }
+                if ($this->valid_contact($params['contact']) == False) {
+                    $result['status'] = 0;
+                    $result['errors'][] = "invalid contact no";
+                }
+                /*if ($CI->form_validation->required($params['password']) == False) {
+                    $result['status'] = 0;
+                    $result['errors'][] = "password Required";
+                }*/
+
+
+                 # code...
+             } 
             if (empty($result)) {
                 $result['status'] = 1;
                 $result['msg'] = "valid data";
@@ -988,7 +1019,6 @@ class validation {
     }
 
     public function validate_order_details_order_id($orderId){
-        //die('hee');
         try {
             $CI = & get_instance();
             $CI->load->library('form_validation');
@@ -1656,6 +1686,25 @@ class validation {
         }
     }
 
+  public function valid_contact($str) {
+        if (preg_match("[^0-9]", $str)){
+            return False;
+        }
+        else{ 
+
+            //$numbersOnly = ereg_replace("[^0-9]", "", $str);
+            $numberOfDigits = strlen(trim($str));
+
+            if ($numberOfDigits == 10) {
+                //echo $numbersOnly;
+                return True;
+            } else {
+                return False;
+                //echo 'Invalid Phone Number';
+            }
+        }
+    }
+
     public function validate_product_details_new($params){
         try{
             $CI = & get_instance();
@@ -1696,5 +1745,7 @@ class validation {
             return $result;
         }
     }
+
+
 
 }

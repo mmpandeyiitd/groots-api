@@ -107,7 +107,9 @@ class api extends CI_Controller {
 
     public function userLogin() {
         // $logger->warn("Environment = ". var_dump($_POST));
+        //return "here";
         //die('here');
+        //print($_POST);die;
         $checkAuthToken = FALSE;
         $result = $this->checkAuth($checkAuthToken);
         if ($result['status'] == 0 && $result['config_status'] != 1) {
