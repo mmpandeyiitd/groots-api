@@ -22,7 +22,7 @@ class order_model extends CI_Model {
             // $logger = Logger::getLogger("main");
             // $logger->warn(print_r($data));
             $this->legacy_db->trans_begin();
-            $sql = 'INSERT INTO order_header (order_number,created_date,payment_status,billing_name,billing_email,billing_phone,billing_address,billing_city,billing_state,billing_pincode,shipping_name,shipping_email,shipping_phone,shipping_address,shipping_state,shipping_city,shipping_pincode,total,total_payable_amount,discount_amt,status,order_type,coupon_code,shipping_charges,tax,timestamp,user_id,delivery_date,user_comment,invoice_number, warehouse_id) VALUES ' . $data['header'];
+            $sql = 'INSERT INTO order_header (order_number,created_date,payment_status,billing_name,billing_email,billing_phone,billing_address,billing_city,billing_state,billing_pincode,shipping_name,shipping_email,shipping_phone,shipping_address,shipping_state,shipping_city,shipping_pincode,total,total_payable_amount,discount_amt,status,order_type,coupon_code,shipping_charges,tax,timestamp,user_id,delivery_date,user_comment,invoice_number, warehouse_id,order_platform) VALUES ' . $data['header'];
             //die($sql);
             $this->legacy_db->query($sql);
             $id = $this->legacy_db->insert_id();
@@ -163,7 +163,7 @@ class order_model extends CI_Model {
                 $dberrorObjs->error_query = $this->legacy_db->last_query();
                 $dberrorObjs->error_time = date("Y-m-d H:i:s");
                 $this->legacy_db->insert('dberror', $dberrorObjs);
-                return FALSE;
+                return new Exception('Found Error : ' . $dberrorObjs->error_message);
             } else {
                 return True;
             }
@@ -474,5 +474,6 @@ class order_model extends CI_Model {
     }
 
 }
+
 
 ?>
