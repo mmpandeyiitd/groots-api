@@ -31,7 +31,10 @@ class communicationengine {
             'replyto' => $no_reply  //,
             //'files' => array('0'=>array('name' =>$file_name,'path' =>$filename_with_path)),
         );
-        $url = $CI->config->item('SENDGRID_URL');
+
+        $this->sendMailSes($mailArray);
+        
+        /*$url = $CI->config->item('SENDGRID_URL');
         $parameter =$CI->config->item('SENDGRID_PARAMETER');
         $user = $CI->config->item('SENDGRID_API_USERNAME');
         $pass = $CI->config->item('SENDGRID_API_PASSWORD');
@@ -100,7 +103,7 @@ class communicationengine {
         curl_close($session);
 
         // print everything out
-        return $response;
+        return $response;*/
     }
 
     /**
@@ -140,5 +143,75 @@ class communicationengine {
 		}
 		curl_close($ch);
 		return $responseData;
+    }
+
+    public function sendMailSes($mailArray){
+        //require_once( dirname(__FILE__) . '/../extensions/aws/aws-autoloader.php');
+        $CI->load->library('email');
+        $CI->load->config('custom-config');
+
+        //$from = $mailArray['from'];
+        //$replyto = $mailArray['replyto'];
+        $subject = $mailArray['subject'];
+        $text = $mailArray['text'];
+        $html = $mailArray['html'];
+
+        $i = 0;
+        $recepientArr = array();
+        foreach ($mailArray['to'] as $to)
+        {
+            if($to['email']=="grootsadmin@gmail.com")
+            {
+                continue;
+            }
+            if ($i == 0)
+            {
+                $params['to']        = $to['email'];
+                //   $params['toname']    = $to['name'];
+                $recepientArr[] = $to['email'];
+            }
+            else
+            {
+                $recepientArr[] = $to['email'];
+            }
+            $i++;
+        }
+
+        $region = $CI->config->item('SES-REGION');
+        $key = $CI->config->item('AWS_KEY');
+        $secret = $CI->config->item('AWS_SECRET_KEY');
+        $from = $CI->config->item('FROM_EMIL');
+
+        $client = SesClient::factory(array(
+            'version'=> 'latest',
+            'region' => $region,
+            'credentials' => array(
+                'key' => $key,
+                'secret'  => $secret,
+            )
+
+        ));
+
+
+        /*foreach ($recepientArr as $to){
+            $client->verifyEmailIdentity(['EmailAddress'=>$to]);
+        }*/
+
+        $request = array();
+        $request['Source'] = $from;
+        $request['Destination']['ToAddresses'] = $recepientArr;
+        $request['Message']['Subject']['Data'] = $subject;
+        $request['Message']['Body']['Html']['Data'] = $html;
+
+        try {
+            $result = $client->sendEmail($request);
+            $messageId = $result->get('MessageId');
+            echo("Email sent! Message ID: $messageId"."\n");
+
+        } catch (Exception $e) {
+            echo("The email was not sent. Error message: ");
+            echo($e->getMessage()."\n");
+        }
+
     }
 }
