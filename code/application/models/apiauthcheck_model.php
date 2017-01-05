@@ -141,7 +141,7 @@ class apiauthcheck_model extends CI_Model {
                         $appversionflag = 1;
                     } else {
                             if ($app_version && strtotime(date("Y-m-d", strtotime($app_version_new->force_update_date))) > strtotime(date("Y-m-d"))) {
-                                $arr['config_status'] = 1;
+                                //$arr['config_status'] = 1;
                                 $arr['status'] = 1;
                                 $arr['config_msg'] = "Update App version";
                                 $arr['response']['app_version'] = $app_version_new->app_version;
@@ -152,7 +152,7 @@ class apiauthcheck_model extends CI_Model {
                             }
                         else {
                             $arr['status'] = 0;
-                            $arr['config_status'] = 0;
+                            //$arr['config_status'] = 0;
                             $arr['msg'] = "Authentication fail";
                             $arr['errors'][] = "App version Mismatch";
                             $arr['data']['app_version'] = $app_version_new->app_version;
@@ -166,12 +166,13 @@ class apiauthcheck_model extends CI_Model {
                         $config_version_new = $config_version_new_array->result();
                         $config_version_new = $config_version_new[0];
                         if ($config_version_new->api_config_version == $headerFiled['CONFIG_VERSION']) {
-                            if ($appversionflag == 1) {
+                            //if ($appversionflag == 1) {
                                 $arr['config_status'] = 1;
                                 $arr['config_msg'] = "app status success";
-                            }
+                            //}
                         } else {
                             $arr['status'] = 0;
+                            $arr['config_status'] = 0;
                             $arr['msg'] = "Authentication fail";
                             $arr['errors'][] = "Config Version Mismatch";
                             $arr['data']['config_version'] = $config_version_new->api_config_version;
