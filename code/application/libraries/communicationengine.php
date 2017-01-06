@@ -11,9 +11,10 @@ class communicationengine {
      * @return multitype:string
 	 */
     public function emailCommunication($data) { // SendGrid API - Mail Service
-        //die(print_r($data));
+        //print_r($data);
         $CI = & get_instance();
         $CI->load->config('custom-config');
+        $CI->load->library('send_ses_email');
         $from_email = $CI->config->item('FROM_EMAIL');
         $from_name = $CI->config->item('FROM_NAME');
         $no_reply = $CI->config->item('NO_REPLY');
@@ -31,7 +32,9 @@ class communicationengine {
             'replyto' => $no_reply  //,
             //'files' => array('0'=>array('name' =>$file_name,'path' =>$filename_with_path)),
         );
-        $url = $CI->config->item('SENDGRID_URL');
+        $CI->send_ses_email->sendMailSes($mailArray);
+
+        /*$url = $CI->config->item('SENDGRID_URL');
         $parameter =$CI->config->item('SENDGRID_PARAMETER');
         $user = $CI->config->item('SENDGRID_API_USERNAME');
         $pass = $CI->config->item('SENDGRID_API_PASSWORD');
@@ -100,7 +103,7 @@ class communicationengine {
         curl_close($session);
 
         // print everything out
-        return $response;
+        return $response;*/
     }
 
     /**
@@ -141,4 +144,6 @@ class communicationengine {
 		curl_close($ch);
 		return $responseData;
     }
+
+
 }
