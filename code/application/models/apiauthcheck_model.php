@@ -140,42 +140,39 @@ class apiauthcheck_model extends CI_Model {
                     if ($headerFiled['APP_VERSION'] == $app_version_new->app_version) {
                         $appversionflag = 1;
                     } else {
-                        $flag = 0;
-                        if ($app_version) {
-                            if (strtotime(date("Y-m-d", strtotime($app_version_new->force_update_date))) > strtotime(date("Y-m-d"))) {
-                                
-                                $arr['config_status'] = 1;
+                            if ($app_version && strtotime(date("Y-m-d", strtotime($app_version_new->force_update_date))) > strtotime(date("Y-m-d"))) {
+                                //$arr['config_status'] = 1;
+                                $arr['status'] = 1;
                                 $arr['config_msg'] = "Update App version";
                                 $arr['response']['app_version'] = $app_version_new->app_version;
                                 $arr['response']['release_date'] = $app_version_new->release_date;
                                 $arr['response']['force_update_date'] = $app_version_new->force_update_date;
                                 $appversionflag = 0;
-                                $flag = 1;
+                                
                             }
-                        }
-
-                        if ($flag == 0) {
+                        else {
                             $arr['status'] = 0;
+                            //$arr['config_status'] = 0;
                             $arr['msg'] = "Authentication fail";
                             $arr['errors'][] = "App version Mismatch";
                             $arr['data']['app_version'] = $app_version_new->app_version;
                             $arr['data']['release_date'] = $app_version_new->release_date;
-                            $arr['data']['force_update_date'] = $app_version_newforce_update_date;
+                            $arr['data']['force_update_date'] = $app_version_new->force_update_date;
                             $appversionflag = -1;
                         }
                     }
                     if ($appversionflag == 1 || $appversionflag == 0) {
-                        $config_version_new_array = $this->legacy_db->query("SELECT * FROM api_configs WHERE app_version_id = " . $app_version->id . " order by id desc limit 0,1");
+                        $config_version_new_array = $this->legacy_db->query("SELECT * FROM api_configs WHERE app_version_id = " . $app_version->id . " and api_config_version = ". $headerFiled['CONFIG_VERSION'] ." order by id desc limit 0,1");
                         $config_version_new = $config_version_new_array->result();
                         $config_version_new = $config_version_new[0];
-                                
                         if ($config_version_new->api_config_version == $headerFiled['CONFIG_VERSION']) {
-                            if ($appversionflag == 1) {
+                            //if ($appversionflag == 1) {
                                 $arr['config_status'] = 1;
                                 $arr['config_msg'] = "app status success";
-                            }
+                            //}
                         } else {
                             $arr['status'] = 0;
+                            $arr['config_status'] = 0;
                             $arr['msg'] = "Authentication fail";
                             $arr['errors'][] = "Config Version Mismatch";
                             $arr['data']['config_version'] = $config_version_new->api_config_version;
