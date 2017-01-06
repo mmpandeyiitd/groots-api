@@ -345,6 +345,64 @@ class user_model extends CI_Model {
         }
     }
 
+    public function checkAppUpdate($params){
+        try{
+            $result = array();
+            $recommended = false;
+            $forceUpdate = false;
+            $appVersion = $params['APP_VERSION'];
+            $apiKey = $params['API_KEY'];
+            $configVersion = $params['CONFIG_VERSION'];
+            $platformQuery = 'select id from api_platforms where api_key = "'.$apiKey.'"';
+            $query = $this->db2->query($platformQuery);
+            if($this->db2->_error_message()){
+               return setDb2ErrorObject(); 
+            }
+            $query = $query->result();
+            $platformId = $query[0]->id;
+            if(is_numeric($platformId)){
+                $appVersionQuery = 'select * from app_versions where platform_id = '.$platformId.' order by id desc limit 1';
+                $appVersionNew = $this->db2->query($appVersionQuery);
+                if($this->db2->_error_message()){
+                    return setDb2ErrorObject(); 
+                }
+                $appVersionNew = $appVersionNew->result();
+                $appVersionNew = $appVersionNew[0];
+                $appVersionQuery = 'select * from app_versions where platform_id = '.$platformId.' and app_version = "'.$appVersion.'" order by id desc limit 1';
+                $appVersionCurrent = $this->db2->query($appVersionQuery);
+                if($this->db2->_error_message()){
+                    return setDb2ErrorObject(); 
+                }
+                $appVersionCurrent = $appVersionCurrent->result();
+                $appVersionCurrent = $appVersionCurrent[0];
+                if(round($appVersionCurrent->app_version, 2) < round($appVersionNew->app_version , 2)){
+                    $recommended = true;
+                    if(strtotime($appVersionCurrent->expiry_date) < strtotime(date('Y-m-d'))){
+                        $forceUpdate = true;
+                    }
+                }
+                $result['forceUpdate'] = $forceUpdate;
+                $result['recommended'] = $recommended;
+                return $result;
+            }
+            else{
+                return new Exception('Api Key Mismatch');
+            }
+
+        } catch (Exception $e){
+            return $e;
+        }
+    }
+
+    public function setDb2ErrorObject(){
+        $dberrorObjs->error_code = $this->db2->_error_number();
+        $dberrorObjs->error_message = $this->db2->_error_message();
+        $dberrorObjs->error_query = $this->db2->last_query();
+        $dberrorObjs->error_time = date("Y-m-d H:i:s");
+        $this->db2->insert('dberror', $dberrorObjs);
+        return new Exception($dberrorObjs->error_message);
+    }
+
 }
 
 ?>

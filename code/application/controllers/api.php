@@ -515,4 +515,36 @@ public function signUp(){
     $this->returnfunction($result);
 }
 
+
+public function checkAppUpdate(){
+  $checkAuthToken = TRUE;
+    $result = $this->checkAuth($checkAuthToken);
+    if ($result['config_status'] == -1) {
+        $json_data = json_encode($result);
+        $data['response'] = $json_data;
+        $this->load->view('responseData', $data);
+        return;
+    }
+    if ($result['config_status'] == 0) {
+        $this->output->set_header("RESPONSE_CODE:0");
+        $json_data = json_encode($result);
+        $data['response'] = $json_data;
+        $this->load->view('responseData', $data);
+        return;
+    }
+    $CI = & get_instance();
+    $CI->load->model('apiauthcheck_model');
+    $user_id = $CI->apiauthcheck_model->getUserIdbyToken($this->authToken);
+    $_GET['user_id'] = $user_id;
+    $headers = getallheaders();
+    $value = array();
+    if (isset($_GET)) {
+        $value = $_GET;
+    }
+    $value['headers'] = $headers;
+    $this->load->library('user');
+    $result = $this->user->checkAppUpdate($value);
+    $this->output->set_header('AUTH_TOKEN:'.$this->authToken);
+    $this->returnfunction($result);
+}  
 }

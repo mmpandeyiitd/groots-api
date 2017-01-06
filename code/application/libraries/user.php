@@ -324,7 +324,6 @@ class user {
             $CI->load->library('validation');
             $result = $CI->validation->validate_reatailer_leads_data($params);
             if(!empty($result['status']) && $result['status'] == 0){
-                die(print_r($result));
                 return $result;
             }
             else{
@@ -381,6 +380,39 @@ class user {
             $result['msg'] = "Sign Up Mail Failed";
             $result['errors'][] = "Fail to send email";
             $result['data'] = (object)array();
+        }
+        return $result;
+    }
+
+    public function checkAppUpdate($params){
+        $CI = & get_instance();
+        $CI->load->model('user_model');
+        $CI->load->config('custom-config');
+        if(isset($params['headers']) && !empty($params['headers'])){
+            $res = $CI->user_model->checkAppUpdate($params['headers']);
+            if(is_a($res, 'Exception')){
+                $result['status'] = 0;
+                $result['msg'] = $e->getMessage();
+                $result['errors'][] = 'Check App Status Failed';
+                $result['data'] = (object)array();
+            }
+            else{
+                if($res['forceUpdate']){
+                    $res['link'] = $CI->config->item('LATEST_APP_LINK');    
+                }
+                $p = array();
+                $p['page'] = 0;//for returnResponse function
+                $result['status'] = 1;
+                $result['msg'] = 'Check App Status Successful';
+                $result['data']['response'] = $this->returnResponse($res,$p);
+                $result['data']['responseHeader'] = $this->returnResponseHeader();
+            }
+        }
+        else{
+            $result['status'] = 0;
+            $result['msg'] = 'Header Field Missing';
+            $result['errors'][] = 'Check App Status Failed';
+            $result['data'] = (object)array(); 
         }
         return $result;
     }
