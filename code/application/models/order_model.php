@@ -179,7 +179,7 @@ class order_model extends CI_Model {
             $update_query = $this->legacy_db->query('UPDATE order_header SET status = "Cancelled"  WHERE order_id ="'.$data
              .'" ');
 
-.           if ($this->legacy_db->_error_message()) {
+         if ($this->legacy_db->_error_message()) {
                 $dberrorObjs->error_code = $this->legacy_db->_error_number();
                 $dberrorObjs->error_message = $this->legacy_db->_error_message();
                 $dberrorObjs->error_query = $this->legacy_db->last_query();

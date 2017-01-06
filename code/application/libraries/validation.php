@@ -982,8 +982,8 @@ class validation {
             }
            else if ($CI->form_validation->numeric($params['orderId']) == False) {
                 $result['status'] = 0;
-                $result['msg'] = "Order Id must be numeric"
-                $result['errors'][] = "Order Id must be numeric"
+                $result['msg'] = "Order Id must be numeric";
+                $result['errors'][] = "Order Id must be numeric";
             } 
             else if (empty($result)){
                 $result['status'] = 1;

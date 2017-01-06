@@ -925,7 +925,7 @@ class order extends CI_Controller {
         $result = $CI->validation->validate_partial_update_order($params);
         if ($result ['status'] == 1){
             $queryresult = $CI->order_model->updatepartialorderheader($params['orderId']);
-            if ( (is_a($queryresult, 'Exception')){
+            if ( is_a($queryresult, 'Exception')){
                 $result['status'] = 0;
                 $result['msg'] = 'fail to execute updatequery';
                 $result['errors'] = $queryresult->getMessage();
