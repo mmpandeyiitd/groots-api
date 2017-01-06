@@ -67,11 +67,11 @@ class send_ses_email
         try {
             $result = $this->sesClient->sendEmail($request);
             $messageId = $result->get('MessageId');
-            echo("Email sent! Message ID: $messageId"."\n");
+            //echo("Email sent! Message ID: $messageId"."\n");
 
         } catch (Exception $e) {
-            echo("The email was not sent. Error message: ");
-            echo($e->getMessage()."\n");
+            //echo("The email was not sent. Error message: ");
+            //echo($e->getMessage()."\n");
         }
 
     }
