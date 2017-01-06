@@ -11,7 +11,7 @@ class communicationengine {
      * @return multitype:string
 	 */
     public function emailCommunication($data) { // SendGrid API - Mail Service
-        //print_r($data);
+        //die(print_r($data));
         $CI = & get_instance();
         $CI->load->config('custom-config');
         $CI->load->library('send_ses_email');
@@ -144,6 +144,4 @@ class communicationengine {
 		curl_close($ch);
 		return $responseData;
     }
-
-
 }
