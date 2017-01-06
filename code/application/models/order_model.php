@@ -172,6 +172,33 @@ class order_model extends CI_Model {
         }
     }
 
+
+    public function updatepartialorderheader($data){
+        try{
+
+            $update_query = $this->legacy_db->query('UPDATE order_header SET status = "Cancelled"  WHERE order_id ="'.$data
+             .'" ');
+
+.           if ($this->legacy_db->_error_message()) {
+                $dberrorObjs->error_code = $this->legacy_db->_error_number();
+                $dberrorObjs->error_message = $this->legacy_db->_error_message();
+                $dberrorObjs->error_query = $this->legacy_db->last_query();
+                $dberrorObjs->error_time = date("Y-m-d H:i:s");
+                $this->legacy_db->insert('dberror', $dberrorObjs);
+                return new Exception('Exception' . $dberrorObjs->error_message);
+            } else {
+                return True;
+
+            }
+
+        }
+        catch(Exception $e){
+          return $e;
+
+        }
+
+    }
+
     public function checkUserAddressExist($data) {
         try {
             $user_query = $this->legacy_db->query("SELECT id FROM user_address where address='" . $data['address'] . "' and user_id=" . $data['user_id']);
