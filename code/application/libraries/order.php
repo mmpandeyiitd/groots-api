@@ -914,6 +914,46 @@ class order extends CI_Controller {
         return $result;
     }
 
+
+    public function partialupdateorder($params){
+
+
+        $CI = & get_instance();
+        $CI->load->model('order_model');
+        $CI->load->library('validation');
+
+        $result = $CI->validation->validate_partial_update_order($params);
+        if ($result ['status'] == 1){
+            $queryresult = $CI->order_model->updatepartialorderheader($params['orderId']);
+            if ( is_a($queryresult, 'Exception')){
+                $result['status'] = 0;
+                $result['msg'] = 'fail to execute updatequery';
+                $result['errors'] = $queryresult->getMessage();
+                
+
+            }
+            else {
+                $result['status'] = 1;
+                $result['msg'] = 'data updated successfully';
+                $result['data'] = array();
+                
+            }
+            return $result;
+        }
+        else {
+            return $result;
+        }
+
+
+
+
+
+
+    }
+
+
+
+
     public function updateCurrentOrder($params_r) {
         $params = $params_r['data'];
         $CI = & get_instance();
