@@ -379,10 +379,13 @@ class user_model extends CI_Model {
                     $recommended = true;
                     if(strtotime($appVersionCurrent->expiry_date) < strtotime(date('Y-m-d'))){
                         $forceUpdate = true;
+                        $recommended = false;
+
                     }
                 }
                 $result['forceUpdate'] = $forceUpdate;
                 $result['recommended'] = $recommended;
+                $result['latestAppVersion'] = $appVersionNew->app_version;
                 return $result;
             }
             else{

@@ -397,7 +397,7 @@ class user {
                 $result['data'] = (object)array();
             }
             else{
-                if($res['forceUpdate']){
+                if($res['forceUpdate'] || $res['recommended']){
                     $res['link'] = $CI->config->item('LATEST_APP_LINK');    
                 }
                 $p = array();
