@@ -19,6 +19,7 @@ class order extends CI_Controller {
             $CI->load->library('validation');
             $CI->load->config('custom-config');
             $CI->load->library('communicationengine');
+
             if (!(isset($params_r['data']['order_prefix']) && $params_r['data']['order_prefix'] != '')) {
                 $params_r['data']['order_prefix'] = $CI->config->item('ORDER_PREFIX');
             }

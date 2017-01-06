@@ -397,7 +397,7 @@ class api extends CI_Controller {
         $result['msg'] = "Server Date Time";
         $result['errors'] = array();
         $date = date("Y-m-d H:i:s");
-        $date = date('Y-m-d H:i:s', strtotime($date.' - 1 hour'));
+        $date = date('Y-m-d H:i:s', strtotime($date.' - 6 hour'));
         $date = date('Y-m-d H:i:s', strtotime($date.' + 1 day'));
         $result['data']['current_date_time'] = $date;
         $this->output->set_header('AUTH_TOKEN:'.$this->authToken);
