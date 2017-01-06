@@ -392,7 +392,7 @@ class user {
             $res = $CI->user_model->checkAppUpdate($params['headers']);
             if(is_a($res, 'Exception')){
                 $result['status'] = 0;
-                $result['msg'] = $e->getMessage();
+                $result['msg'] = $res->getMessage();
                 $result['errors'][] = 'Check App Status Failed';
                 $result['data'] = (object)array();
             }
