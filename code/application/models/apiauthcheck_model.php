@@ -125,23 +125,27 @@ class apiauthcheck_model extends CI_Model {
     public function appStatusVerify($headerFiled, $checkAuthToken = TRUE) {
         if ($headerFiled) {
             $arr = array();
+            $arr['status'] = 0; // final api response status
+            $arr['config_status'] = 0; // auth check status
             $api_id_query = $this->legacy_db->query("SELECT id FROM api_platforms WHERE api_key = '".$headerFiled['API_KEY']."'");
             $api_id = $api_id_query->result();
             $api_id = $api_id[0]->id;
             if ($api_id) {
                 if ($headerFiled['API_KEY'] != 'webapikey') {
-                    
+                    // if non web api ie. android, ios apis
+
                     $app_version_new_array = $this->legacy_db->query("SELECT * FROM app_versions WHERE platform_id = " . $api_id . " order by id desc limit 0,1");
                     $app_version_new = $app_version_new_array->result();
                     $app_version_new = $app_version_new[0];
                     $app_version_array = $this->legacy_db->query("SELECT * FROM app_versions WHERE platform_id = " . $api_id . " and app_version = " . $headerFiled['APP_VERSION'] . " order by id desc limit 0,1");
                     $app_version = $app_version_array->result();
-                    $app_version = $app_version[0];
-                    if ($headerFiled['APP_VERSION'] == $app_version_new->app_version) {
-                        $appversionflag = 1;
+                    $app_version = $app_version[0]; //echo $app_version->app_version; echo $app_version_new->app_version; echo $headerFiled['APP_VERSION'];
+                    /*if ($headerFiled['APP_VERSION'] == $app_version_new->app_version) {
+                        $appversionflag = 1; // user is using latest app version
                     } else {
-                            if ($app_version && strtotime(date("Y-m-d", strtotime($app_version_new->force_update_date))) > strtotime(date("Y-m-d"))) {
-                                //$arr['config_status'] = 1;
+                        //user is not using latest app version
+                        if ($app_version && strtotime(date("Y-m-d", strtotime($app_version_new->force_update_date))) > strtotime(date("Y-m-d"))) {
+                                $arr['config_status'] = 1;
                                 $arr['status'] = 1;
                                 $arr['config_msg'] = "Update App version";
                                 $arr['response']['app_version'] = $app_version_new->app_version;
@@ -152,7 +156,7 @@ class apiauthcheck_model extends CI_Model {
                             }
                         else {
                             $arr['status'] = 0;
-                            //$arr['config_status'] = 0;
+                            $arr['config_status'] = 0;
                             $arr['msg'] = "Authentication fail";
                             $arr['errors'][] = "App version Mismatch";
                             $arr['data']['app_version'] = $app_version_new->app_version;
@@ -160,8 +164,9 @@ class apiauthcheck_model extends CI_Model {
                             $arr['data']['force_update_date'] = $app_version_new->force_update_date;
                             $appversionflag = -1;
                         }
-                    }
-                    if ($appversionflag == 1 || $appversionflag == 0) {
+                    }*/
+                    //if ($appversionflag == 1 || $appversionflag == 0) {
+                    if ($app_version) {
                         $config_version_new_array = $this->legacy_db->query("SELECT * FROM api_configs WHERE app_version_id = " . $app_version->id . " and api_config_version = ". $headerFiled['CONFIG_VERSION'] ." order by id desc limit 0,1");
                         $config_version_new = $config_version_new_array->result();
                         $config_version_new = $config_version_new[0];
@@ -179,7 +184,7 @@ class apiauthcheck_model extends CI_Model {
 
                         }
                     }
-                } else {
+                } else { // if web api
                     $arr['config_status'] = 1;
                     $arr['config_msg'] = "app status success";
                 }

@@ -22,19 +22,13 @@ class api extends CI_Controller {
     }
     
     public function checkAuth($checkAuthToken = TRUE) {
+        // $checkAuthToken is false only for non logged in apis
         date_default_timezone_set('Asia/Calcutta');
         $requestHeaders = apache_request_headers();
-        if ($checkAuthToken == TRUE) {
-            if (!$requestHeaders['API_KEY']) {
-                    // $result['config_status'] = -1;
-                    // $result['config_msg'] = "Auth Token is missing";
-                $result['status'] = 0;
-                $result['msg'] = "Authentication fail";
-                $result['errors'][] = "key is missing";
-                $result['data'] = (object)array();
-                return $result;
-            }
-        }
+        $result = array();
+        $result['config_status'] = 0; // auth check status
+        $result['status'] = 0;  // final api response status
+
         if ($requestHeaders['API_KEY']) {
             $CI = & get_instance();
             $CI->load->model('apiauthcheck_model');
@@ -49,8 +43,8 @@ class api extends CI_Controller {
                 $this->authToken = $requestHeaders['AUTH_TOKEN'];
             }
         } else {
-            // $result['config_status'] = -1;
-            // $result['config_msg'] = "Header Field is missing";
+
+            $result['config_msg'] = "Header Field is missing";
             $result['status'] = 0;
             $result['msg'] = "Authentication Fail";
             $result['errors'][] = "Header Field is missing";
