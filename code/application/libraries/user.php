@@ -409,7 +409,6 @@ class user {
                 $x[0] = (object)$res;
                 $result['data']['response'] = $this->returnResponse($x,$p);
                 $result['data']['responseHeader'] = $this->returnResponseHeader();
-                print_r($result['data']['response']);die;
             }
         }
         else{
