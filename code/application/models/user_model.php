@@ -377,7 +377,7 @@ class user_model extends CI_Model {
                 $appVersionCurrent = $appVersionCurrent[0];
                 if(round($appVersionCurrent->app_version, 2) < round($appVersionNew->app_version , 2)){
                     $recommended = true;
-                    if(!is_null($appVersionCurrent->expiry_date) && (strtotime($appVersionCurrent->expiry_date) < strtotime(date('Y-m-d')))){
+                    if(!is_null($appVersionCurrent->expiry_date) && (strtotime($appVersionCurrent->expiry_date) < strtotime(date('Y-m-d H:i:s')))){
                         $forceUpdate = true;
                         $recommended = false;
 
