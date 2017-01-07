@@ -244,6 +244,7 @@ class user {
             $result['msg']          = 'User details found in Database';
             $result['data']['responseHeader'] = $this->returnResponseHeader();
             $result['data']['response'] = $this->returnResponse($user_details, $params);
+            print_r($result['data']['response']);die;
             return $result;
         } catch (Exception $ex) {
             $result['status'] = 0;
@@ -404,8 +405,11 @@ class user {
                 $p['page'] = 0;//for returnResponse function
                 $result['status'] = 1;
                 $result['msg'] = 'Check App Status Successful';
-                $result['data']['response'] = $this->returnResponse($res,$p);
+                $x = array();
+                $x[0] = (object)$res;
+                $result['data']['response'] = $this->returnResponse($x,$p);
                 $result['data']['responseHeader'] = $this->returnResponseHeader();
+                print_r($result['data']['response']);die;
             }
         }
         else{
