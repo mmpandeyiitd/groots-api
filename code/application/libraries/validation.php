@@ -964,6 +964,8 @@ class validation {
       try{
             $CI = & get_instance();
             $CI->load->library('form_validation');
+            
+
             if ($CI->form_validation->required($params['user_id']) == False)
             {
                 $result['status'] = 0;

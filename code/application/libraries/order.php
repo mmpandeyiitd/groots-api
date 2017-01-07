@@ -935,7 +935,7 @@ class order extends CI_Controller {
             else {
                 $result['status'] = 1;
                 $result['msg'] = 'data updated successfully';
-                $result['data'] = array();
+                $result['data'] = (object)array();
                 
             }
             return $result;
