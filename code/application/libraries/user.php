@@ -244,7 +244,6 @@ class user {
             $result['msg']          = 'User details found in Database';
             $result['data']['responseHeader'] = $this->returnResponseHeader();
             $result['data']['response'] = $this->returnResponse($user_details, $params);
-            print_r($result['data']['response']);die;
             return $result;
         } catch (Exception $ex) {
             $result['status'] = 0;
