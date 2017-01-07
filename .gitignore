@@ -609,4 +609,6 @@ Session.vim
 ### Project Specific files
 /code/application/config/custom-config.php
 /code/application/config/database.php
-
+/code/application/config/aws_sdk.php
+/code/vendor/*
+/code/composer.lock
