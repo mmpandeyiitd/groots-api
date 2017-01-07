@@ -300,6 +300,44 @@ class api extends CI_Controller {
     $this->returnfunction($result);   
 }
 
+public function partialUpdateOrder(){
+
+        $checkAuthToken = TRUE;
+        $result = $this->checkAuth($checkAuthToken);
+        if ($result['config_status'] == -1){
+            $json_data = json_encode($result);
+            $data['response'] = $json_data;
+            $this->load->view('responseData',$data);
+            return;
+
+        }
+        if ($result['config_status'] == 0){
+            $this->output->set_header("RESPONSE_CODE:0");
+            $json_data = json_encode($result);
+            $data['response'] = $json_data;
+            $this->load->view('responseData',$data);
+            return;
+        }
+        $CI = & get_instance();
+        $CI->load->model('apiauthcheck_model');
+        $user_id = $CI->apiauthcheck_model->getUserIdbyToken($this->authToken);
+        $_POST['user_id'] = $user_id;
+        $value = array();
+        if (isset ($_POST)){
+            $value = $_POST;
+        } 
+        $this->load->library('order');
+        $result = $this->order->partialupdateorder($value);
+        $this->output->set_header('AUTH_TOKEN:'.$this->authToken);
+        $this->returnfunction($result);
+
+
+            
+
+
+    }
+
+
 public function user_profile() {
     $checkAuthToken = TRUE;
     $result = $this->checkAuth($checkAuthToken);
@@ -327,6 +365,29 @@ public function user_profile() {
     $this->output->set_header('AUTH_TOKEN:'.$this->authToken);
     $this->returnfunction($result);
 }
+
+public function allproducts(){
+       $checkAuthToken = TRUE;
+       $result = $this->checkAuth($checkAuthToken);
+       if ($result ['status'] == 0 && $resuklt[config_status] != 1){
+          $json_data = json_encode($result);
+          $data['response'] = $json_data;
+          $this->load->view('responseData',$data);
+          return;
+
+       }
+
+       $CI = & get_instance();
+       $CI ->load ->model('apiauthcheck_model');
+       $user_id = $CI->apiauthcheck_model->getUserIdbyToken($this->authToken);
+       $value = array();
+       $value['user_id'] = $user_id;
+       $this->load->library('');
+             
+
+
+
+    }
 
 public function productList() {
     $checkAuthToken = TRUE;
