@@ -328,7 +328,7 @@ class order extends CI_Controller {
                             $emailData['body'] = $message;
                             $emailData['subject'] = "Groots : Your Order Has Been Placed Successfully";
                             $emailData['email'] = $params['shipping_email'];
-                            //$dataRes['UserEmail'] = $CI->communicationengine->emailCommunication($emailData);
+                            $dataRes['UserEmail'] = $CI->communicationengine->emailCommunication($emailData);
                             $SMSData['SMS'] = str_replace("{ORDERNO}", $data['order_number'], $CI->config->item('PLACE_ORDER'));
                             $SMSData['mobile'] = $params['shipping_phone'];
                             //$dataRes['UserSMS'] = $CI->communicationengine->smsCommunication($SMSData);
@@ -338,7 +338,7 @@ class order extends CI_Controller {
                                     $emailData['body'] = $message;
                                     $emailData['subject'] = "Supplified : Your Product Detail";
                                     $emailData['email'] = $seller[$i]['email'];
-                                    //$dataRes['SellerEmail'] = $CI->communicationengine->emailCommunication($emailData);
+                                    $dataRes['SellerEmail'] = $CI->communicationengine->emailCommunication($emailData);
                                 }
                             }
 

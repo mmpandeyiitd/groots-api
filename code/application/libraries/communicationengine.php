@@ -14,7 +14,7 @@ class communicationengine {
         //die(print_r($data));
         $CI = & get_instance();
         $CI->load->config('custom-config');
-        $CI->load->library('send_ses_email');
+        //$CI->load->library('send_ses_email');
         $from_email = $CI->config->item('FROM_EMAIL');
         $from_name = $CI->config->item('FROM_NAME');
         $no_reply = $CI->config->item('NO_REPLY');
@@ -32,7 +32,7 @@ class communicationengine {
             'replyto' => $no_reply  //,
             //'files' => array('0'=>array('name' =>$file_name,'path' =>$filename_with_path)),
         );
-        $CI->send_ses_email->sendMailSes($mailArray);
+        //$CI->send_ses_email->sendMailSes($mailArray);
 
         /*$url = $CI->config->item('SENDGRID_URL');
         $parameter =$CI->config->item('SENDGRID_PARAMETER');
