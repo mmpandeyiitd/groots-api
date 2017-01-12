@@ -405,7 +405,9 @@ class user {
                 $p['page'] = 0;//for returnResponse function
                 $result['status'] = 1;
                 $result['msg'] = 'Check App Status Successful';
-                $result['data']['response'] = $this->returnResponse($res,$p);
+                $x = array();
+                $x[0] = (object)$res;
+                $result['data']['response'] = $this->returnResponse($x,$p);
                 $result['data']['responseHeader'] = $this->returnResponseHeader();
             }
         }

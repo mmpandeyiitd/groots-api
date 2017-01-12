@@ -356,7 +356,7 @@ class user_model extends CI_Model {
             $platformQuery = 'select id from api_platforms where api_key = "'.$apiKey.'"';
             $query = $this->db2->query($platformQuery);
             if($this->db2->_error_message()){
-               return setDb2ErrorObject(); 
+               return $this->setDb2ErrorObject(); 
             }
             $query = $query->result();
             $platformId = $query[0]->id;
@@ -364,20 +364,20 @@ class user_model extends CI_Model {
                 $appVersionQuery = 'select * from app_versions where platform_id = '.$platformId.' order by id desc limit 1';
                 $appVersionNew = $this->db2->query($appVersionQuery);
                 if($this->db2->_error_message()){
-                    return setDb2ErrorObject(); 
+                    return $this->setDb2ErrorObject(); 
                 }
                 $appVersionNew = $appVersionNew->result();
                 $appVersionNew = $appVersionNew[0];
                 $appVersionQuery = 'select * from app_versions where platform_id = '.$platformId.' and app_version = "'.$appVersion.'" order by id desc limit 1';
                 $appVersionCurrent = $this->db2->query($appVersionQuery);
                 if($this->db2->_error_message()){
-                    return setDb2ErrorObject(); 
+                    return $this->setDb2ErrorObject(); 
                 }
                 $appVersionCurrent = $appVersionCurrent->result();
                 $appVersionCurrent = $appVersionCurrent[0];
                 if(round($appVersionCurrent->app_version, 2) < round($appVersionNew->app_version , 2)){
                     $recommended = true;
-                    if(strtotime($appVersionCurrent->expiry_date) < strtotime(date('Y-m-d'))){
+                    if(!is_null($appVersionCurrent->expiry_date) && (strtotime($appVersionCurrent->expiry_date) < strtotime(date('Y-m-d H:i:s')))){
                         $forceUpdate = true;
                         $recommended = false;
 
