@@ -58,6 +58,9 @@ class api extends CI_Controller {
         }
         return $result;
     }
+
+
+
     
     public function returnfunction($result) {
         if ($result['app'] == 1) {
@@ -327,6 +330,8 @@ public function partialUpdateOrder(){
             $value = $_POST;
         } 
         $this->load->library('order');
+            
+
         $result = $this->order->partialupdateorder($value);
         $this->output->set_header('AUTH_TOKEN:'.$this->authToken);
         $this->returnfunction($result);
@@ -336,6 +341,9 @@ public function partialUpdateOrder(){
 
 
     }
+
+
+    
 
 
 public function user_profile() {

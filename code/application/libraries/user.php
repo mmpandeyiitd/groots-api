@@ -218,6 +218,7 @@ class user {
             $CI = & get_instance();
             $CI->load->model('user_model');
             $user_details = $CI->user_model->getUserDetails($params);
+
             if ($user_details == false || is_a($user_details, 'Exception')) {
                 $result['status'] = 0;
                 $result['msg'] = 'Cannot Find Data. Please Try Again';
