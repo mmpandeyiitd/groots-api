@@ -52,6 +52,9 @@ class api extends CI_Controller {
         }
         return $result;
     }
+
+
+
     
     public function returnfunction($result) {
         if ($result['app'] == 1) {
@@ -321,6 +324,8 @@ public function partialUpdateOrder(){
             $value = $_POST;
         } 
         $this->load->library('order');
+            
+
         $result = $this->order->partialupdateorder($value);
         $this->output->set_header('AUTH_TOKEN:'.$this->authToken);
         $this->returnfunction($result);
@@ -330,6 +335,9 @@ public function partialUpdateOrder(){
 
 
     }
+
+
+    
 
 
 public function user_profile() {
@@ -571,6 +579,45 @@ public function signUp(){
 }
 
 
+/*public function emailInvoice(){
+    $checkAuthToken = TRUE;
+    $result = $this->checkAuth($checkAuthToken);
+    if ($result['config_status'] == -1){
+        $json_data = json_encode($result);
+        $data['response'] = $json_data;
+        $this->load->view('responseData',$data);
+        return;
+    }
+    if ($result['config_status'] == 0){
+        $this->output -> set_header("RESPONSE_CODE:0");
+        $json_data = json_encode($result);
+        $data['response'] = $json_data;
+        $this->load->view('responseData',$data);
+        return;
+    }
+
+    $CI = & get_instance();
+    $CI->load->model('apiauthcheck_model');
+    $user_id = $CI ->apiauthcheck_model ->getUserIdbyToken($this->authToken);
+    $_GET['user_id'] = $user_id;
+    $value = array();
+    $headers = getallheaders();
+    if (isset($_GET)) {
+        $value = $_GET;
+    }
+    $value['headers'] = $headers;
+    $this ->load -> library('user');
+    $result = $this ->user->sendInvoiceEmail($value);
+    $this ->returnfunction($result);
+
+
+
+
+
+
+}
+*/
+
 public function checkAppUpdate(){
   $checkAuthToken = TRUE;
     $result = $this->checkAuth($checkAuthToken);
@@ -601,5 +648,123 @@ public function checkAppUpdate(){
     $result = $this->user->checkAppUpdate($value);
     $this->output->set_header('AUTH_TOKEN:'.$this->authToken);
     $this->returnfunction($result);
-}  
+} 
+
+    public function getcontactnumbers (){
+         $checkAuthToken = TRUE;
+           $result = $this->checkAuth($checkAuthToken);
+           if ($result['config_status'] == -1) {
+            $json_data = json_encode($result);
+            $data['response'] = $json_data;
+            $this->load->view('responseData', $data);
+            return;
+        }
+        if ($result['config_status'] == 0) {
+            $this->output->set_header("RESPONSE_CODE:0");
+            $json_data = json_encode($result);
+            $data['response'] = $json_data;
+            $this->load->view('responseData', $data);
+            return;
+        }
+
+        $CI = & get_instance();
+        $CI->load->model('apiauthcheck_model');
+        $user_id = $CI->apiauthcheck_model->getUserIdbyToken($this->authToken);
+
+        $value = array();
+
+        $CI->load->config('custom-config');
+
+       
+        $result['order_support'] = $CI->config->item('contact_order_support');
+        $result['customer_support'] = $CI->config->item('contact_cust_support');
+
+        if ($result['order_support'] == false || $result['customer_support'] == false){
+            $result['status'] = 0 ;
+             $result['data'] = (object)array();
+            $result['msg'] = 'customer support or order support missing';
+        }
+        else {
+            $result['status'] = 1;
+            //$result['msg'] = 'successful'; 
+            $result['msg']          = 'contact no found in Database';
+            $x = array();
+                $x[0] = (object)$result;
+                $result['data']['response'] = $this->returnResponse($x);
+                $result['data']['responseHeader'] = $this->returnResponseHeader();
+               // $result['data']['response'] = $this->returnResponse($result);
+
+        }
+          
+       $this->output->set_header('AUTH_TOKEN:'.$this->authToken);
+       $this->returnfunction($result);
+
+    }
+
+    public function salesContactNo() {
+        $checkAuthToken = FALSE;
+        $result = $this->checkAuth($checkAuthToken);
+        if ($result['status'] == 0 && $result['config_status'] != 1) {
+            $json_data = json_encode($result);
+            $data['response'] = $json_data;
+            $this->load->view('responseData', $data);
+            return;
+        }
+        
+        $CI = & get_instance();
+        $CI->load->model('apiauthcheck_model');
+        $value = array();
+        $CI->load->config('custom-config');
+        $value['sales_contact'] = $CI->config->item('contact_sales_support');
+
+
+        if ($value['sales_contact'] == false){
+            $result['status'] = 0 ;
+             $result['data'] = (object)array();
+            $result['msg'] = ' sales support missing';
+        }
+        else{
+            $result['status'] = 1;
+            $result['msg'] = "sales no found in database";
+            $x = array();
+            $x[0] = (object)$value;
+            $result['data']['response'] = $this ->returnResponse($x);
+            $result['data']['responseHeader'] = $this->returnResponseHeader();
+
+
+        } 
+        $this->output->set_header('AUTH_TOKEN:'.$this->authToken);
+        $this->returnfunction($result);
+
+    }
+
+
+
+    public function returnResponseHeader() {
+        $responseHeader = array();
+        $responseHeader['status'] = 0;
+        $responseHeader['QTime'] = null;
+        $responseHeader['params'] = null;
+        return $responseHeader;
+    }
+    public function returnResponse($data) {
+        $response = array();
+        if (isset($data) && !empty($data)) {
+            $response['numFound'] = count($data);
+           // $response['start'] = intval($params['page']);
+            $response['docs'] = $data;
+        } else {
+            $response['numFound'] = null;
+            $response['start'] = null;
+            $response['docs'] = null;
+        }
+        return $response;
+    }
+
+
+    
+
+
+
+
 }

@@ -188,7 +188,7 @@ class order extends CI_Controller {
                     return $result;
                 }
 
-                $total_payable_amount = ($grandtotal - ($params['discount_amt']) + ($params['total_tax']));
+                $total_payable_amount = ($grandtotal - ($params['discount_amt']) + ($params['total_tax']) + $params['shipping_charges']);
 
                 if (round($total_payable_amount, 2) != (round($params['total_payable_amount'], 2))) {
                     $result['status'] = 0;
@@ -231,7 +231,7 @@ class order extends CI_Controller {
                 $data['status'] = "'" . 'pending' . "'";
                 $data['order_type'] = "'" . $params['order_type'] . "'";
                 $data['coupon_code'] = "'" . $params['coupon_code'] . "'";
-                $data['shipping_charges'] = 0;
+                $data['shipping_charges'] = $params['shipping_charges'];
                 $data['tax'] = $params['total_tax'];
                 $data['timestamp'] = "'" . date('Y-m-d H:i:s') . "'";
                 $data['user_id'] = $params['user_id'];
@@ -980,6 +980,7 @@ class order extends CI_Controller {
             $updateHeader['order_id'] = $params['order_id'];
             $updateHeader['total_payable_amount'] = $params['total_payable_amount'];
             $updateHeader['total'] = $params['total'];
+            $updateHeader['shipping_charges'] = $params['shipping_charges'];
             $updateHeader['delivery_date'] = $params['delivery_date'];
             $where = array('order_id' => $params['order_id']);
             $e = $this->order_model->updateorderheader($updateHeader);
