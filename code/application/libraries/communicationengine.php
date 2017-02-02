@@ -32,7 +32,7 @@ class communicationengine {
             'replyto' => $no_reply  //,
             //'files' => array('0'=>array('name' =>$file_name,'path' =>$filename_with_path)),
         );
-        $CI->send_ses_email->sendMailSes($mailArray);
+        return $CI->send_ses_email->sendMailSes($mailArray);
 
         /*$url = $CI->config->item('SENDGRID_URL');
         $parameter =$CI->config->item('SENDGRID_PARAMETER');

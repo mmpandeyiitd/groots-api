@@ -187,9 +187,10 @@ class user {
                     $data = $CI->communicationengine->emailCommunication($emailData);
                     if ($data) {
                         $result['status'] = 1;
-                        $result['msg'] = "User Forgot Password";
+                        $result['msg'] = "Reset Password Email sent Successfully";
                         $result['errors'] = array();
-                        $result['data'] = json_decode($data);
+                        $arr = array('msg' => $result['msg']);
+                        $result['data'] = $arr;//json_encode($arr);
                     } else {
                         $result['status'] = 0;
                         $result['msg'] = "Forgot Password Fail";
