@@ -219,7 +219,7 @@ class user_model extends CI_Model {
     
     public function getUserDetails($params) {
        try{
-            $query = 'SELECT r.id, r.name as retailerName, r.shipping_charge as shippingCharge,r.min_order_price as minOrderPrice, r.due_date as outstandingDate, r.total_payable_amount as outstandingAmount, c.name as collectionRepName, ge.name as salesRepName  FROM retailer as r left join collection_agent as c on r.collection_agent_id = c.id left join groots_employee as ge on r.sales_rep_id = ge.id where r.id="'.$params['user_id'].'"';
+            $query = 'SELECT r.id, r.name as retailerName,r.name as orgName,r.email as email, r.mobile as contact,r.address as address,r.alternate_email as alternateEmail,r.city as city,r.state as state,r.website as website,r.tan_no as tanNo,r.pan_no as panNo,r.payment_mode as paymentMode,r.collection_frequency as paymentFreq,r.min_order_price as minOrderPrice, r.due_date as outstandingDate, r.total_payable_amount as outstandingAmount, c.name as collectionRepName, ge.name as salesRepName  FROM retailer as r left join collection_agent as c on r.collection_agent_id = c.id left join groots_employee as ge on r.sales_rep_id = ge.id where r.id="'.$params['user_id'].'"';
             //echo $query; die;
             $user_details_query = $this->db2->query($query);
             $user_details  = $user_details_query->result();
@@ -344,6 +344,37 @@ class user_model extends CI_Model {
             return $e;
         }
     }
+
+
+     public function insertRetailerDetailsLeads($params,$dat){
+        try{
+          //  $params = '(' . implode(',', $params) . ')';
+
+
+                          
+
+
+
+
+            $sql = 'update retailer SET name ='.$params['personName'].', address = '.$params['address'].', tan_no = '.$params['tanNo'].', collection_frequency = '.$params['paymentFreq'].', payment_mode = '.$params['paymentMode'].', pan_no = '.$params['pan_no'].', website = '.$params['website'].', alternate_email = '.$params['alternate_email'].', city = '.$params['city'].', state = '.$params['state'].', pincode = '.$params['pincode'].', retailer_grade_type = '.$params['retailer_grade_type'].' where id = '.$dat['id'] ; 
+
+           /* $sql = 'insert into retailer (name,address, tan_no,collection_frequency, payment_mode,pan_no,website,alternate_email,city,state,pincode) values'.$params;*/
+            //die($sql);
+            $query = $this->db2->query($sql);
+            if($this->db2->_error_message()){
+                $dberrorObjs->error_code = $this->db2->_error_number();
+                $dberrorObjs->error_message = $this->db2->_error_message();
+                $dberrorObjs->error_query = $this->db2->last_query();
+                $dberrorObjs->error_time = date("Y-m-d H:i:s");
+                $this->db2->insert('dberror', $dberrorObjs);
+                return new Exception($dberrorObjs->error_message);
+            }
+            else return array();
+        } catch (Exception $e){
+            return $e;
+        }
+    }
+
 
     public function checkAppUpdate($params){
         try{
