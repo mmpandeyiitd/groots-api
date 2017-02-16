@@ -129,6 +129,7 @@ class user {
                         $result['data']["user_id"] = $res["id"];
                         $result['data']["retailer_name"] = $res["contact_person1"];
                         $result['data']["name"] = $res["name"];
+                        $result['data']["registration_status"] = $res["registration_status"];
                     } else if ($master_password == $params['password']){
                         $result['status'] = 1;
                         $result['errors'] = array();
@@ -136,6 +137,7 @@ class user {
                         $result['data']["user_id"] = $data["id"];
                         $result['data']["retailer_name"] = $data["contact_person1"];
                         $result['data']["name"] = $data["name"];
+                        $result['data']["registration_status"] = $data["registration_status"];
                     } else {
                         $result['status'] = 0;
                         $result['msg'] = "User Login Fail";
