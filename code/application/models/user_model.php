@@ -154,14 +154,14 @@ class user_model extends CI_Model {
 
             if (!empty($data['email'])){
 
-                $user_query = $this->db2->query("SELECT id,email,name,contact_person1 FROM retailer where email='" . $data['email'] . "' AND STATUS = 1");
+                $user_query = $this->db2->query("SELECT id,email,name,contact_person1 FROM retailer where email='" . $data['email'] . "' AND (status = 1 or (status=0 and registration_status != 'OTPVerificationPending'))");
 
 
                  
             }
             elseif (!empty($data['contact'])){
 
-                $user_query = $this->db2->query("SELECT id,email,name,contact_person1 FROM retailer where mobile='" . $data['contact'] . "' AND STATUS = 1");
+                $user_query = $this->db2->query("SELECT id,email,name,contact_person1 FROM retailer where mobile='" . $data['contact'] . "' AND (status = 1 or (status=0 and registration_status != 'OTPVerificationPending'))");
 
             }
            
