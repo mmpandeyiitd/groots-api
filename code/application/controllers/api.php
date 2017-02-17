@@ -607,8 +607,8 @@ $result = $this->checkAuth($checkAuthToken);
      if (isset($_POST)) {
         $value = $_POST;
     }
-    $this->load->library('user');
-    $result =  $this->user->
+   // $this->load->library('user');
+   // $result =  $this->user->
     $value['user_id'] = $user_id;
     $this->load->library('user');
     $result = $this->user->insertRetailerDetails($value);
