@@ -439,7 +439,21 @@ class user {
              $data['id'] = '"'.$params['user_id'] .'"';
 
 
-             $e = $CI->user_model->updateRetailerMakeActive($data);
+             $e = $CI->user_model->updateRetailerMakeActivee($data);
+
+             if(is_a($e, 'Exception')){
+                    $result['status'] = 0;
+                    $result['msg'] = 'Fail To Save Data';
+                    $result['errors'] = $e->getMessage();
+                    return $result;
+                }
+                else{
+                    $result['status'] = 1;
+                    $result['msg'] = 'Form Submitted Successfully';
+                    
+                     return $result;
+                }
+
 
 
         

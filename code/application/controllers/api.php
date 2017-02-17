@@ -644,6 +644,8 @@ public function makeRetailerActive(){
     }
      $value['user_id'] = $user_id;
     $this->load->library('user');
+    $result = $this->user->updateRetailerMakeActive($value);
+    $this->returnfunction($result);
 
 
 

@@ -382,7 +382,7 @@ class user_model extends CI_Model {
           try {
 
 
-            $sql = "update retailer set status = 1 ,registration_status = 'Complete' where id =".$params['user_id'];
+            $sql = "update retailer set status = 1 ,registration_status = 'Complete' where id =".$params['id'];
 
             $query = $this->db2->query($sql);
             if($this->db2->_error_message()){
