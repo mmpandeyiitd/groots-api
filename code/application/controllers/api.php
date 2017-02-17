@@ -617,6 +617,41 @@ $result = $this->checkAuth($checkAuthToken);
 }
 
 
+public function makeRetailerActive(){
+    $checkAuthToken = TRUE;
+ $result = $this->checkAuth($checkAuthToken);
+ if ($result['config_status'] == -1) {
+        $json_data = json_encode($result);
+        $data['response'] = $json_data;
+        $this->load->view('responseData', $data);
+        return;
+    }
+    if ($result['config_status'] == 0) {
+        $this->output->set_header("RESPONSE_CODE:0");
+        $json_data = json_encode($result);
+        $data['response'] = $json_data;
+        $this->load->view('responseData', $data);
+        return;
+    }
+
+
+    $CI = & get_instance();
+     $CI->load->model('apiauthcheck_model');
+    $user_id = $CI->apiauthcheck_model->getUserIdbyToken($this->authToken);
+    $value = array();
+     if (isset($_POST)) {
+        $value = $_POST;
+    }
+     $value['user_id'] = $user_id;
+    $this->load->library('user');
+
+
+
+
+}
+
+
+
 /*public function emailInvoice(){
     $checkAuthToken = TRUE;
     $result = $this->checkAuth($checkAuthToken);

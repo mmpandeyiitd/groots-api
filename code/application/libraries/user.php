@@ -425,6 +425,40 @@ class user {
     }
 
 
+    public function updateRetailerMakeActive($params){
+
+        try{
+            //die(print_r($params));
+            $result = array();
+            $CI = & get_instance();
+            $CI->load->model('user_model');
+            $CI->load->library('validation');
+
+
+
+             $data['id'] = '"'.$params['user_id'] .'"';
+
+
+             $e = $CI->user_model->updateRetailerMakeActive($data);
+
+
+        
+
+
+
+        }
+        catch (Exception $e){
+            $result['status'] = 0;
+            $result['msg'] = 'Fail To Save Data';
+            $result['errors'] = $e->getMessage();
+            return $result; 
+        }
+        
+
+
+    }
+
+
     public function sendSignUpEmail($data){
         $CI = & get_instance();
         $CI->load->library('communicationengine');

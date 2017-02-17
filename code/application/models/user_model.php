@@ -376,6 +376,36 @@ class user_model extends CI_Model {
     }
 
 
+
+
+    public function updateRetailerMakeActivee($params){
+          try {
+
+
+            $sql = "update retailer set status = 1 ,registration_status = 'Complete' where id =".$params['user_id'];
+
+            $query = $this->db2->query($sql);
+            if($this->db2->_error_message()){
+                $dberrorObjs->error_code = $this->db2->_error_number();
+                $dberrorObjs->error_message = $this->db2->_error_message();
+                $dberrorObjs->error_query = $this->db2->last_query();
+                $dberrorObjs->error_time = date("Y-m-d H:i:s");
+                $this->db2->insert('dberror', $dberrorObjs);
+                return new Exception($dberrorObjs->error_message);
+            }
+            else return array();
+
+
+
+          }
+          catch(Exception $e){
+            return $e;
+          }
+
+
+    }
+
+
     public function checkAppUpdate($params){
         try{
             $result = array();
