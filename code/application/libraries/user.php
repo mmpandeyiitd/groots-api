@@ -391,6 +391,7 @@ class user {
                 $data['state'] = '"' .$params['state'] .'"';
                 $data['pincode'] = '"'.$params['pinCode'] .'"';
                 $data['retailer_grade_type'] = '"'.$params['retailerGradeType'].'"';
+                $data['business_type'] = '"'.$params['businessType'].'"';
                 $dat['id'] = '"'.$params['user_id'] .'"';
 
 
