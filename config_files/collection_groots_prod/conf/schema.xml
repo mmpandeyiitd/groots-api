@@ -171,6 +171,9 @@
 	<field name="min_order_qunatity" type="int" indexed="true" stored="true"/>
 	<field name="sku" type="string" indexed="true" stored="true" />
 	<field name="checkout_url" type="string" indexed="true" stored="true"/>
+  <field name="is_sample" type="int" indexed="true" stored="true"/>
+  <field name="min_price" type="tfloat" indexed="true" stored="true"/>
+  <field name="max_price" type="tfloat" indexed="true" stored="true"/>
 	
 	
 <!--<field name="synonyms" type="text_en" indexed="true" />-->        
