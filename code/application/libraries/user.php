@@ -363,6 +363,117 @@ class user {
         }
     }
 
+
+    public function insertRetailerDetails($params){
+
+
+        try{
+            //die(print_r($params));
+            $result = array();
+            $CI = & get_instance();
+            $CI->load->model('user_model');
+            $CI->load->library('validation');
+            /*$result = $CI->validation->validate_reatailer_details_leads_data($params);
+            if(!empty($result['status']) && $result['status'] == 0){
+                return $result;
+            }
+            else{*/
+                $data['personName'] = '"' . $params['personName'] . '"';
+                $data['address'] = '"' . $params['address'] . '"';
+               /* $data['paymentFreq'] = (empty($params['designation'])) ? null:'"' . $params['designation'] . '"';*/
+                $data['tanNo'] = '"' . $params['tanNo'] . '"';
+                 $data['paymentFreq'] = '"' . $params['modeOfFreq'] . '"';
+                $data['paymentMode'] = '"' . $params['modeOfPayment'] . '"';
+                $data['pan_no'] ='"' . $params['panNo'] . '"';
+                $data['website'] = '"' .$params['website'] . '"';
+                $data['alternate_email'] = '"' .$params['alternateEmail'] . '"';
+                $data['city'] = '"' .$params['city'] . '"';
+                $data['state'] = '"' .$params['state'] .'"';
+                $data['pincode'] = '"'.$params['pinCode'] .'"';
+                $data['retailer_grade_type'] = '"'.$params['retailerGradeType'].'"';
+                $data['business_type'] = '"'.$params['businessType'].'"';
+                $dat['id'] = '"'.$params['user_id'] .'"';
+
+
+               
+               
+                $e = $CI->user_model->insertRetailerDetailsLeads($data,$dat);
+                if(is_a($e, 'Exception')){
+                    $result['status'] = 0;
+                    $result['msg'] = 'Fail To Save Data';
+                    $result['errors'] = $e->getMessage();
+                    return $result;
+                }
+                else{
+                    $result['status'] = 1;
+                    $result['msg'] = 'Form Submitted Successfully';
+                    //$res = $this->sendSignUpEmail($params);
+                    if($res['status'] == 1){
+                        return $result;
+                    }
+                    else return $result;
+                }
+           // }
+        } catch (Exception $e){
+            $result['status'] = 0;
+            $result['msg'] = 'Fail To Save Data';
+            $result['errors'] = $e->getMessage();
+            return $result; 
+        }
+
+
+
+    }
+
+
+    public function updateRetailerMakeActive($params){
+
+        try{
+            //die(print_r($params));
+            $result = array();
+            $CI = & get_instance();
+            $CI->load->model('user_model');
+            $CI->load->library('validation');
+
+
+
+             $data['id'] = '"'.$params['user_id'] .'"';
+
+
+             $e = $CI->user_model->updateRetailerMakeActivee($data);
+
+             if(is_a($e, 'Exception')){
+                    $result['status'] = 0;
+                    $result['msg'] = 'Fail To Save Data';
+                    $result['errors'] = $e->getMessage();
+                    return $result;
+                }
+                else{
+                    $result['status'] = 1;
+                    $result['msg'] = 'Form Submitted Successfully';
+                    
+                     return $result;
+                }
+
+
+
+        
+
+
+
+        }
+        catch (Exception $e){
+            $result['status'] = 0;
+            $result['msg'] = 'Fail To Save Data';
+            $result['errors'] = $e->getMessage();
+            return $result; 
+        }
+        
+
+
+    }
+
+
     public function sendSignUpEmail($data){
         $CI = & get_instance();
         $CI->load->library('communicationengine');
